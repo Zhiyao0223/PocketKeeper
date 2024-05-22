@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pocketkeeper/application/app_constant.dart';
 import 'package:pocketkeeper/application/controller/login_controller.dart';
 import 'package:pocketkeeper/template/utils/spacing.dart';
 import 'package:pocketkeeper/template/widgets/widgets.dart';
+import 'package:pocketkeeper/theme/themes.dart';
 import '../../theme/custom_theme.dart';
 import '../../template/state_management/state_management.dart';
 
@@ -14,16 +16,28 @@ class LoginScreen extends StatefulWidget {
   }
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    with TickerProviderStateMixin {
   late CustomTheme customTheme;
   late LoginController controller;
+  late OutlineInputBorder outlineInputBorder;
+
+  FocusNode emailFocusNode = FocusNode();
+  FocusNode passwordFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     customTheme = CustomTheme();
+    outlineInputBorder = OutlineInputBorder(
+      borderRadius: const BorderRadius.all(Radius.circular(30)),
+      borderSide: BorderSide(
+        color: customTheme.colorPrimary.withOpacity(0.2),
+        width: 2,
+      ),
+    );
 
-    controller = FxControllerStore.put(LoginController());
+    controller = FxControllerStore.put(LoginController(this));
   }
 
   @override
@@ -40,50 +54,242 @@ class _LoginScreenState extends State<LoginScreen> {
     // Prevent load UI if data is not finish load
     if (!controller.isDataFetched) {
       // Display spinner while loading
-      return CircularProgressIndicator(
-        backgroundColor: customTheme.white,
-        color: customTheme.colorPrimary,
-      );
+      return _buildLoading();
     }
-
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const Image(
-            image: AssetImage('assets/icons/app_icon_1024.png'),
-            width: 100,
-            height: 100,
+      body: Center(
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.1,
           ),
-          FxText.bodyLarge('Welcome back!'),
-          FxSpacing.height(16),
-          FxText.bodyMedium("Log in to your existing account"),
-          FxSpacing.height(16),
-          FxTextField(
-            labelText: 'Email',
-            hintText: 'Enter your email',
-            prefixIcon: const Icon(Icons.email),
-            textFieldType: FxTextFieldType.email,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              // Top section of login form
+              _buildTopSection(),
+              FxSpacing.height(32),
+              // Email
+              _buildEmailField(),
+              FxSpacing.height(16),
+              // Password
+              _buildPasswordField(),
+              FxSpacing.height(16),
+              // Forgot password
+              Align(
+                alignment: Alignment.centerRight,
+                child: InkWell(
+                  onTap: () => controller.onForgetPasswordClick(),
+                  child: FxText.labelMedium(
+                    'Forgot password?',
+                    fontWeight: 600,
+                    color: customTheme.colorPrimary,
+                  ),
+                ),
+              ),
+              FxSpacing.height(16),
+              // Login button
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: FxButton.rounded(
+                  onPressed: controller.onLoginButtonClick,
+                  backgroundColor: customTheme.colorPrimary,
+                  child: FxText.bodyMedium(
+                    'LOG IN',
+                    fontWeight: 700,
+                    color: customTheme.white,
+                  ),
+                ),
+              ),
+              _buildSocialLogin(),
+              FxSpacing.height(32),
+              // Sign up
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FxText.labelMedium(
+                    "Don't have an account? ",
+                    xMuted: true,
+                  ),
+                  InkWell(
+                    onTap: controller.onRegisterClick,
+                    child: FxText.labelMedium(
+                      'Sign Up',
+                      color: customTheme.colorPrimary,
+                      fontWeight: 600,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          FxSpacing.height(16),
-          FxTextField(
-            labelText: 'Password',
-            hintText: 'Enter your password',
-            prefixIcon: const Icon(Icons.lock),
-            textFieldType: FxTextFieldType.password,
-          ),
-          FxSpacing.height(16),
-          FxButton.medium(
-            onPressed: () => {},
-            child: FxText.bodyMedium('Forgot password?'),
-          ),
-          FxSpacing.height(16),
-          FxButton.medium(
-            onPressed: () => {},
-            child: FxText.bodyMedium('Log in'),
-          ),
-        ],
+        ),
       ),
+    );
+  }
+
+  // Display spinner while loading
+  Widget _buildLoading() {
+    return CircularProgressIndicator(
+      backgroundColor: customTheme.white,
+      color: customTheme.colorPrimary,
+    );
+  }
+
+  // Build top section of login form
+  Widget _buildTopSection() {
+    return Column(
+      children: <Widget>[
+        Image.asset(
+          appLogoImage,
+          width: MediaQuery.of(context).size.width * 0.5,
+          height: MediaQuery.of(context).size.width * 0.5,
+        ),
+        FxSpacing.height(32),
+        FxText.titleLarge(
+          'Welcome back!',
+          fontWeight: 700,
+          fontSize: 28,
+        ),
+        FxSpacing.height(8),
+        FxText.bodyMedium(
+          'Log in to your existing account',
+          fontSize: 18,
+          xMuted: true,
+        ),
+        FxSpacing.height(32),
+      ],
+    );
+  }
+
+  // Display Email Field
+  Widget _buildEmailField() {
+    return SlideTransition(
+      position: controller.emailAnimation.returnAnimationOffset(),
+      child: TextFormField(
+        focusNode: emailFocusNode,
+        style: FxTextStyle.bodyMedium(),
+        keyboardType: TextInputType.text,
+        decoration: InputDecoration(
+          floatingLabelBehavior: FloatingLabelBehavior.never,
+          isDense: true,
+          filled: true,
+          fillColor: customTheme.white,
+          hintText: "Email Address",
+          enabledBorder: outlineInputBorder,
+          focusedBorder: outlineInputBorder,
+          border: outlineInputBorder,
+          prefixIcon: Icon(
+            Icons.email,
+            color: emailFocusNode.hasFocus
+                ? customTheme.colorPrimary
+                : customTheme.black,
+          ),
+          contentPadding: FxSpacing.all(16),
+          hintStyle: FxTextStyle.bodyMedium(xMuted: true),
+          isCollapsed: true,
+        ),
+        maxLines: 1,
+        controller: controller.emailController,
+        validator: controller.validateEmail,
+        cursorColor: customTheme.black,
+        onTapOutside: (_) {
+          // Lost focus change colour
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+      ),
+    );
+  }
+
+  // Display Password Field
+  Widget _buildPasswordField() {
+    return SlideTransition(
+      position: controller.passwordAnimation.returnAnimationOffset(),
+      child: TextFormField(
+        focusNode: passwordFocusNode,
+        style: FxTextStyle.bodyMedium(),
+        keyboardType: TextInputType.text,
+        obscureText: controller.enablePasswordVisibility ? false : true,
+        decoration: InputDecoration(
+          errorMaxLines: 3,
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+          isDense: true,
+          filled: true,
+          fillColor: customTheme.white,
+          hintText: "Password",
+          enabledBorder: outlineInputBorder,
+          focusedBorder: outlineInputBorder,
+          border: outlineInputBorder,
+          prefixIcon: Icon(
+            Icons.lock,
+            color: passwordFocusNode.hasFocus
+                ? customTheme.colorPrimary
+                : customTheme.black,
+          ),
+          suffixIcon: InkWell(
+            onTap: () {
+              controller.togglePasswordVisibility();
+            },
+            child: Icon(
+              controller.enablePasswordVisibility
+                  ? Icons.visibility
+                  : Icons.visibility_off,
+              color: passwordFocusNode.hasFocus
+                  ? customTheme.colorPrimary
+                  : customTheme.black,
+            ),
+          ),
+          contentPadding: FxSpacing.all(16),
+          hintStyle: FxTextStyle.bodyMedium(xMuted: true),
+          isCollapsed: true,
+        ),
+        maxLines: 1,
+        controller: controller.passwordController,
+        validator: controller.validatePassword,
+        cursorColor: customTheme.black,
+        onTapOutside: (_) {
+          // Lost focus change colour
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+      ),
+    );
+  }
+
+  // Build social login section
+  Widget _buildSocialLogin() {
+    return Column(
+      children: [
+        FxSpacing.height(16),
+        FxText.labelMedium(
+          'Or log in with:',
+          xMuted: true,
+        ),
+        FxSpacing.height(16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FxButton.rounded(
+              onPressed: controller.onGoogleAccountLoginClick,
+              backgroundColor: customTheme.white,
+              child: Row(
+                children: [
+                  Image.asset(
+                    googleLogoImage,
+                    width: 24,
+                    height: 24,
+                  ),
+                  FxSpacing.width(8),
+                  FxText(
+                    'Google',
+                    color: customTheme.black,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

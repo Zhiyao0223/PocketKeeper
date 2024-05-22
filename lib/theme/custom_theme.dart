@@ -17,7 +17,8 @@ class CustomTheme {
       onInfo,
       onWarning,
       onSuccess,
-      onError;
+      onError,
+      customPrimary;
 
   final Color lightBlack,
       violet,
@@ -46,8 +47,8 @@ class CustomTheme {
     this.cardDark = const Color(0xfffefefe),
     this.disabledColor = const Color(0xffdcc7ff),
     this.onDisabled = const Color(0xffffffff),
-    this.colorPrimary = const Color(0x003548f2),
-    this.colorSecondary = const Color(0x003548f2),
+    this.colorPrimary = const Color.fromARGB(255, 53, 71, 225),
+    this.colorSecondary = const Color.fromARGB(255, 53, 72, 242),
     this.colorWarning = const Color(0xffffc837),
     this.colorInfo = const Color(0xffff784b),
     this.colorSuccess = const Color(0xff3cd278),
@@ -57,6 +58,7 @@ class CustomTheme {
     this.onSuccess = const Color(0xffffffff),
     this.colorError = const Color(0xfff0323c),
     this.onError = const Color(0xffffffff),
+    this.customPrimary = const Color(0x003548f2),
 
     //Color
     this.lightBlack = const Color(0xffa7a7a7),

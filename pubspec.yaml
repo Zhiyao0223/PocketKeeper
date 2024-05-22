@@ -1,12 +1,12 @@
 name: pocketkeeper
-description: Final Year Project
+description: "Final Year Project"
 
 publish_to: 'none'
 
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.6 <4.0.0'
+  sdk: '>=3.4.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -16,7 +16,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.2.2
   google_fonts: ^6.2.1
-  http: ^0.13.6
+  http: ^1.2.1
 
   flutter_dotenv: ^5.1.0
   fluttertoast: ^8.2.5
@@ -26,10 +26,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^2.0.0
-
-  # App Icon
-  flutter_launcher_icons: ^0.13.1
+  flutter_lints: ^4.0.0
 
 flutter:
   uses-material-design: true
@@ -52,10 +49,6 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/icons/
+    - assets/fonts/
     - .env
-
-flutter_launcher_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: "assets/icons/app_icon_1024.png"
-  min_sdk_android: 21
