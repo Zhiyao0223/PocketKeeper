@@ -4,9 +4,7 @@ import '../../theme/custom_theme.dart';
 import '../../template/state_management/state_management.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String title;
-
-  const HomeScreen({super.key, required this.title});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() {
@@ -40,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
     // Prevent load UI if data is not finish load
     if (!controller.isDataFetched) {
       // Display spinner while loading
-      // If want look nicer, can use "skeleton body"
       return CircularProgressIndicator(
         backgroundColor: customTheme.white,
         color: customTheme.colorPrimary,
@@ -50,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: const Text("Dashboard"),
       ),
       body: Center(
         child: Column(

@@ -15,7 +15,7 @@ dependencies:
   # UI Library
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.2.2
-  google_fonts: ^2.3.3
+  google_fonts: ^6.2.1
   http: ^0.13.6
 
   flutter_dotenv: ^5.1.0
@@ -33,6 +33,22 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  fonts:
+    - family: DM Sans
+      fonts:
+        - asset: assets/fonts/DMSans-Regular.ttf
+          weight: 300
+        - asset: assets/fonts/DMSans-Italic.ttf
+          style: italic
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Roboto-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Roboto-Italic.ttf
+          style: italic
 
   assets:
     - assets/images/

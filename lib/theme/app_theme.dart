@@ -44,9 +44,12 @@ class AppTheme {
 
     /// AppBar Theme
     appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xffffffff),
-        iconTheme: IconThemeData(color: Color(0xff495057)),
-        actionsIconTheme: IconThemeData(color: Color(0xff495057))),
+      backgroundColor: Color(0xffffffff),
+      iconTheme: IconThemeData(color: Color(0xff495057)),
+      actionsIconTheme: IconThemeData(
+        color: Color(0xff495057),
+      ),
+    ),
 
     /// Card Theme
     cardTheme: const CardTheme(color: Color(0xfff0f0f0)),
@@ -54,13 +57,14 @@ class AppTheme {
 
     /// Floating Action Theme
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: const Color(0xff3C4EC5),
-        splashColor: const Color(0xffeeeeee).withAlpha(100),
-        highlightElevation: 8,
-        elevation: 4,
-        focusColor: const Color(0xff3C4EC5),
-        hoverColor: const Color(0xff3C4EC5),
-        foregroundColor: const Color(0xffeeeeee)),
+      backgroundColor: const Color(0xff3C4EC5),
+      splashColor: const Color(0xffeeeeee).withAlpha(100),
+      highlightElevation: 8,
+      elevation: 4,
+      focusColor: const Color(0xff3C4EC5),
+      hoverColor: const Color(0xff3C4EC5),
+      foregroundColor: const Color(0xffeeeeee),
+    ),
 
     /// Divider Theme
     dividerTheme:
