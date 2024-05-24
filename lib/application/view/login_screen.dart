@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/app_constant.dart';
 import 'package:pocketkeeper/application/controller/login_controller.dart';
 import 'package:pocketkeeper/application/view/forget_password_email_screen.dart';
+import 'package:pocketkeeper/application/view/home_screen.dart';
 import 'package:pocketkeeper/application/view/register_screen.dart';
 import 'package:pocketkeeper/template/utils/spacing.dart';
 import 'package:pocketkeeper/template/widgets/widgets.dart';
@@ -60,7 +61,10 @@ class _LoginScreenState extends State<LoginScreen>
       return buildCircularLoadingIndicator();
     }
     return Scaffold(
-      body: Center(
+      appBar: AppBar(),
+      body: GestureDetector(
+        onVerticalDragDown: (_) =>
+            FocusManager.instance.primaryFocus?.unfocus(),
         child: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: EdgeInsets.symmetric(
@@ -100,7 +104,18 @@ class _LoginScreenState extends State<LoginScreen>
                 width: double.infinity,
                 height: 50,
                 child: FxButton.rounded(
-                  onPressed: controller.onLoginButtonClick,
+                  onPressed: () {
+                    controller.onLoginButtonClick().then((value) {
+                      if (value) {
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                          ),
+                          (route) => false,
+                        );
+                      }
+                    });
+                  },
                   backgroundColor: customTheme.colorPrimary,
                   child: FxText.bodyMedium(
                     'LOG IN',

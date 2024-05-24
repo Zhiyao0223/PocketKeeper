@@ -42,8 +42,9 @@ class LoginController extends FxController {
     // TODO: Implement forget password
   }
 
-  void onLoginButtonClick() {
+  Future<bool> onLoginButtonClick() async {
     // TODO: Implement login button submit
+    return true;
   }
 
   void onGoogleAccountLoginClick() {

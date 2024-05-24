@@ -16,7 +16,7 @@ class FxBuilder<T extends FxController> extends StatefulWidget {
       didUpdateWidget;
 
   const FxBuilder({
-    Key? key,
+    super.key,
     required this.controller,
     required this.builder,
     this.initState,
@@ -24,7 +24,7 @@ class FxBuilder<T extends FxController> extends StatefulWidget {
     this.didChangeDependencies,
     this.didUpdateWidget,
     this.theme,
-  }) : super(key: key);
+  });
 
   @override
   FxBuilderState<T> createState() => FxBuilderState<T>();

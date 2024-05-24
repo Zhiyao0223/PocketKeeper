@@ -24,6 +24,9 @@ class FPEmailController extends FxController {
     // Initialize controller
     emailController = TextEditingController();
 
+    /// Remove this later ///
+    emailController.text = "test@gmail.com";
+
     fetchData();
   }
 
@@ -33,9 +36,9 @@ class FPEmailController extends FxController {
     update();
   }
 
-  Future<bool> onButtonClick() async {
+  Future<int> onButtonClick() async {
     // TODO: Implement forget password
-    return true;
+    return 1000;
   }
 
   String? validateEmail(String? value) {

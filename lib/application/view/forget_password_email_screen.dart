@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pocketkeeper/application/app_constant.dart';
 import 'package:pocketkeeper/application/controller/forget_password_email_controller.dart';
+import 'package:pocketkeeper/application/view/forget_password_verification_code_screen.dart';
 import 'package:pocketkeeper/template/utils/spacing.dart';
 import 'package:pocketkeeper/template/widgets/button/button.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
@@ -38,7 +40,7 @@ class _ForgetPasswordEmailState extends State<ForgetPasswordEmailScreen>
       ),
     );
 
-    controller = FxControllerStore.put(FPEmailController(this));
+    controller = FxControllerStore.putOrFind(FPEmailController(this));
   }
 
   @override
@@ -62,25 +64,23 @@ class _ForgetPasswordEmailState extends State<ForgetPasswordEmailScreen>
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.1,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildTopSection(),
-            FxSpacing.height(10),
-            FxText.bodyMedium(
-              'Please write your email to reeive a confirmation code to set a new password.',
-              fontSize: 18,
-              xMuted: true,
-            ),
-            FxSpacing.height(20),
-            _buildEmailField(),
-            FxSpacing.height(20),
-            _buildSubmitButton(),
-          ],
+      body: GestureDetector(
+        onVerticalDragDown: (_) =>
+            FocusManager.instance.primaryFocus?.unfocus(),
+        child: SingleChildScrollView(
+          padding: FxSpacing.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.1,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _buildTopSection(),
+              FxSpacing.height(20),
+              _buildEmailField(),
+              FxSpacing.height(30),
+              _buildSubmitButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -89,12 +89,22 @@ class _ForgetPasswordEmailState extends State<ForgetPasswordEmailScreen>
   Widget _buildTopSection() {
     return Column(
       children: [
-        Image.asset('assets/forget_password.png'),
+        Image.asset(
+          forgetPasswordImage,
+          width: MediaQuery.of(context).size.width * 0.7,
+        ),
         FxSpacing.height(20),
         FxText.titleLarge(
-          'Forget Password',
+          'Forget Password?',
           fontWeight: 700,
           fontSize: 28,
+        ),
+        FxSpacing.height(10),
+        FxText.bodyMedium(
+          'Please write your email to receive a confirmation code.',
+          textAlign: TextAlign.center,
+          fontSize: 18,
+          xMuted: true,
         ),
       ],
     );
@@ -141,8 +151,20 @@ class _ForgetPasswordEmailState extends State<ForgetPasswordEmailScreen>
       height: 50,
       child: FxButton.rounded(
         onPressed: () {
-          controller.onButtonClick().then((value) {
-            Navigator.pop(context);
+          controller.onButtonClick().then((verificationCode) {
+            // Only go to code screen if success (4 digit code)
+            if (verificationCode > 999) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return ForgetPasswordVerificationCodeScreen(
+                      email: controller.emailController.text,
+                      initialVerificationCode: verificationCode,
+                    );
+                  },
+                ),
+              );
+            }
           }).catchError((error) {
             // Handle any errors here
             ExceptionHandler.handleException(error);

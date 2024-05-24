@@ -5,6 +5,7 @@ import '../../template/state_management/controller.dart';
 
 class FPVerificationCodeController extends FxController {
   bool isDataFetched = false, enablePasswordVisibility = false;
+  late int verificationCode;
 
   // Form key
   GlobalKey<FormState> formKey = GlobalKey();
@@ -16,7 +17,13 @@ class FPVerificationCodeController extends FxController {
   late TickerProvider ticker;
   late CustomAnimation emailAnimation, passwordAnimation;
 
-  FPVerificationCodeController(this.ticker) {
+  late String inputEmail;
+
+  FPVerificationCodeController({
+    required this.ticker,
+    required this.inputEmail,
+    required this.verificationCode,
+  }) {
     emailAnimation = CustomAnimation(ticker: ticker);
     passwordAnimation = CustomAnimation(ticker: ticker);
   }
@@ -38,26 +45,12 @@ class FPVerificationCodeController extends FxController {
     update();
   }
 
-  void onForgetPasswordClick() {
+  Future<bool> onButtonClick() async {
     // TODO: Implement forget password
+    return true;
   }
 
-  void onLoginButtonClick() {
-    // TODO: Implement login button submit
-  }
-
-  void onGoogleAccountLoginClick() {
-    // TODO: Implement google account login
-  }
-
-  String? validateEmail(String? value) {
-    // TODO: Implement register click
-    return null;
-  }
-
-  void togglePasswordVisibility() {}
-
-  String? validatePassword(String? value) {
+  String? validateCode(String? value) {
     // TODO: Implement register click
     return null;
   }

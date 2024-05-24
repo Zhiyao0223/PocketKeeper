@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
-import '../controller/home_page_controller.dart';
+import 'package:pocketkeeper/application/app_constant.dart';
+import 'package:pocketkeeper/application/controller/forget_password_verification_code.dart';
+import 'package:pocketkeeper/application/view/forget_password_new_password_screen.dart';
+import 'package:pocketkeeper/template/utils/spacing.dart';
+import 'package:pocketkeeper/template/widgets/button/button.dart';
+import 'package:pocketkeeper/template/widgets/text/text.dart';
+import 'package:pocketkeeper/template/widgets/text_field/text_field.dart';
+import 'package:pocketkeeper/widget/exception_handler_toast.dart';
 import '../../theme/custom_theme.dart';
 import '../../template/state_management/state_management.dart';
 
 class ForgetPasswordVerificationCodeScreen extends StatefulWidget {
-  const ForgetPasswordVerificationCodeScreen({super.key});
+  final String email;
+  final int initialVerificationCode;
+
+  const ForgetPasswordVerificationCodeScreen(
+      {super.key, required this.email, required this.initialVerificationCode});
 
   @override
   State<ForgetPasswordVerificationCodeScreen> createState() {
@@ -13,21 +24,26 @@ class ForgetPasswordVerificationCodeScreen extends StatefulWidget {
 }
 
 class _ForgetPasswordVerificationCodeState
-    extends State<ForgetPasswordVerificationCodeScreen> {
+    extends State<ForgetPasswordVerificationCodeScreen>
+    with TickerProviderStateMixin {
   late CustomTheme customTheme;
-  late HomePageController controller;
+  late FPVerificationCodeController controller;
 
   @override
   void initState() {
     super.initState();
     customTheme = CustomTheme();
 
-    controller = FxControllerStore.put(HomePageController());
+    controller = FxControllerStore.put(FPVerificationCodeController(
+      ticker: this,
+      inputEmail: widget.email,
+      verificationCode: widget.initialVerificationCode,
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return FxBuilder<HomePageController>(
+    return FxBuilder<FPVerificationCodeController>(
       controller: controller,
       builder: (controllers) {
         return _buildBody();
@@ -36,67 +52,149 @@ class _ForgetPasswordVerificationCodeState
   }
 
   Widget _buildBody() {
-    // Prevent load UI if data is not finish load
-    if (!controller.isDataFetched) {
-      // Display spinner while loading
-      return CircularProgressIndicator(
-        backgroundColor: customTheme.white,
-        color: customTheme.colorPrimary,
-      );
-    }
+    if (!controller.isDataFetched) return const CircularProgressIndicator();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Password'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/new_password.png'),
-            SizedBox(height: 20),
-            Text(
-              'New Password',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Please write your new password.',
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 20),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
+      body: GestureDetector(
+        onVerticalDragDown: (_) =>
+            FocusManager.instance.primaryFocus?.unfocus(),
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          padding: FxSpacing.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.1,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _buildTopSection(),
+              FxSpacing.height(20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildVerificationCodeBox(0),
+                  _buildVerificationCodeBox(1),
+                  _buildVerificationCodeBox(2),
+                  _buildVerificationCodeBox(3),
+                ],
               ),
-              obscureText: true,
+              FxSpacing.height(30),
+              _buildSubmitButton(),
+              FxSpacing.height(10),
+              InkWell(
+                onTap: () {},
+                child: FxText.bodyMedium(
+                  'Resend',
+                  color: customTheme.colorPrimary,
+                  fontWeight: 700,
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTopSection() {
+    return Column(
+      children: [
+        Image.asset(
+          forgetPasswordImage,
+          width: MediaQuery.of(context).size.width * 0.7,
+        ),
+        FxSpacing.height(20),
+        FxText.titleLarge(
+          'Verify email address',
+          fontWeight: 700,
+          fontSize: 28,
+        ),
+        FxSpacing.height(10),
+        FxText.bodyMedium(
+          'Verification code sent to ${controller.inputEmail}',
+          textAlign: TextAlign.center,
+          fontSize: 18,
+          xMuted: true,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVerificationCodeBox(int numberIndex) {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        color: customTheme.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: customTheme.colorPrimary.withOpacity(0.5),
+          width: 2,
+        ),
+      ),
+      child: Center(
+        child: FxTextField(
+            keyboardType: TextInputType.number,
+            textAlign: TextAlign.center,
+            maxLength: 1,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
             ),
-            SizedBox(height: 10),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Confirm Password',
-                border: OutlineInputBorder(),
-              ),
-              obscureText: true,
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+              isDense: true,
+              contentPadding: EdgeInsets.all(0),
+              counterText: "",
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Add your logic here
-              },
-              child: Text('Confirm Password'),
-              style: ElevatedButton.styleFrom(
-                iconColor: Colors.purple,
-                minimumSize: Size(double.infinity, 50),
-              ),
-            ),
-          ],
+            onChanged: (value) {
+              // Move pointer to next code textfield
+              if (value.isNotEmpty) {
+                if (numberIndex < 3) {
+                  FocusScope.of(context).nextFocus();
+                }
+              } else {
+                if (numberIndex > 0) {
+                  FocusScope.of(context).previousFocus();
+                }
+              }
+            }),
+      ),
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: FxButton.rounded(
+        onPressed: () {
+          controller.onButtonClick().then((successSendCode) {
+            // Only go to code screen if success
+            if (successSendCode) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const ForgetPasswordNewPasswordScreen();
+                  },
+                ),
+              );
+            }
+          }).catchError((error) {
+            // Handle any errors here
+            ExceptionHandler.handleException(error);
+          });
+        },
+        backgroundColor: customTheme.colorPrimary,
+        child: FxText.bodyMedium(
+          'CONFIRM CODE',
+          fontWeight: 700,
+          color: customTheme.white,
         ),
       ),
     );

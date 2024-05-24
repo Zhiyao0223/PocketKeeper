@@ -10,15 +10,15 @@ class FPNewPasswordController extends FxController {
   GlobalKey<FormState> formKey = GlobalKey();
 
   // Text field controller
-  late TextEditingController emailController, passwordController;
+  late TextEditingController passwordController, confirmPasswordController;
 
   // Animation
   late TickerProvider ticker;
-  late CustomAnimation emailAnimation, passwordAnimation;
+  late CustomAnimation passwordAnimation, confirmPasswordAnimation;
 
   FPNewPasswordController(this.ticker) {
-    emailAnimation = CustomAnimation(ticker: ticker);
     passwordAnimation = CustomAnimation(ticker: ticker);
+    confirmPasswordAnimation = CustomAnimation(ticker: ticker);
   }
 
   @override
@@ -26,8 +26,8 @@ class FPNewPasswordController extends FxController {
     super.initState();
 
     // Initialize controller
-    emailController = TextEditingController();
     passwordController = TextEditingController();
+    confirmPasswordController = TextEditingController();
 
     fetchData();
   }
@@ -38,26 +38,20 @@ class FPNewPasswordController extends FxController {
     update();
   }
 
-  void onForgetPasswordClick() {
+  void onSubmitButtonClick() {
     // TODO: Implement forget password
   }
-
-  void onLoginButtonClick() {
-    // TODO: Implement login button submit
+  void togglePasswordVisibility() {
+    enablePasswordVisibility = !enablePasswordVisibility;
+    update();
   }
 
-  void onGoogleAccountLoginClick() {
-    // TODO: Implement google account login
-  }
-
-  String? validateEmail(String? value) {
+  String? validatePassword(String? value) {
     // TODO: Implement register click
     return null;
   }
 
-  void togglePasswordVisibility() {}
-
-  String? validatePassword(String? value) {
+  String? validateConfirmPassword(String? value) {
     // TODO: Implement register click
     return null;
   }
