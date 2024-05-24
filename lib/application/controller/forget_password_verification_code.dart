@@ -3,7 +3,7 @@ import 'package:pocketkeeper/utils/custom_animation.dart';
 
 import '../../template/state_management/controller.dart';
 
-class LoginController extends FxController {
+class FPVerificationCodeController extends FxController {
   bool isDataFetched = false, enablePasswordVisibility = false;
 
   // Form key
@@ -16,7 +16,7 @@ class LoginController extends FxController {
   late TickerProvider ticker;
   late CustomAnimation emailAnimation, passwordAnimation;
 
-  LoginController(this.ticker) {
+  FPVerificationCodeController(this.ticker) {
     emailAnimation = CustomAnimation(ticker: ticker);
     passwordAnimation = CustomAnimation(ticker: ticker);
   }
@@ -64,6 +64,6 @@ class LoginController extends FxController {
 
   @override
   String getTag() {
-    return "LoginController";
+    return "FGVerificationCodeController";
   }
 }

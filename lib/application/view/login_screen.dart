@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/app_constant.dart';
 import 'package:pocketkeeper/application/controller/login_controller.dart';
+import 'package:pocketkeeper/application/view/forget_password_email_screen.dart';
+import 'package:pocketkeeper/application/view/register_screen.dart';
 import 'package:pocketkeeper/template/utils/spacing.dart';
 import 'package:pocketkeeper/template/widgets/widgets.dart';
 import 'package:pocketkeeper/theme/themes.dart';
+import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
 import '../../theme/custom_theme.dart';
 import '../../template/state_management/state_management.dart';
 
@@ -54,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen>
     // Prevent load UI if data is not finish load
     if (!controller.isDataFetched) {
       // Display spinner while loading
-      return _buildLoading();
+      return buildCircularLoadingIndicator();
     }
     return Scaffold(
       body: Center(
@@ -79,7 +82,11 @@ class _LoginScreenState extends State<LoginScreen>
               Align(
                 alignment: Alignment.centerRight,
                 child: InkWell(
-                  onTap: () => controller.onForgetPasswordClick(),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ForgetPasswordEmailScreen(),
+                    ),
+                  ),
                   child: FxText.labelMedium(
                     'Forgot password?',
                     fontWeight: 600,
@@ -113,7 +120,11 @@ class _LoginScreenState extends State<LoginScreen>
                     xMuted: true,
                   ),
                   InkWell(
-                    onTap: controller.onRegisterClick,
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const RegisterScreen(),
+                      ),
+                    ),
                     child: FxText.labelMedium(
                       'Sign Up',
                       color: customTheme.colorPrimary,
@@ -126,14 +137,6 @@ class _LoginScreenState extends State<LoginScreen>
           ),
         ),
       ),
-    );
-  }
-
-  // Display spinner while loading
-  Widget _buildLoading() {
-    return CircularProgressIndicator(
-      backgroundColor: customTheme.white,
-      color: customTheme.colorPrimary,
     );
   }
 
