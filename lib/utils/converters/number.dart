@@ -11,41 +11,16 @@ extension NumberExtension on num {
     return value.toStringAsFixed(2);
   }
 
-  String toCurrencyWithSymbol() {
-    return '\$${toStringAsFixed(2)}';
-  }
-
-  String toCurrencyWithSymbolAndDecimal() {
-    return '\$${toStringAsFixed(2)}';
-  }
-
-  String toPercentage() {
-    return '${toStringAsFixed(2)}%';
-  }
-
-  String toPercentageWithSymbol() {
-    return '${toStringAsFixed(2)}%';
-  }
-
-  String toPercentageWithSymbolAndDecimal() {
-    return '${toStringAsFixed(2)}%';
-  }
-
   String toCommaSeparated() {
     return toString().replaceAllMapped(
         RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
   }
 
-  String toCommaSeparatedWithSymbol() {
-    return '\$${toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}';
-  }
-
-  String toCommaSeparatedWithSymbolAndDecimal() {
-    return '\$${toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}';
-  }
-
-  String toCommaSeparatedWithDecimal() {
-    return toString().replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
+  // Convert double to whole number if no decimal
+  String toWholeNumber(double tempTotal) {
+    // Only convert to no decimal if it is whole number
+    return (tempTotal % 1 == 0)
+        ? tempTotal.toStringAsFixed(2)
+        : tempTotal.toStringAsFixed(2);
   }
 }

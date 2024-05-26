@@ -75,12 +75,14 @@ class _LoginScreenState extends State<LoginScreen>
             children: <Widget>[
               // Top section of login form
               _buildTopSection(),
-              FxSpacing.height(32),
-              // Email
-              _buildEmailField(),
               FxSpacing.height(16),
-              // Password
-              _buildPasswordField(),
+              // Form
+              Form(
+                key: controller.formKey,
+                child: _buildForm(),
+              ),
+              // Email
+
               FxSpacing.height(16),
               // Forgot password
               Align(
@@ -105,8 +107,8 @@ class _LoginScreenState extends State<LoginScreen>
                 height: 50,
                 child: FxButton.rounded(
                   onPressed: () {
-                    controller.onLoginButtonClick().then((value) {
-                      if (value) {
+                    controller.onLoginButtonClick().then((authorized) {
+                      if (authorized) {
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
                             builder: (context) => const HomeScreen(),
@@ -176,7 +178,18 @@ class _LoginScreenState extends State<LoginScreen>
           fontSize: 18,
           xMuted: true,
         ),
-        FxSpacing.height(32),
+        FxSpacing.height(16),
+      ],
+    );
+  }
+
+  // Build form
+  Widget _buildForm() {
+    return Column(
+      children: <Widget>[
+        _buildEmailField(),
+        FxSpacing.height(16),
+        _buildPasswordField(),
       ],
     );
   }

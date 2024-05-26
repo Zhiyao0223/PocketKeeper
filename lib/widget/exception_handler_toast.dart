@@ -45,11 +45,12 @@ class ExceptionHandler {
       msg: errorMessage,
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Colors.red,
+      timeInSecForIosWeb: 1, // Duration for iOS
+      backgroundColor: Colors.black87,
       textColor: Colors.white,
-      fontSize: 12.0,
+      fontSize: 16.0,
     );
+
     isToastShowing = true;
     toastTimer = Timer(
       const Duration(seconds: 3),

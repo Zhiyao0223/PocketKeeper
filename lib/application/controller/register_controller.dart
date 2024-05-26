@@ -48,6 +48,25 @@ class RegisterController extends FxController {
     update();
   }
 
+  // Validatre Username
+  String? validateUserName(String? text) {
+    if (text == null) {
+      return "Username cannot be empty";
+    } else {
+      if (text.trim().isEmpty) {
+        return "Username cannot be empty";
+      }
+    }
+
+    if (RegExp(r'^(?=(?:.*[a-zA-Z]){6})[a-zA-Z0-9_ -]{6,100}$')
+        .hasMatch(text)) {
+      return null;
+    } else {
+      return "Username must be between 6 - 100 alphanumeric characters. With 6 alphabet characters.";
+    }
+    //return Validator.validateName(text);
+  }
+
   String? validateUsername(String? value) {
     // TODO: Implement register click
     return null;

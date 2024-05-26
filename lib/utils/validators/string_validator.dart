@@ -1,3 +1,11 @@
+/*
+
+String validator
+All string related validation function will be written here for global use
+ 
+*/
+
+// Check if first character is capital
 bool isFirstCharCapital(String string) {
   if (string.codeUnitAt(0) >= 65 && string.codeUnitAt(0) <= 90) {
     return true;
@@ -5,6 +13,7 @@ bool isFirstCharCapital(String string) {
   return false;
 }
 
+// Check if alphabet is included in string
 bool isAlphabetIncluded(String string) {
   string = string.toUpperCase();
   for (int i = 0; i < string.length; i++) {
@@ -15,6 +24,7 @@ bool isAlphabetIncluded(String string) {
   return false;
 }
 
+// Check if digit is included in string
 bool isDigitIncluded(String string) {
   for (int i = 0; i < string.length; i++) {
     if (string.codeUnitAt(i) >= 0 && string.codeUnitAt(i) <= 9) {
@@ -24,6 +34,7 @@ bool isDigitIncluded(String string) {
   return false;
 }
 
+// Check if special character is included in string
 bool isSpecialCharacterIncluded(String string) {
   String ch = "~`!@#\$%^&*.?_";
 
@@ -35,8 +46,11 @@ bool isSpecialCharacterIncluded(String string) {
   return false;
 }
 
+// Check if required characters are present in string
 bool isIncludedCharactersPresent(
-    String string, List<String>? includeCharacters) {
+  String string,
+  List<String>? includeCharacters,
+) {
   if (includeCharacters == null) {
     return false;
   }
@@ -49,6 +63,7 @@ bool isIncludedCharactersPresent(
   return false;
 }
 
+// Check if ignore characters are present in string
 bool isIgnoreCharactersPresent(String string, List<String>? ignoreCharacters) {
   if (ignoreCharacters == null) {
     return false;
@@ -62,6 +77,7 @@ bool isIgnoreCharactersPresent(String string, List<String>? ignoreCharacters) {
   return false;
 }
 
+// Check alphabet in string exceed max limit
 bool checkMaxAlphabet(String string, int maxAlphabet) {
   int counter = 0;
   string = string.toUpperCase();
@@ -76,6 +92,7 @@ bool checkMaxAlphabet(String string, int maxAlphabet) {
   return false;
 }
 
+// Check digit in string exceed max limit
 bool checkMaxDigit(String string, int maxDigit) {
   int counter = 0;
 
@@ -90,6 +107,7 @@ bool checkMaxDigit(String string, int maxDigit) {
   return false;
 }
 
+// Check alphabet in string exceed min limit
 bool checkMinAlphabet(String string, int minAlphabet) {
   int counter = 0;
   string = string.toUpperCase();
@@ -104,6 +122,7 @@ bool checkMinAlphabet(String string, int minAlphabet) {
   return false;
 }
 
+// Check digit in string exceed min limit
 bool checkMinDigit(String string, int minDigit) {
   int counter = 0;
   for (int i = 0; i < string.length; i++) {
@@ -117,6 +136,7 @@ bool checkMinDigit(String string, int minDigit) {
   return false;
 }
 
+// Global function to use all function
 bool validateString(
   String string, {
   int minLength = 8,
@@ -188,13 +208,43 @@ bool validateString(
   return true;
 }
 
+// Check if string is email address
 bool isStringEmailAddress(String email) {
   Pattern pattern =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$';
   RegExp regex = RegExp(pattern as String);
-  return (!regex.hasMatch(email));
+  return (regex.hasMatch(email));
 }
 
-bool validateStringRange(String text, [int minLength = 8, int maxLength = 20]) {
+// Check if string is in specific min and max limit
+bool validateStringRange({
+  required String text,
+  int minLength = 8,
+  int maxLength = 20,
+}) {
   return text.length >= minLength && text.length <= maxLength;
+}
+
+/*
+  Check for empty string
+  Return true if string is empty
+*/
+bool validateEmptyString(dynamic text) {
+  return text == null || text.toString().trim().isEmpty;
+}
+
+/*
+  Compare two string
+  Return true if same string
+  Parameters:
+    - firstString: first string for compare
+    - secondString: second string for compare
+*/
+bool equalString({String? firstString, String? secondString}) {
+  if (validateEmptyString(firstString) || validateEmptyString(secondString)) {
+    return false;
+  } else if (firstString != secondString) {
+    return false;
+  }
+  return true;
 }
