@@ -77,12 +77,26 @@ class _ForgetPasswordVerificationCodeState
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildVerificationCodeBox(0),
-                  _buildVerificationCodeBox(1),
-                  _buildVerificationCodeBox(2),
-                  _buildVerificationCodeBox(3),
+                  Form(
+                    key: controller.formKey,
+                    child: Column(
+                      children: [
+                        _buildVerificationCodeBox(0),
+                        _buildVerificationCodeBox(1),
+                        _buildVerificationCodeBox(2),
+                        _buildVerificationCodeBox(3),
+                      ],
+                    ),
+                  ),
                 ],
               ),
+              FxSpacing.height(20),
+              if (controller.hasError)
+                // ignore: deprecated_member_use_from_same_package
+                FxText.caption(
+                  'Invalid verification code',
+                  color: customTheme.colorError,
+                ),
               FxSpacing.height(30),
               _buildSubmitButton(),
               FxSpacing.height(10),
@@ -126,6 +140,22 @@ class _ForgetPasswordVerificationCodeState
   }
 
   Widget _buildVerificationCodeBox(int numberIndex) {
+    TextEditingController tmpController = TextEditingController();
+    switch (numberIndex) {
+      case 0:
+        tmpController = controller.firstCodeController;
+        break;
+      case 1:
+        tmpController = controller.secondCodeController;
+        break;
+      case 2:
+        tmpController = controller.thirdCodeController;
+        break;
+      case 3:
+        tmpController = controller.fourthCodeController;
+        break;
+    }
+
     return Container(
       width: 50,
       height: 50,
@@ -139,6 +169,7 @@ class _ForgetPasswordVerificationCodeState
       ),
       child: Center(
         child: FxTextField(
+            controller: tmpController,
             keyboardType: TextInputType.number,
             textAlign: TextAlign.center,
             maxLength: 1,
@@ -184,6 +215,8 @@ class _ForgetPasswordVerificationCodeState
                   },
                 ),
               );
+            } else {
+              setState(() {});
             }
           }).catchError((error) {
             // Handle any errors here

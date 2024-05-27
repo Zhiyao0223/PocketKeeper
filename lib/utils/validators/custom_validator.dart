@@ -30,7 +30,7 @@ bool validateEmailAddress(String? email) {
   -3 - Password length must between 8 and 20
   -4 - Password does not match with confirm password
 */
-int validatePassword({
+int validatePasswords({
   String? password,
   String? confirmPassword,
   bool isSetNewPassword = true,

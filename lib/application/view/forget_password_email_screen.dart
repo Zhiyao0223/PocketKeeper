@@ -111,36 +111,39 @@ class _ForgetPasswordEmailState extends State<ForgetPasswordEmailScreen>
   }
 
   Widget _buildEmailField() {
-    return SlideTransition(
-      position: controller.emailAnimation.returnAnimationOffset(),
-      child: TextFormField(
-        focusNode: emailFocusNode,
-        style: FxTextStyle.bodyMedium(),
-        keyboardType: TextInputType.text,
-        decoration: InputDecoration(
-          floatingLabelBehavior: FloatingLabelBehavior.never,
-          isDense: true,
-          filled: true,
-          fillColor: customTheme.white,
-          hintText: "Email Address",
-          enabledBorder: outlineInputBorder,
-          focusedBorder: outlineInputBorder,
-          border: outlineInputBorder,
-          prefixIcon: Icon(
-            Icons.email,
-            color: emailFocusNode.hasFocus
-                ? customTheme.colorPrimary
-                : customTheme.black,
+    return Form(
+      key: controller.formKey,
+      child: SlideTransition(
+        position: controller.emailAnimation.returnAnimationOffset(),
+        child: TextFormField(
+          focusNode: emailFocusNode,
+          style: FxTextStyle.bodyMedium(),
+          keyboardType: TextInputType.text,
+          decoration: InputDecoration(
+            floatingLabelBehavior: FloatingLabelBehavior.never,
+            isDense: true,
+            filled: true,
+            fillColor: customTheme.white,
+            hintText: "Email Address",
+            enabledBorder: outlineInputBorder,
+            focusedBorder: outlineInputBorder,
+            border: outlineInputBorder,
+            prefixIcon: Icon(
+              Icons.email,
+              color: emailFocusNode.hasFocus
+                  ? customTheme.colorPrimary
+                  : customTheme.black,
+            ),
+            contentPadding: FxSpacing.all(16),
+            hintStyle: FxTextStyle.bodyMedium(xMuted: true),
+            isCollapsed: true,
           ),
-          contentPadding: FxSpacing.all(16),
-          hintStyle: FxTextStyle.bodyMedium(xMuted: true),
-          isCollapsed: true,
+          maxLines: 1,
+          controller: controller.emailController,
+          validator: controller.validateEmail,
+          cursorColor: customTheme.black,
+          onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
         ),
-        maxLines: 1,
-        controller: controller.emailController,
-        validator: controller.validateEmail,
-        cursorColor: customTheme.black,
-        onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
       ),
     );
   }

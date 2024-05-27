@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/utils/custom_animation.dart';
+import 'package:pocketkeeper/utils/validators/validator.dart';
+import 'package:pocketkeeper/widget/show_toast.dart';
 
 import '../../template/state_management/controller.dart';
 
 class FPVerificationCodeController extends FxController {
-  bool isDataFetched = false, enablePasswordVisibility = false;
+  bool isDataFetched = false, hasError = false;
   late int verificationCode;
 
   // Form key
   GlobalKey<FormState> formKey = GlobalKey();
 
   // Text field controller
-  late TextEditingController emailController, passwordController;
+  late TextEditingController firstCodeController,
+      secondCodeController,
+      thirdCodeController,
+      fourthCodeController;
 
   // Animation
   late TickerProvider ticker;
-  late CustomAnimation emailAnimation, passwordAnimation;
+  late CustomAnimation firstCodeAnimation,
+      secondCodeAnimation,
+      thirdCodeAnimation,
+      fourthCodeAnimation;
 
   late String inputEmail;
 
@@ -24,8 +32,10 @@ class FPVerificationCodeController extends FxController {
     required this.inputEmail,
     required this.verificationCode,
   }) {
-    emailAnimation = CustomAnimation(ticker: ticker);
-    passwordAnimation = CustomAnimation(ticker: ticker);
+    firstCodeAnimation = CustomAnimation(ticker: ticker);
+    secondCodeAnimation = CustomAnimation(ticker: ticker);
+    thirdCodeAnimation = CustomAnimation(ticker: ticker);
+    fourthCodeAnimation = CustomAnimation(ticker: ticker);
   }
 
   @override
@@ -33,8 +43,10 @@ class FPVerificationCodeController extends FxController {
     super.initState();
 
     // Initialize controller
-    emailController = TextEditingController();
-    passwordController = TextEditingController();
+    firstCodeController = TextEditingController();
+    secondCodeController = TextEditingController();
+    thirdCodeController = TextEditingController();
+    fourthCodeController = TextEditingController();
 
     fetchData();
   }
@@ -46,12 +58,35 @@ class FPVerificationCodeController extends FxController {
   }
 
   Future<bool> onButtonClick() async {
-    // TODO: Implement forget password
+    // Validate form
+    if (!formKey.currentState!.validate()) {
+      hasError = true;
+      return false;
+    }
+    hasError = false;
+
+    // Get verification code
+    int inputCode = int.parse(
+      firstCodeController.text +
+          secondCodeController.text +
+          thirdCodeController.text +
+          fourthCodeController.text,
+    );
+
+    if (verificationCode != inputCode) {
+      showToast(customMessage: "Invalid verification code");
+      return false;
+    }
+
     return true;
   }
 
   String? validateCode(String? value) {
-    // TODO: Implement register click
+    // Check if empty and not numeric
+    if (validateEmptyString(value) || !validateIsIntOnly(value ?? "")) {
+      hasError = true;
+    }
+
     return null;
   }
 

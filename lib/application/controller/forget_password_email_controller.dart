@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:pocketkeeper/application/service/api_service.dart';
 import 'package:pocketkeeper/utils/custom_animation.dart';
+import 'package:pocketkeeper/utils/validators/custom_validator.dart';
+import 'package:pocketkeeper/widget/show_toast.dart';
 
 import '../../template/state_management/controller.dart';
 
 class FPEmailController extends FxController {
   bool isDataFetched = false;
+
+  // Form key
+  GlobalKey<FormState> formKey = GlobalKey();
 
   // Text field controller
   late TextEditingController emailController;
@@ -36,14 +42,44 @@ class FPEmailController extends FxController {
     update();
   }
 
+  // Validate email and get verification code from backend
   Future<int> onButtonClick() async {
-    // TODO: Implement forget password
-    return 1000;
+    // Validate form
+    if (!formKey.currentState!.validate()) {
+      return -1;
+    }
+
+    return await getVerificationCode(emailController.text);
+  }
+
+  // Get verification code
+  Future<int> getVerificationCode(String email) async {
+    // Variables
+    const String filename = "get_verification_code.php";
+    Map<String, dynamic> requestBody = {
+      "email": email,
+      "process": "get_code",
+    };
+
+    Map<String, dynamic> responseJson = await ApiService.post(
+      filename: filename,
+      body: requestBody,
+    );
+
+    // Check if success
+    if (responseJson["status"] != 200) {
+      // Show toast if email not exist
+      if (responseJson["status"] == 501) {
+        showToast(customMessage: "Email not exist");
+      }
+      return -1;
+    }
+
+    return responseJson['body']['verification_code'];
   }
 
   String? validateEmail(String? value) {
-    // TODO: Implement register click
-    return null;
+    return validateEmailAddress(value) ? null : "Invalid email address";
   }
 
   @override
