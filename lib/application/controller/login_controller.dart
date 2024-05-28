@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/service/api_service.dart';
+import 'package:pocketkeeper/application/service/authentication.dart';
 import 'package:pocketkeeper/utils/custom_animation.dart';
 import 'package:pocketkeeper/utils/validators/custom_validator.dart';
 import 'package:pocketkeeper/utils/validators/string_validator.dart';
@@ -63,8 +65,38 @@ class LoginController extends FxController {
     );
   }
 
-  void onGoogleAccountLoginClick() {
-    showToast();
+  // TODO
+  Future<List<String>> onGoogleAccountLoginClick() async {
+    User? user = await Authentication.signInWithGoogle(context: context);
+
+    if (user != null && user.email != null) {
+      // Check for database if user exist, if no go register page with prefilled data
+      Map<String, dynamic> apiResponse = await checkUserExist(user.email!);
+      if (apiResponse["status"] == 200) {
+        return ["0"];
+      }
+    } else {
+      showToast(
+        customMessage: "Error occurred using Google Sign In. Try again.",
+      );
+    }
+    return ["-1"];
+  }
+
+  Future<Map<String, dynamic>> checkUserExist(String tmpEmail) async {
+    // Variables
+    const String filename = "check_registered_email.php";
+    Map<String, dynamic> requestBody = {
+      "email": tmpEmail,
+      "process": "check_user_exist",
+    };
+
+    Map<String, dynamic> responseJson = await ApiService.post(
+      filename: filename,
+      body: requestBody,
+    );
+
+    return responseJson;
   }
 
   void togglePasswordVisibility() {

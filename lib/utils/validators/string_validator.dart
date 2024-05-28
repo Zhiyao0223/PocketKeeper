@@ -26,12 +26,7 @@ bool isAlphabetIncluded(String string) {
 
 // Check if digit is included in string
 bool isDigitIncluded(String string) {
-  for (int i = 0; i < string.length; i++) {
-    if (string.codeUnitAt(i) >= 0 && string.codeUnitAt(i) <= 9) {
-      return true;
-    }
-  }
-  return false;
+  return RegExp(r'\d').hasMatch(string);
 }
 
 // Check if special character is included in string

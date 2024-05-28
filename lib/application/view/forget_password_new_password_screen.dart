@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/app_constant.dart';
 import 'package:pocketkeeper/application/controller/forget_password_new_password_controller.dart';
+import 'package:pocketkeeper/application/view/login_screen.dart';
 import 'package:pocketkeeper/template/utils/spacing.dart';
 import 'package:pocketkeeper/template/widgets/button/button.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
@@ -10,7 +11,9 @@ import '../../theme/custom_theme.dart';
 import '../../template/state_management/state_management.dart';
 
 class ForgetPasswordNewPasswordScreen extends StatefulWidget {
-  const ForgetPasswordNewPasswordScreen({super.key});
+  final String email;
+
+  const ForgetPasswordNewPasswordScreen({super.key, required this.email});
 
   @override
   State<ForgetPasswordNewPasswordScreen> createState() {
@@ -40,7 +43,8 @@ class _ForgetPasswordNewPasswordState
       ),
     );
 
-    controller = FxControllerStore.put(FPNewPasswordController(this));
+    controller = FxControllerStore.put(
+        FPNewPasswordController(ticker: this, email: widget.email));
   }
 
   @override
@@ -59,6 +63,8 @@ class _ForgetPasswordNewPasswordState
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => Navigator.pop(context),
@@ -69,18 +75,29 @@ class _ForgetPasswordNewPasswordState
             FocusManager.instance.primaryFocus?.unfocus(),
         child: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: FxSpacing.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.1,
+          padding: FxSpacing.only(
+            left: MediaQuery.of(context).size.width * 0.1,
+            right: MediaQuery.of(context).size.width * 0.1,
+            top: MediaQuery.of(context).size.height * 0.05,
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              _buildTopSection(),
-              FxSpacing.height(20),
-              _buildPasswordField(),
-              FxSpacing.height(20),
-              _buildSubmitButton(),
-            ],
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                _buildTopSection(),
+                FxSpacing.height(20),
+                Form(
+                  key: controller.formKey,
+                  child: Column(
+                    children: [
+                      _buildPasswordField(),
+                      FxSpacing.height(20),
+                      _buildSubmitButton(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -95,15 +112,13 @@ class _ForgetPasswordNewPasswordState
           width: MediaQuery.of(context).size.width * 0.5,
         ),
         FxSpacing.height(20),
-        FxText.titleLarge(
+        const FxText.titleLarge(
           'Create New Password',
           fontWeight: 700,
-          fontSize: 28,
         ),
         FxSpacing.height(10),
-        FxText.bodyMedium(
+        const FxText.bodyMedium(
           'Please enter your new password',
-          fontSize: 18,
           xMuted: true,
         ),
       ],
@@ -201,7 +216,21 @@ class _ForgetPasswordNewPasswordState
     return SizedBox(
       width: double.infinity,
       child: FxButton.rounded(
-        onPressed: controller.onSubmitButtonClick,
+        onPressed: () {
+          controller.onSubmitButtonClick().then((success) {
+            if (success) {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const LoginScreen();
+                  },
+                ),
+                (route) => false,
+              );
+            }
+          });
+        },
         backgroundColor: customTheme.colorPrimary,
         child: FxText.bodyMedium(
           'CONFIRM PASSWORD',

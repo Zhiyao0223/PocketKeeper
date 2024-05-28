@@ -94,16 +94,14 @@ class _ForgetPasswordEmailState extends State<ForgetPasswordEmailScreen>
           width: MediaQuery.of(context).size.width * 0.7,
         ),
         FxSpacing.height(20),
-        FxText.titleLarge(
+        const FxText.titleLarge(
           'Forget Password?',
           fontWeight: 700,
-          fontSize: 28,
         ),
         FxSpacing.height(10),
-        FxText.bodyMedium(
+        const FxText.bodyMedium(
           'Please write your email to receive a confirmation code.',
           textAlign: TextAlign.center,
-          fontSize: 18,
           xMuted: true,
         ),
       ],

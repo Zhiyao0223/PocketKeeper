@@ -20,6 +20,6 @@ const fontDirectory = "${_assetDirectory}fonts/";
 Image Constant
 */
 const appLogoImage = "${iconDirectory}playstore.png";
-const googleLogoImage = "${iconDirectory}google-icon.png";
+const googleLogoImage = "${imageDirectory}google_logo.png";
 const forgetPasswordImage = "${imageDirectory}forget_password.png";
 const createNewPasswordImage = "${imageDirectory}create_new_password.png";

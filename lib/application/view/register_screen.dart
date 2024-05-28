@@ -109,7 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    FxText.labelMedium(
+                    const FxText.labelMedium(
                       'Already have an account? ',
                       xMuted: true,
                     ),
@@ -143,15 +143,13 @@ class _RegisterScreenState extends State<RegisterScreen>
     return Column(
       children: [
         FxSpacing.height(20),
-        FxText.titleLarge(
+        const FxText.titleLarge(
           "Let's Get Started!",
           fontWeight: 700,
-          fontSize: 28,
         ),
         FxSpacing.height(10),
-        FxText.bodyMedium(
+        const FxText.bodyMedium(
           'Create an account to get all features',
-          fontSize: 18,
           xMuted: true,
         ),
       ],

@@ -79,11 +79,14 @@ class _ForgetPasswordVerificationCodeState
                 children: [
                   Form(
                     key: controller.formKey,
-                    child: Column(
+                    child: Row(
                       children: [
                         _buildVerificationCodeBox(0),
+                        FxSpacing.width(10),
                         _buildVerificationCodeBox(1),
+                        FxSpacing.width(10),
                         _buildVerificationCodeBox(2),
+                        FxSpacing.width(10),
                         _buildVerificationCodeBox(3),
                       ],
                     ),
@@ -100,14 +103,27 @@ class _ForgetPasswordVerificationCodeState
               FxSpacing.height(30),
               _buildSubmitButton(),
               FxSpacing.height(10),
-              InkWell(
-                onTap: () {},
-                child: FxText.bodyMedium(
-                  'Resend',
-                  color: customTheme.colorPrimary,
-                  fontWeight: 700,
-                ),
-              )
+              StatefulBuilder(builder: (context, setState) {
+                return InkWell(
+                  onTap: () async {
+                    // Resend verification code
+                    controller.startTimer == 0
+                        ? await controller.resendVerificationCode()
+                        : null;
+                  },
+                  child: FxText.bodyMedium(
+                    controller.startTimer == 0
+                        ? 'Resend'
+                        : 'Resend in ${controller.startTimer} seconds',
+                    color: controller.startTimer == 0
+                        ? customTheme.colorPrimary
+                        : customTheme.colorPrimary.withOpacity(0.5),
+                    fontWeight: 700,
+                    textAlign: TextAlign.center,
+                    xMuted: controller.startTimer == 0 ? false : true,
+                  ),
+                );
+              }),
             ],
           ),
         ),
@@ -123,16 +139,14 @@ class _ForgetPasswordVerificationCodeState
           width: MediaQuery.of(context).size.width * 0.7,
         ),
         FxSpacing.height(20),
-        FxText.titleLarge(
+        const FxText.titleLarge(
           'Verify email address',
           fontWeight: 700,
-          fontSize: 28,
         ),
         FxSpacing.height(10),
         FxText.bodyMedium(
           'Verification code sent to ${controller.inputEmail}',
           textAlign: TextAlign.center,
-          fontSize: 18,
           xMuted: true,
         ),
       ],
@@ -211,7 +225,9 @@ class _ForgetPasswordVerificationCodeState
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (context) {
-                    return const ForgetPasswordNewPasswordScreen();
+                    return ForgetPasswordNewPasswordScreen(
+                      email: controller.inputEmail,
+                    );
                   },
                 ),
               );

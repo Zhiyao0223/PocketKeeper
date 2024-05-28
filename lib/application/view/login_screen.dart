@@ -61,96 +61,105 @@ class _LoginScreenState extends State<LoginScreen>
       return buildCircularLoadingIndicator();
     }
     return Scaffold(
-      appBar: AppBar(),
-      body: GestureDetector(
-        onVerticalDragDown: (_) =>
-            FocusManager.instance.primaryFocus?.unfocus(),
-        child: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.1,
+      body: SafeArea(
+        top: true,
+        bottom: true,
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).size.height * 0.05,
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // Top section of login form
-              _buildTopSection(),
-              FxSpacing.height(16),
-              // Form
-              Form(
-                key: controller.formKey,
-                child: _buildForm(),
+          child: GestureDetector(
+            onVerticalDragDown: (_) =>
+                FocusManager.instance.primaryFocus?.unfocus(),
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.1,
               ),
-              // Email
-
-              FxSpacing.height(16),
-              // Forgot password
-              Align(
-                alignment: Alignment.centerRight,
-                child: InkWell(
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ForgetPasswordEmailScreen(),
-                    ),
-                  ),
-                  child: FxText.labelMedium(
-                    'Forgot password?',
-                    fontWeight: 600,
-                    color: customTheme.colorPrimary,
-                  ),
-                ),
-              ),
-              FxSpacing.height(16),
-              // Login button
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: FxButton.rounded(
-                  onPressed: () {
-                    controller.onLoginButtonClick().then((authorized) {
-                      if (authorized) {
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (context) => const HomeScreen(),
-                          ),
-                          (route) => false,
-                        );
-                      }
-                    });
-                  },
-                  backgroundColor: customTheme.colorPrimary,
-                  child: FxText.bodyMedium(
-                    'LOG IN',
-                    fontWeight: 700,
-                    color: customTheme.white,
-                  ),
-                ),
-              ),
-              _buildSocialLogin(),
-              FxSpacing.height(32),
-              // Sign up
-              Row(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FxText.labelMedium(
-                    "Don't have an account? ",
-                    xMuted: true,
+                children: <Widget>[
+                  // Top section of login form
+                  _buildTopSection(),
+                  FxSpacing.height(16),
+                  // Form
+                  Form(
+                    key: controller.formKey,
+                    child: _buildForm(),
                   ),
-                  InkWell(
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const RegisterScreen(),
+                  FxSpacing.height(16),
+                  // Forgot password
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const ForgetPasswordEmailScreen(),
+                        ),
+                      ),
+                      child: FxText.labelMedium(
+                        'Forgot password?',
+                        fontWeight: 600,
+                        color: customTheme.colorPrimary,
                       ),
                     ),
-                    child: FxText.labelMedium(
-                      'Sign Up',
-                      color: customTheme.colorPrimary,
-                      fontWeight: 600,
+                  ),
+                  FxSpacing.height(16),
+                  // Login button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: FxButton.rounded(
+                      onPressed: () {
+                        controller.onLoginButtonClick().then((authorized) {
+                          if (authorized) {
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                builder: (context) => const HomeScreen(),
+                              ),
+                              (route) => false,
+                            );
+                          }
+                        });
+                      },
+                      backgroundColor: customTheme.colorPrimary,
+                      child: FxText.bodyMedium(
+                        'LOG IN',
+                        fontWeight: 700,
+                        color: customTheme.white,
+                      ),
                     ),
+                  ),
+                  _buildSocialLogin(),
+                  FxSpacing.height(32),
+                  // Sign up
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const FxText.labelMedium(
+                        "Don't have an account? ",
+                        xMuted: true,
+                      ),
+                      InkWell(
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const RegisterScreen(),
+                          ),
+                        ),
+                        child: FxText.labelMedium(
+                          'Sign Up',
+                          color: customTheme.colorPrimary,
+                          fontWeight: 600,
+                        ),
+                      ),
+                      FxSpacing.height(
+                          MediaQuery.of(context).size.height * 0.05),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -167,15 +176,13 @@ class _LoginScreenState extends State<LoginScreen>
           height: MediaQuery.of(context).size.width * 0.5,
         ),
         FxSpacing.height(32),
-        FxText.titleLarge(
+        const FxText.titleLarge(
           'Welcome back!',
           fontWeight: 700,
-          fontSize: 28,
         ),
         FxSpacing.height(8),
-        FxText.bodyMedium(
+        const FxText.bodyMedium(
           'Log in to your existing account',
-          fontSize: 18,
           xMuted: true,
         ),
         FxSpacing.height(16),
@@ -292,7 +299,7 @@ class _LoginScreenState extends State<LoginScreen>
     return Column(
       children: [
         FxSpacing.height(16),
-        FxText.labelMedium(
+        const FxText.labelMedium(
           'Or log in with:',
           xMuted: true,
         ),

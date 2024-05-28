@@ -10,9 +10,6 @@ pubspec.lock
 # If you don't generate documentation locally you can remove this line.
 doc/api/
 
-# dotenv environment variables file
-.env*
-
 # Other OS
 linux/
 macos/
@@ -30,3 +27,9 @@ windows/
 .flutter-plugins
 .flutter-plugins-dependencies
 
+# Sensitive Info:
+.env*
+android/app/google-services.json
+firebase.json
+.vscode/settings.json
+lib/application/service/firebase_options.dart

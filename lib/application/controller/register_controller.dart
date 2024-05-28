@@ -50,7 +50,6 @@ class RegisterController extends FxController {
 
   void fetchData() async {
     isDataFetched = true;
-
     update();
   }
 
