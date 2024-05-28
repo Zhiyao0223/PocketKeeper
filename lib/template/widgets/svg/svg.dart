@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,7 +9,7 @@ class FxSvg extends StatefulWidget {
   final Color? color;
   final double? size;
 
-  const FxSvg(this.image, {this.color, this.size = 24});
+  const FxSvg(this.image, {super.key, this.color, this.size = 24});
 
   @override
   _FxTwoToneIconState createState() => _FxTwoToneIconState();

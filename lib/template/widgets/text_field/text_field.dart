@@ -5,8 +5,9 @@
 ///There are mainly 2 styles of TextField.
 ///[FxTextFieldStyle.underlined] -  It gives underline to the textField.
 ///[FxTextFieldStyle.outlined] -  It gives outline to the textField.
+library;
 
-// ignore_for_file: deprecated_member_use_from_same_package, deprecated_member_use
+// ignore_for_file: deprecated_member_use_from_same_package, deprecated_member_use, library_private_types_in_public_api
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -138,8 +139,9 @@ class FxTextField extends StatefulWidget {
   final bool? alignLabelWithHint;
   final bool? allowSuffixIcon;
 
-  FxTextField(
-      {this.controller,
+  const FxTextField(
+      {super.key,
+      this.controller,
       this.focusNode,
       this.decoration,
       this.keyboardType,

@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 /// [FxOnBoarding] - Gives a custom page onBoarding widget with 2 buttons for SKIP and DONE.
+library;
 
+// ignore_for_file: library_private_types_in_public_api
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -19,12 +21,18 @@ class FxOnBoarding extends StatefulWidget {
   final List<PageViewModel> pages;
   final Color selectedIndicatorColor;
   final Color unSelectedIndicatorColor;
-  final Widget skipWidget,doneWidget;
+  final Widget skipWidget, doneWidget;
 
-  const FxOnBoarding({Key? key, required this.pages, required this.selectedIndicatorColor, required this.unSelectedIndicatorColor, required this.skipWidget, required this.doneWidget}) : super(key: key);
+  const FxOnBoarding(
+      {super.key,
+      required this.pages,
+      required this.selectedIndicatorColor,
+      required this.unSelectedIndicatorColor,
+      required this.skipWidget,
+      required this.doneWidget});
 
   @override
-  _FxOnBoardingState createState() => new _FxOnBoardingState();
+  _FxOnBoardingState createState() => _FxOnBoardingState();
 }
 
 class _FxOnBoardingState extends State<FxOnBoarding>
@@ -40,7 +48,7 @@ class _FxOnBoardingState extends State<FxOnBoarding>
   double? slidePercent = 0.0;
 
   _FxOnBoardingState() {
-    slideUpdateStream = new StreamController<SlideUpdate>();
+    slideUpdateStream = StreamController<SlideUpdate>();
 
     slideUpdateStream!.stream.listen((SlideUpdate event) {
       setState(() {
@@ -57,7 +65,7 @@ class _FxOnBoardingState extends State<FxOnBoarding>
           }
         } else if (event.updateType == UpdateType.doneDragging) {
           if (slidePercent! > 0.5) {
-            animatedPageDragger = new AnimatedPageDragger(
+            animatedPageDragger = AnimatedPageDragger(
               slideDirection: slideDirection,
               transitionGoal: TransitionGoal.open,
               slidePercent: slidePercent,
@@ -65,7 +73,7 @@ class _FxOnBoardingState extends State<FxOnBoarding>
               vsync: this,
             );
           } else {
-            animatedPageDragger = new AnimatedPageDragger(
+            animatedPageDragger = AnimatedPageDragger(
               slideDirection: slideDirection,
               transitionGoal: TransitionGoal.close,
               slidePercent: slidePercent,
@@ -99,23 +107,23 @@ class _FxOnBoardingState extends State<FxOnBoarding>
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       backgroundColor: Colors.black,
-      body: new Stack(
+      body: Stack(
         children: [
           FxSinglePage(
             viewModel: widget.pages[activeIndex],
             percentVisible: 1.0,
           ),
-          new FxPageReveal(
+          FxPageReveal(
             revealPercent: slidePercent,
-            child: new FxSinglePage(
+            child: FxSinglePage(
               viewModel: widget.pages[nextPageIndex],
               percentVisible: slidePercent,
             ),
           ),
-          new FxPagerIndicator(
-            viewModel: new PagerIndicatorViewModel(
+          FxPagerIndicator(
+            viewModel: PagerIndicatorViewModel(
                 widget.pages,
                 activeIndex,
                 slideDirection,
@@ -123,13 +131,12 @@ class _FxOnBoardingState extends State<FxOnBoarding>
                 widget.selectedIndicatorColor,
                 widget.unSelectedIndicatorColor,
                 widget.skipWidget,
-                widget.doneWidget
-            ),
+                widget.doneWidget),
           ),
-          new FxPageDragger(
+          FxPageDragger(
             canDragLeftToRight: activeIndex > 0,
             canDragRightToLeft: activeIndex < widget.pages.length - 1,
-            slideUpdateStream: this.slideUpdateStream,
+            slideUpdateStream: slideUpdateStream,
           )
         ],
       ),

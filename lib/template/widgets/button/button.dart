@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// ignore_for_file: deprecated_member_use, curly_braces_in_flow_control_structures
+
 /// Three types of button implemented from Material Button.
+library;
 
 /// [FxButtonType.elevated] - gives elevation to the button along with some height and shadow.
 /// [FxButtonType.outlined] - gives outline to the button
@@ -48,8 +51,9 @@ class FxButton extends StatelessWidget {
 
   final Widget child;
 
-  FxButton(
-      {this.onPressed,
+  const FxButton(
+      {super.key,
+      this.onPressed,
       required this.child,
       this.msPadding,
       this.padding,
@@ -73,8 +77,9 @@ class FxButton extends StatelessWidget {
       this.shadowColor,
       this.splashColor});
 
-  FxButton.rounded(
-      {required this.onPressed,
+  const FxButton.rounded(
+      {super.key,
+      required this.onPressed,
       required this.child,
       this.msPadding,
       this.padding,
@@ -98,8 +103,9 @@ class FxButton extends StatelessWidget {
       this.shadowColor,
       this.splashColor});
 
-  FxButton.small(
-      {required this.onPressed,
+  const FxButton.small(
+      {super.key,
+      required this.onPressed,
       required this.child,
       this.msPadding,
       this.padding = const EdgeInsets.fromLTRB(8, 4, 8, 4),
@@ -123,8 +129,9 @@ class FxButton extends StatelessWidget {
       this.shadowColor,
       this.splashColor});
 
-  FxButton.medium(
-      {required this.onPressed,
+  const FxButton.medium(
+      {super.key,
+      required this.onPressed,
       required this.child,
       this.msPadding,
       this.padding = const EdgeInsets.fromLTRB(24, 16, 24, 16),
@@ -148,8 +155,9 @@ class FxButton extends StatelessWidget {
       this.shadowColor,
       this.splashColor});
 
-  FxButton.text(
-      {required this.onPressed,
+  const FxButton.text(
+      {super.key,
+      required this.onPressed,
       required this.child,
       this.msPadding,
       this.padding = const EdgeInsets.fromLTRB(24, 16, 24, 16),
@@ -173,8 +181,9 @@ class FxButton extends StatelessWidget {
       this.shadowColor,
       this.splashColor});
 
-  FxButton.block(
-      {required this.onPressed,
+  const FxButton.block(
+      {super.key,
+      required this.onPressed,
       required this.child,
       this.msPadding,
       this.padding = const EdgeInsets.fromLTRB(24, 16, 24, 16),
@@ -198,8 +207,9 @@ class FxButton extends StatelessWidget {
       this.shadowColor,
       this.splashColor});
 
-  FxButton.outlined(
-      {required this.onPressed,
+  const FxButton.outlined(
+      {super.key,
+      required this.onPressed,
       required this.child,
       this.msPadding,
       this.padding = const EdgeInsets.fromLTRB(24, 16, 24, 16),
@@ -223,8 +233,9 @@ class FxButton extends StatelessWidget {
       this.shadowColor,
       this.splashColor});
 
-  FxButton.large(
-      {required this.onPressed,
+  const FxButton.large(
+      {super.key,
+      required this.onPressed,
       required this.child,
       this.msPadding,
       this.padding = const EdgeInsets.fromLTRB(36, 20, 36, 20),
@@ -256,7 +267,6 @@ class FxButton extends StatelessWidget {
     if (buttonType == FxButtonType.outlined) {
       button = OutlinedButton(
         onPressed: onPressed,
-        child: child,
         style: style ??
             ButtonStyle(
                 side: msSide ??
@@ -281,6 +291,7 @@ class FxButton extends StatelessWidget {
                       borderRadius: BorderRadius.circular(
                           borderRadiusAll ?? FxConstant.constant.buttonRadius),
                     ))),
+        child: child,
       );
     } else if (buttonType == FxButtonType.elevated) {
       button = ElevatedButton(
@@ -289,9 +300,9 @@ class FxButton extends StatelessWidget {
                   elevation: msElevation ??
                       MaterialStateProperty.resolveWith<double>(
                         (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.disabled))
+                          if (states.contains(MaterialState.disabled)) {
                             return 0;
-                          else if (states.contains(MaterialState.pressed))
+                          } else if (states.contains(MaterialState.pressed))
                             return elevation! * 2;
                           else if (states.contains(MaterialState.hovered))
                             return elevation! * 1.5;
@@ -301,8 +312,9 @@ class FxButton extends StatelessWidget {
                   backgroundColor: msBackgroundColor ??
                       MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.disabled))
+                          if (states.contains(MaterialState.disabled)) {
                             return bgColor.withAlpha(100);
+                          }
                           return bgColor;
                         },
                       ),

@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 /// [FxTextLiquidFill] - builds a widget for text which gets build having a watery effect.
+library;
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -17,8 +19,8 @@ class FxTextLiquidFill extends StatefulWidget {
   final Color? boxBackgroundColor;
   final Color? waveColor;
 
-  FxTextLiquidFill(
-      {Key? key,
+  const FxTextLiquidFill(
+      {super.key,
       required this.text,
       this.textStyle,
       this.loadDuration,
@@ -26,11 +28,11 @@ class FxTextLiquidFill extends StatefulWidget {
       this.boxHeight,
       this.boxWidth,
       this.boxBackgroundColor,
-      this.waveColor})
-      : super(key: key);
+      this.waveColor});
 
   @override
-  _FxTextLiquidFillState createState() => new _FxTextLiquidFillState();
+  // ignore: library_private_types_in_public_api
+  _FxTextLiquidFillState createState() => _FxTextLiquidFillState();
 }
 
 class _FxTextLiquidFillState extends State<FxTextLiquidFill>
@@ -57,9 +59,9 @@ class _FxTextLiquidFillState extends State<FxTextLiquidFill>
 
     _boxWidth = widget.boxWidth ?? 400;
 
-    _waveDuration = widget.waveDuration ?? Duration(milliseconds: 1000);
+    _waveDuration = widget.waveDuration ?? const Duration(milliseconds: 1000);
 
-    _loadDuration = widget.loadDuration ?? Duration(milliseconds: 10000);
+    _loadDuration = widget.loadDuration ?? const Duration(milliseconds: 10000);
 
     _waveController = AnimationController(vsync: this, duration: _waveDuration);
 
@@ -72,7 +74,7 @@ class _FxTextLiquidFillState extends State<FxTextLiquidFill>
     _waveColor = widget.waveColor ?? Colors.blueAccent;
 
     _textStyle = widget.textStyle ??
-        TextStyle(fontSize: 84, fontWeight: FontWeight.bold);
+        const TextStyle(fontSize: 84, fontWeight: FontWeight.bold);
 
     _waveController!.repeat();
     _loadController!.forward();
@@ -117,9 +119,9 @@ class _FxTextLiquidFillState extends State<FxTextLiquidFill>
           width: _boxWidth ?? MediaQuery.of(context).size.width,
           child: ShaderMask(
             blendMode: BlendMode.srcOut,
-            shaderCallback: (bounds) =>
-                LinearGradient(colors: [_boxBackgroundColor!], stops: [0.0])
-                    .createShader(bounds),
+            shaderCallback: (bounds) => LinearGradient(
+                colors: [_boxBackgroundColor!],
+                stops: const [0.0]).createShader(bounds),
             child: Container(
               color: Colors.transparent,
               child: Center(
@@ -161,18 +163,18 @@ class WavePainter extends CustomPainter {
     RenderBox textBox =
         textKey!.currentContext!.findRenderObject() as RenderBox;
 
-    double _textHeight = textBox.size.height;
+    double textHeight = textBox.size.height;
 
-    double _percent = percentValue! / 100.0;
-    double _baseHeight =
-        (boxHeight! / 2) + (_textHeight / 2) - (_percent * _textHeight);
+    double percent = percentValue! / 100.0;
+    double baseHeight =
+        (boxHeight! / 2) + (textHeight / 2) - (percent * textHeight);
 
     Path path = Path();
-    path.moveTo(0.0, _baseHeight);
+    path.moveTo(0.0, baseHeight);
     for (double i = 0.0; i < width; i++) {
       path.lineTo(
           i,
-          _baseHeight +
+          baseHeight +
               sin((i / width * 2 * pi) + (waveAnimation!.value * 2 * pi)) * 8);
     }
 

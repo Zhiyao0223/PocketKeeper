@@ -10,7 +10,8 @@ import 'package:flutter/material.dart';
 class FxPagerIndicator extends StatelessWidget {
   final PagerIndicatorViewModel? viewModel;
 
-  FxPagerIndicator({
+  const FxPagerIndicator({
+    super.key,
     this.viewModel,
   });
 
@@ -38,8 +39,8 @@ class FxPagerIndicator extends StatelessWidget {
           (i != viewModel!.activeIndex && percentActive! > 0.6));
 
       bubbles.add(
-        new PageBubble(
-          viewModel: new PageBubbleViewModel(
+        PageBubble(
+          viewModel: PageBubbleViewModel(
               page.color,
               percentActive,
               isActive,
@@ -49,7 +50,7 @@ class FxPagerIndicator extends StatelessWidget {
       );
     }
 
-    final bubbleWidth = 55.0;
+    const bubbleWidth = 55.0;
     final baseTranslation =
         ((viewModel!.pages.length * bubbleWidth) / 2) - (bubbleWidth / 2);
     var translation = baseTranslation - (viewModel!.activeIndex * bubbleWidth);
@@ -60,16 +61,17 @@ class FxPagerIndicator extends StatelessWidget {
       translation -= bubbleWidth * viewModel!.slidePercent!;
     }
 
-    return new Column(
+    return Column(
       children: <Widget>[
-        new Expanded(child: new Container()),
+        Expanded(child: Container()),
         Container(
-          margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+          margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Opacity(
-                opacity: (viewModel!.activeIndex == viewModel!.pages.length - 1 &&
+                opacity: (viewModel!.activeIndex ==
+                            viewModel!.pages.length - 1 &&
                         viewModel!.slideDirection == SlideDirection.leftToRight
                     ? viewModel!.slidePercent!
                     : (viewModel!.activeIndex == viewModel!.pages.length - 2 &&
@@ -83,17 +85,17 @@ class FxPagerIndicator extends StatelessWidget {
               ),
               Expanded(
                 flex: 1,
-                child: new Transform(
-                  transform:
-                      new Matrix4.translationValues(translation, 0.0, 0.0),
-                  child: new Row(
+                child: Transform(
+                  transform: Matrix4.translationValues(translation, 0.0, 0.0),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: bubbles,
                   ),
                 ),
               ),
               Opacity(
-                opacity: (viewModel!.activeIndex == viewModel!.pages.length - 2 &&
+                opacity: (viewModel!.activeIndex ==
+                            viewModel!.pages.length - 2 &&
                         viewModel!.slideDirection == SlideDirection.rightToLeft
                     ? viewModel!.slidePercent!
                     : (viewModel!.activeIndex == viewModel!.pages.length - 1 &&
@@ -144,21 +146,20 @@ class PagerIndicatorViewModel {
 class PageBubble extends StatelessWidget {
   final PageBubbleViewModel? viewModel;
 
-  PageBubble({this.viewModel});
+  const PageBubble({super.key, this.viewModel});
 
   @override
   Widget build(BuildContext context) {
-
-    return new Container(
-      margin: EdgeInsets.only(right: 2),
+    return Container(
+      margin: const EdgeInsets.only(right: 2),
       width: lerpDouble(25.0, 75.0, viewModel!.activePercent!),
       height: 4,
       child: Row(
         children: <Widget>[
-          new Container(
+          Container(
               width: lerpDouble(25.0, 75.0, viewModel!.activePercent!),
               height: lerpDouble(25.0, 75.0, viewModel!.activePercent!),
-              decoration: new BoxDecoration(
+              decoration: BoxDecoration(
                 //shape: BoxShape.circle,
                 color: viewModel!.isActive
                     ? viewModel!.selectedIndicatorColor

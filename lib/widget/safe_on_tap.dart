@@ -5,11 +5,11 @@ This class is used to prevent an event from being trigger multiple time
 */
 class SafeOnTap extends StatefulWidget {
   const SafeOnTap({
-    Key? key,
+    super.key,
     required this.child,
     required this.onSafeTap,
     this.intervalMs = 500,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final GestureTapCallback onSafeTap;

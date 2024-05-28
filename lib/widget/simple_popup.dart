@@ -19,7 +19,7 @@ class CustomDialogScreen extends StatefulWidget {
   final bool additionalBirthDateField;
 
   const CustomDialogScreen({
-    Key? key,
+    super.key,
     this.customMessage,
     required this.title,
     this.icons,
@@ -34,7 +34,7 @@ class CustomDialogScreen extends StatefulWidget {
     this.additionalBirthDateField = false,
     // this.button1Color,
     this.button2Color,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomDialogScreen> createState() {

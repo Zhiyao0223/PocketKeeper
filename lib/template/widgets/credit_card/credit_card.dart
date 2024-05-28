@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 ///
+library;
 
 /// [FxCreditCard] - customisable credit card with all the necessary details in it.
 
-// ignore_for_file: deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, library_private_types_in_public_api
 
 import 'dart:math';
 
@@ -17,10 +18,10 @@ import '../../../theme/themes.dart';
 import '../../utils/utils.dart';
 import '../widgets.dart';
 
-typedef void OnCreditCardNumberChanged(String creditCardNumber);
-typedef void OnCreditCardDateChanged(String creditCardDate);
-typedef void OnCreditCardNameChanged(String creditCardName);
-typedef void OnCreditCardCVVChanged(String creditCardCVV);
+typedef OnCreditCardNumberChanged = void Function(String creditCardNumber);
+typedef OnCreditCardDateChanged = void Function(String creditCardDate);
+typedef OnCreditCardNameChanged = void Function(String creditCardName);
+typedef OnCreditCardCVVChanged = void Function(String creditCardCVV);
 
 class FxCreditCard extends StatefulWidget {
   final OnCreditCardNumberChanged onCreditCardNumberChanged;
@@ -29,12 +30,11 @@ class FxCreditCard extends StatefulWidget {
   final OnCreditCardCVVChanged onCreditCardCVVChanged;
 
   const FxCreditCard(
-      {Key? key,
+      {super.key,
       required this.onCreditCardNumberChanged,
       required this.onCreditCardDateChanged,
       required this.onCreditCardNameChanged,
-      required this.onCreditCardCVVChanged})
-      : super(key: key);
+      required this.onCreditCardCVVChanged});
 
   @override
   _FxCreditCardState createState() => _FxCreditCardState();
@@ -169,7 +169,7 @@ class _FxCreditCardState extends State<FxCreditCard>
             onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(Icons.chevron_left),
           ),
-          title: FxText.sh1("Add Card", fontWeight: 600),
+          title: const FxText.sh1("Add Card", fontWeight: 600),
           actions: <Widget>[
             InkWell(
                 onTap: () {

@@ -17,9 +17,9 @@ abstract class FxController extends DisposableInterface
 
   ThemeData get theme => _theme ?? Theme.of(context);
 
-  set theme(ThemeData? theme) => this._theme = theme;
+  set theme(ThemeData? theme) => _theme = theme;
 
-  set state(State state) => this._state = state;
+  set state(State state) => _state = state;
 
   @protected
   void update() {

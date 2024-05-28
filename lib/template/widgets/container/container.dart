@@ -6,6 +6,7 @@
 ///
 /// [FxContainer.bordered] - provides border to the container.
 /// [FxContainer.rounded] - provides rounded shape to the container for the given height and width of the container.
+library;
 
 import 'package:flutter/material.dart';
 
@@ -30,7 +31,7 @@ class FxContainer extends StatelessWidget {
   final bool enableBorderRadius;
 
   const FxContainer(
-      {Key? key,
+      {super.key,
       this.child,
       this.borderRadius,
       this.padding,
@@ -49,11 +50,10 @@ class FxContainer extends StatelessWidget {
       this.marginAll,
       this.margin,
       this.splashColor,
-      this.borderColor})
-      : super(key: key);
+      this.borderColor});
 
   const FxContainer.transparent(
-      {Key? key,
+      {super.key,
       this.child,
       this.borderRadius,
       this.padding,
@@ -72,11 +72,10 @@ class FxContainer extends StatelessWidget {
       this.marginAll,
       this.margin,
       this.splashColor,
-      this.borderColor})
-      : super(key: key);
+      this.borderColor});
 
   const FxContainer.none(
-      {Key? key,
+      {super.key,
       this.child,
       this.borderRadius,
       this.padding,
@@ -95,11 +94,10 @@ class FxContainer extends StatelessWidget {
       this.marginAll,
       this.margin,
       this.splashColor,
-      this.borderColor})
-      : super(key: key);
+      this.borderColor});
 
   const FxContainer.bordered(
-      {Key? key,
+      {super.key,
       this.child,
       this.borderRadius,
       this.padding,
@@ -118,11 +116,10 @@ class FxContainer extends StatelessWidget {
       this.marginAll,
       this.margin,
       this.splashColor,
-      this.borderColor})
-      : super(key: key);
+      this.borderColor});
 
   const FxContainer.roundBordered(
-      {Key? key,
+      {super.key,
       this.child,
       this.borderRadius,
       this.padding,
@@ -141,11 +138,10 @@ class FxContainer extends StatelessWidget {
       this.marginAll,
       this.margin,
       this.splashColor,
-      this.borderColor})
-      : super(key: key);
+      this.borderColor});
 
   const FxContainer.rounded(
-      {Key? key,
+      {super.key,
       this.child,
       this.borderRadius,
       this.padding,
@@ -164,8 +160,7 @@ class FxContainer extends StatelessWidget {
       this.marginAll,
       this.margin,
       this.splashColor,
-      this.borderColor})
-      : super(key: key);
+      this.borderColor});
 
   @override
   Widget build(BuildContext context) {

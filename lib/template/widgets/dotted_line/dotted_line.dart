@@ -2,7 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// ignore_for_file: empty_catches
+
 /// [FxDottedLine] - gives a dotted line.
+library;
+
+// ignore_for_file: library_private_types_in_public_api
 
 import 'dart:ui';
 
@@ -33,29 +38,24 @@ class FxDottedLineCorner {
 }
 
 class FxDottedLine extends StatefulWidget {
-
   final Color color;
 
   final double? height;
 
   final double? width;
 
-
   final double strokeWidth;
-
 
   final double dottedLength;
 
-
   final double space;
-
 
   final FxDottedLineCorner? corner;
 
   final Widget? child;
 
   FxDottedLine({
-    Key? key,
+    super.key,
     this.color = Colors.black,
     this.height,
     this.width,
@@ -64,7 +64,7 @@ class FxDottedLine extends StatefulWidget {
     this.strokeWidth = 1.0,
     this.corner,
     this.child,
-  }) : super(key: key) {
+  }) {
     assert(width != null || height != null || child != null);
   }
 
@@ -79,7 +79,9 @@ class _FxDottedLineState extends State<FxDottedLine> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isEmpty(widget.width) && _isEmpty(widget.height) && widget.child == null) return Container();
+    if (_isEmpty(widget.width) &&
+        _isEmpty(widget.height) &&
+        widget.child == null) return Container();
     if (widget.child != null) {
       tryToGetChildSize();
       List<Widget> children = [];
@@ -114,7 +116,8 @@ class _FxDottedLineState extends State<FxDottedLine> {
   void tryToGetChildSize() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       try {
-        RenderBox box = childKey.currentContext!.findRenderObject() as RenderBox;
+        RenderBox box =
+            childKey.currentContext!.findRenderObject() as RenderBox;
         double tempWidth = box.size.width;
         double tempHeight = box.size.height;
         bool needUpdate = tempWidth != childWidth || tempHeight != childHeight;
@@ -165,12 +168,11 @@ class _DottedLinePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
 
-
     if (!isShape) {
       double length = isHorizontal ? size.width : size.height;
       double count = (length) / (dottedLength! + space!);
       if (count < 2.0) return;
-      var startOffset = Offset(0, 0);
+      var startOffset = const Offset(0, 0);
       for (int i = 0; i < count.toInt(); i++) {
         canvas.drawLine(
             startOffset,
@@ -181,10 +183,7 @@ class _DottedLinePainter extends CustomPainter {
             (isHorizontal ? (dottedLength! + space!) : 0),
             (isHorizontal ? 0 : (dottedLength! + space!)));
       }
-    }
-
-
-    else {
+    } else {
       Path path = Path();
       path.addRRect(RRect.fromLTRBAndCorners(
         0,
@@ -192,11 +191,12 @@ class _DottedLinePainter extends CustomPainter {
         size.width,
         size.height,
         topLeft: Radius.circular(corner != null ? corner!.leftTopCorner : 0.0),
-        topRight: Radius.circular(corner != null ? corner!.rightTopCorner : 0.0),
+        topRight:
+            Radius.circular(corner != null ? corner!.rightTopCorner : 0.0),
         bottomLeft:
-        Radius.circular(corner != null ? corner!.leftBottomCorner : 0.0),
+            Radius.circular(corner != null ? corner!.leftBottomCorner : 0.0),
         bottomRight:
-        Radius.circular(corner != null ? corner!.rightBottomCorner : 0.0),
+            Radius.circular(corner != null ? corner!.rightBottomCorner : 0.0),
       ));
 
       Path draw = buildDashPath(path, dottedLength, space);

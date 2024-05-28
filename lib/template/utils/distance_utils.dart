@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /// [FxDistanceUtils] - gives different functions that can be used for calculating or formatting distance
-
+library;
 
 import 'dart:math';
 
@@ -17,11 +17,9 @@ class FxDistanceUtils {
   static String formatDistance(double distance) {
     if (distance > 1000) {
       distance = distance / 1000;
-      return (distance).toStringAsFixed(
-              distance.truncateToDouble() == distance ? 0 : 2) +
-          " KM";
+      return "${(distance).toStringAsFixed(distance.truncateToDouble() == distance ? 0 : 2)} KM";
     } else {
-      return distance.floor().toString() + " Meter";
+      return "${distance.floor()} Meter";
     }
   }
 

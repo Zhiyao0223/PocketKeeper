@@ -10,6 +10,8 @@
 // found in the LICENSE file.
 
 /// [FxTextStyle] - gives 13 different type of styles to the text on the basis of size
+library;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

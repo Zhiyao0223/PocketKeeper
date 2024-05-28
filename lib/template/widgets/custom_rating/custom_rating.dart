@@ -2,12 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// ignore_for_file: library_private_types_in_public_api
+
 /// [FxCustomRating] - able to give customisable rating widget with custom features.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../utils/utils.dart';
 
-typedef void OnRatingChange(int rating);
+typedef OnRatingChange = void Function(int rating);
 
 class FxCustomRating extends StatefulWidget {
   final int initialRating;
@@ -19,7 +23,7 @@ class FxCustomRating extends StatefulWidget {
   final IconData activeIcon, inActiveIcon;
 
   const FxCustomRating(
-      {Key? key,
+      {super.key,
       this.starSize = 24,
       this.starSpacing = 8,
       this.starColors,
@@ -27,8 +31,7 @@ class FxCustomRating extends StatefulWidget {
       required this.onRatingChange,
       this.inactiveStarColor = Colors.grey,
       this.activeIcon = Icons.star,
-      this.inActiveIcon = Icons.star_outline})
-      : super(key: key);
+      this.inActiveIcon = Icons.star_outline});
 
   @override
   _FxCustomRatingState createState() => _FxCustomRatingState();

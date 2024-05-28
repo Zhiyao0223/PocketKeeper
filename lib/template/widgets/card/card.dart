@@ -7,6 +7,7 @@
 /// [FxCard.bordered] - provides border to the card.
 /// [FxCard.rounded] - provides rounded shape to the card for the given height and width of the card.
 ///
+library;
 
 import 'package:flutter/material.dart';
 
@@ -29,7 +30,7 @@ class FxCard extends StatelessWidget {
   final double? width, height;
   final Color? splashColor;
   const FxCard(
-      {Key? key,
+      {super.key,
       required this.child,
       this.borderRadius,
       this.padding,
@@ -46,10 +47,9 @@ class FxCard extends StatelessWidget {
       this.margin,
       this.splashColor,
       this.width,
-      this.height})
-      : super(key: key);
+      this.height});
   const FxCard.bordered(
-      {Key? key,
+      {super.key,
       required this.child,
       this.borderRadius,
       this.padding,
@@ -66,10 +66,9 @@ class FxCard extends StatelessWidget {
       this.margin,
       this.splashColor,
       this.width,
-      this.height})
-      : super(key: key);
+      this.height});
   const FxCard.rounded(
-      {Key? key,
+      {super.key,
       required this.child,
       this.borderRadius,
       this.padding,
@@ -86,11 +85,10 @@ class FxCard extends StatelessWidget {
       this.margin,
       this.splashColor,
       this.width,
-      this.height})
-      : super(key: key);
+      this.height});
 
   const FxCard.none(
-      {Key? key,
+      {super.key,
       required this.child,
       this.borderRadius,
       this.padding,
@@ -107,8 +105,7 @@ class FxCard extends StatelessWidget {
       this.margin,
       this.splashColor,
       this.width,
-      this.height})
-      : super(key: key);
+      this.height});
   @override
   Widget build(BuildContext context) {
     FxShadow myShadow = shadow ?? FxShadow();

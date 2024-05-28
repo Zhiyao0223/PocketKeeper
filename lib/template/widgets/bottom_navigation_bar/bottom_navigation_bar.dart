@@ -7,8 +7,9 @@
 /// [FxBottomNavigationBarType.normal] -  In this, the bottom items/Icons can be highlighted in a normal way.
 /// [FxBottomNavigationBarType.containered] -  In this, the bottom items/Icons are kept in a container with text accompanied  by the icons.
 ///
+library;
 
-// ignore_for_file: deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 
@@ -215,7 +216,7 @@ class _FxBottomNavigationBarState extends State<FxBottomNavigationBar>
                         size: iconSize ?? item.iconSize ?? 14,
                         color: iconColor ??
                             item.iconColor ??
-                            AppTheme.theme.colorScheme.onBackground,
+                            AppTheme.theme.colorScheme.onSurface,
                       ),
                   widget.labelDirection == Axis.horizontal
                       ? FxSpacing.width(showLabel ? widget.labelSpacing : 0)
@@ -228,7 +229,7 @@ class _FxBottomNavigationBarState extends State<FxBottomNavigationBar>
                               FxTextStyle.caption(
                                   color: titleColor ??
                                       item.titleColor ??
-                                      AppTheme.theme.colorScheme.onBackground,
+                                      AppTheme.theme.colorScheme.onSurface,
                                   fontSize: widget.titleSize ?? item.titleSize),
                         )
                       : Container(),
@@ -282,7 +283,7 @@ class _FxBottomNavigationBarState extends State<FxBottomNavigationBar>
                 size: iconSize ?? item.iconSize ?? 24,
                 color: iconColor ??
                     item.iconColor ??
-                    AppTheme.theme.colorScheme.onBackground.withAlpha(150),
+                    AppTheme.theme.colorScheme.onSurface.withAlpha(150),
               );
     }
   }
@@ -331,7 +332,7 @@ class _FxBottomNavigationBarState extends State<FxBottomNavigationBar>
     activeContainerColor = widget.activeContainerColor ??
         AppTheme.theme.primaryColor.withAlpha(100);
     backgroundColor =
-        widget.backgroundColor ?? AppTheme.theme.colorScheme.background;
+        widget.backgroundColor ?? AppTheme.theme.colorScheme.surface;
     activeTitleStyle = widget.activeTitleStyle;
     titleStyle = widget.titleStyle;
     activeTitleColor = widget.activeTitleColor;

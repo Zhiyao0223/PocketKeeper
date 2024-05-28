@@ -8,6 +8,7 @@
 // found in the LICENSE file.
 
 /// [FxAppThemeNotifier] - notifies the app by giving the theme to the app
+library;
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';

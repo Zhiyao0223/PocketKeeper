@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 
 typedef _LetIndexPage = bool Function(int value);
@@ -15,7 +17,7 @@ class FxCurvedNavigationBar extends StatefulWidget {
   final double height;
 
   FxCurvedNavigationBar({
-    Key? key,
+    super.key,
     required this.items,
     this.index = 0,
     this.color = Colors.white,
@@ -27,10 +29,9 @@ class FxCurvedNavigationBar extends StatefulWidget {
     this.animationDuration = const Duration(milliseconds: 600),
     this.height = 75.0,
   })  : letIndexChange = letIndexChange ?? ((_) => true),
-        assert(items.length >= 1),
+        assert(items.isNotEmpty),
         assert(0 <= index && index < items.length),
-        assert(0 <= height && height <= 75.0),
-        super(key: key);
+        assert(0 <= height && height <= 75.0);
 
   @override
   FxCurvedNavigationBarState createState() => FxCurvedNavigationBarState();
@@ -142,14 +143,14 @@ class FxCurvedNavigationBarState extends State<FxCurvedNavigationBar>
                 height: 100.0,
                 child: Row(
                     children: widget.items.map((item) {
-                      return NavButton(
-                        onTap: _buttonTap,
-                        position: _pos,
-                        length: _length,
-                        index: widget.items.indexOf(item),
-                        child: Center(child: item),
-                      );
-                    }).toList())),
+                  return NavButton(
+                    onTap: _buttonTap,
+                    position: _pos,
+                    length: _length,
+                    index: widget.items.indexOf(item),
+                    child: Center(child: item),
+                  );
+                }).toList())),
           ),
         ],
       ),
@@ -176,8 +177,6 @@ class FxCurvedNavigationBarState extends State<FxCurvedNavigationBar>
     });
   }
 }
-
-
 
 class NavCustomPainter extends CustomPainter {
   late double loc;
@@ -231,8 +230,6 @@ class NavCustomPainter extends CustomPainter {
   }
 }
 
-
-
 class NavButton extends StatelessWidget {
   final double position;
   final int length;
@@ -240,7 +237,8 @@ class NavButton extends StatelessWidget {
   final ValueChanged<int> onTap;
   final Widget child;
 
-  NavButton({
+  const NavButton({
+    super.key,
     required this.onTap,
     required this.position,
     required this.length,
@@ -260,7 +258,7 @@ class NavButton extends StatelessWidget {
         onTap: () {
           onTap(index);
         },
-        child: Container(
+        child: SizedBox(
             height: 75.0,
             child: Transform.translate(
               offset: Offset(
@@ -273,4 +271,3 @@ class NavButton extends StatelessWidget {
     );
   }
 }
-

@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// ignore_for_file: prefer_initializing_formals
+
 /// [FxShadow] - provides custom shadow to the widget
+library;
 
 import 'package:flutter/material.dart';
 
@@ -37,7 +40,7 @@ class FxShadow {
       bool darkShadow = false}) {
     this.spreadRadius = spreadRadius ?? elevation * 0.125;
     this.blurRadius = blurRadius ?? elevation * 2;
-    this.alpha = alpha != null ? alpha : (darkShadow ? 100 : 36);
+    this.alpha = alpha ?? (darkShadow ? 100 : 36);
     this.elevation = elevation;
     this.offset = offset;
     this.position = position;
@@ -59,7 +62,7 @@ class FxShadow {
           this.offset = Offset(-elevation, elevation * 0.25);
           break;
         case FxShadowPosition.center:
-          this.offset = Offset(0, 0);
+          this.offset = const Offset(0, 0);
           break;
         case FxShadowPosition.centerRight:
           this.offset = Offset(elevation, elevation * 0.25);
@@ -88,7 +91,7 @@ class FxShadow {
       bool darkShadow = false}) {
     this.spreadRadius = spreadRadius ?? elevation * 0.125;
     this.blurRadius = blurRadius ?? elevation * 2;
-    this.alpha = alpha != null ? alpha : (darkShadow ? 100 : 36);
+    this.alpha = alpha ?? (darkShadow ? 100 : 36);
     this.elevation = elevation;
     this.offset = offset;
     this.position = position;
@@ -110,7 +113,7 @@ class FxShadow {
           this.offset = Offset(-elevation, elevation * 0.25);
           break;
         case FxShadowPosition.center:
-          this.offset = Offset(0, 0);
+          this.offset = const Offset(0, 0);
           break;
         case FxShadowPosition.centerRight:
           this.offset = Offset(elevation, elevation * 0.25);

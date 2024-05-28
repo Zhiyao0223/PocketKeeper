@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 /// [FxColorUtils] - returns a list of colors.
+library;
+
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -14,12 +16,12 @@ class FxColorUtils {
 
   static List<Color> getColorByRating() {
     return [
-      Color(0xfff0323c), //For 0 star color
-      Color(0xfff0323c), //For 1 star color
-      Color(0xfff0323c).withAlpha(200), //For 2 star color
-      Color(0xfff9c700), //For 3 star color
-      Color(0xff3cd278).withAlpha(200), //For 4 star color
-      Color(0xff3cd278) //For 5 star color
+      const Color(0xfff0323c), //For 0 star color
+      const Color(0xfff0323c), //For 1 star color
+      const Color(0xfff0323c).withAlpha(200), //For 2 star color
+      const Color(0xfff9c700), //For 3 star color
+      const Color(0xff3cd278).withAlpha(200), //For 4 star color
+      const Color(0xff3cd278) //For 5 star color
     ];
   }
 

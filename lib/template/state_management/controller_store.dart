@@ -46,8 +46,8 @@ class FxControllerStore {
     return null;
   }
 
-  static FxController? last(){
-    if(_history.length>0){
+  static FxController? last() {
+    if (_history.isNotEmpty) {
       return _controllers[_history.last];
     }
     return null;

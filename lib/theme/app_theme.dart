@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 /*
 * File : App Theme
 * Version : 1.0.0
@@ -9,6 +11,7 @@
 
 /// [FxAppThemeType.dark] - Applies all the properties for dark theme
 /// [FxAppThemeType.light] - Applies all the properties for light theme
+library;
 
 import 'package:flutter/material.dart';
 

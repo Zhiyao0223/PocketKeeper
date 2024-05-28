@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 /// [FxStringValidator] - validates a string for different purposes like name, number, email, etc.
+library;
 
 class FxStringValidator {
   static bool isFirstCapital(String string) {
@@ -49,8 +50,8 @@ class FxStringValidator {
     return false;
   }
 
-  static bool isIncludedCharactersPresent(String string,
-      List<String>? includeCharacters) {
+  static bool isIncludedCharactersPresent(
+      String string, List<String>? includeCharacters) {
     if (includeCharacters == null) {
       return false;
     }
@@ -63,8 +64,8 @@ class FxStringValidator {
     return false;
   }
 
-  static bool isIgnoreCharactersPresent(String string,
-      List<String>? ignoreCharacters) {
+  static bool isIgnoreCharactersPresent(
+      String string, List<String>? ignoreCharacters) {
     if (ignoreCharacters == null) {
       return false;
     }
@@ -132,7 +133,8 @@ class FxStringValidator {
     return false;
   }
 
-  static bool validateString(String string, {
+  static bool validateString(
+    String string, {
     int minLength = 8,
     int maxLength = 20,
     bool firstCapital = false,
@@ -205,15 +207,12 @@ class FxStringValidator {
   static bool isEmail(String email) {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$';
-    RegExp regex = new RegExp(pattern as String);
+    RegExp regex = RegExp(pattern as String);
     return (!regex.hasMatch(email));
   }
 
-
-  static bool validateStringRange(String text, [
-    int minLength = 8,
-    int maxLength = 20]) {
+  static bool validateStringRange(String text,
+      [int minLength = 8, int maxLength = 20]) {
     return text.length >= minLength && text.length <= maxLength;
   }
-
 }

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 /// [FxCardMonthInputFormatter] - formats the string as per the credit card expiry date format
+library;
 
 import 'package:flutter/services.dart';
 
@@ -16,10 +17,10 @@ class FxCardMonthInputFormatter extends TextInputFormatter {
       return newValue;
     }
 
-    var buffer = new StringBuffer();
+    var buffer = StringBuffer();
     for (int i = 0; i < newText.length; i++) {
       buffer.write(newText[i]);
-      print(newText[i]);
+      // print(newText[i]);
       var nonZeroIndex = i + 1;
       if (nonZeroIndex % 2 == 0 && nonZeroIndex != newText.length) {
         buffer.write('/');
@@ -29,6 +30,6 @@ class FxCardMonthInputFormatter extends TextInputFormatter {
     var string = buffer.toString();
     return newValue.copyWith(
         text: string,
-        selection: new TextSelection.collapsed(offset: string.length));
+        selection: TextSelection.collapsed(offset: string.length));
   }
 }

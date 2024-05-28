@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// ignore_for_file: deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, use_key_in_widget_constructors, deprecated_member_use, overridden_fields
 
 /// There are mainly 13 types of Text widgets.
 /// h1,h2,h3,h4,h5,h6,sh1,sh2,b1,b2,button,caption,overline - This is the order of its size.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../theme/themes.dart';
@@ -13,6 +15,7 @@ import '../../../theme/themes.dart';
 class FxText extends StatelessWidget {
   //Key
 
+  // ignore: annotate_overrides
   final Key? key;
 
   final String text;
@@ -40,7 +43,7 @@ class FxText extends StatelessWidget {
   final double? textScaleFactor;
   final TextWidthBasis? textWidthBasis;
 
-  FxText(this.text,
+  const FxText(this.text,
       {this.style,
       this.fontWeight = 500,
       this.muted = false,
@@ -66,7 +69,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.h4(this.text,
+  const FxText.h4(this.text,
       {this.style,
       this.fontWeight = 500,
       this.muted = false,
@@ -92,7 +95,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.h5(this.text,
+  const FxText.h5(this.text,
       {this.style,
       this.fontWeight = 500,
       this.muted = false,
@@ -118,7 +121,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.h6(this.text,
+  const FxText.h6(this.text,
       {this.style,
       this.fontWeight = 500,
       this.muted = false,
@@ -144,7 +147,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.sh1(this.text,
+  const FxText.sh1(this.text,
       {this.style,
       this.fontWeight = 500,
       this.muted = false,
@@ -170,7 +173,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.sh2(this.text,
+  const FxText.sh2(this.text,
       {this.style,
       this.fontWeight = 500,
       this.muted = false,
@@ -196,7 +199,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.button(this.text,
+  const FxText.button(this.text,
       {this.style,
       this.fontWeight = 500,
       this.muted = false,
@@ -222,7 +225,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.caption(this.text,
+  const FxText.caption(this.text,
       {this.style,
       this.fontWeight = 500,
       this.muted = false,
@@ -248,7 +251,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.overline(this.text,
+  const FxText.overline(this.text,
       {this.style,
       this.fontWeight = 500,
       this.muted = false,
@@ -276,7 +279,7 @@ class FxText extends StatelessWidget {
   // Material Design 3
 
   @Deprecated('message')
-  FxText.d1(this.text,
+  const FxText.d1(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -302,7 +305,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.d2(this.text,
+  const FxText.d2(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -328,7 +331,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.d3(this.text,
+  const FxText.d3(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -354,7 +357,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.h1(this.text,
+  const FxText.h1(this.text,
       {this.style,
       this.fontWeight = 500,
       this.muted = false,
@@ -380,7 +383,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.h2(this.text,
+  const FxText.h2(this.text,
       {this.style,
       this.fontWeight = 500,
       this.muted = false,
@@ -406,7 +409,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.h3(this.text,
+  const FxText.h3(this.text,
       {this.style,
       this.fontWeight = 500,
       this.muted = false,
@@ -432,7 +435,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.t1(this.text,
+  const FxText.t1(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -458,7 +461,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.t2(this.text,
+  const FxText.t2(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -484,7 +487,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.t3(this.text,
+  const FxText.t3(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -510,7 +513,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.l1(this.text,
+  const FxText.l1(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -536,7 +539,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.l2(this.text,
+  const FxText.l2(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -562,7 +565,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.l3(this.text,
+  const FxText.l3(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -588,7 +591,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.b1(this.text,
+  const FxText.b1(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -614,7 +617,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.b2(this.text,
+  const FxText.b2(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -640,7 +643,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
   @Deprecated('message')
-  FxText.b3(this.text,
+  const FxText.b3(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -666,7 +669,7 @@ class FxText extends StatelessWidget {
       this.textWidthBasis});
 
 // New Implementation
-  FxText.displayLarge(this.text,
+  const FxText.displayLarge(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -691,7 +694,7 @@ class FxText extends StatelessWidget {
       this.textScaleFactor,
       this.textWidthBasis});
 
-  FxText.displayMedium(this.text,
+  const FxText.displayMedium(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -716,7 +719,7 @@ class FxText extends StatelessWidget {
       this.textScaleFactor,
       this.textWidthBasis});
 
-  FxText.displaySmall(this.text,
+  const FxText.displaySmall(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -741,7 +744,7 @@ class FxText extends StatelessWidget {
       this.textScaleFactor,
       this.textWidthBasis});
 
-  FxText.headlineLarge(this.text,
+  const FxText.headlineLarge(this.text,
       {this.style,
       this.fontWeight = 500,
       this.muted = false,
@@ -766,7 +769,7 @@ class FxText extends StatelessWidget {
       this.textScaleFactor,
       this.textWidthBasis});
 
-  FxText.headlineMedium(this.text,
+  const FxText.headlineMedium(this.text,
       {this.style,
       this.fontWeight = 500,
       this.muted = false,
@@ -791,7 +794,7 @@ class FxText extends StatelessWidget {
       this.textScaleFactor,
       this.textWidthBasis});
 
-  FxText.headlineSmall(this.text,
+  const FxText.headlineSmall(this.text,
       {this.style,
       this.fontWeight = 500,
       this.muted = false,
@@ -816,7 +819,7 @@ class FxText extends StatelessWidget {
       this.textScaleFactor,
       this.textWidthBasis});
 
-  FxText.titleLarge(this.text,
+  const FxText.titleLarge(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -841,7 +844,7 @@ class FxText extends StatelessWidget {
       this.textScaleFactor,
       this.textWidthBasis});
 
-  FxText.titleMedium(this.text,
+  const FxText.titleMedium(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -866,7 +869,7 @@ class FxText extends StatelessWidget {
       this.textScaleFactor,
       this.textWidthBasis});
 
-  FxText.titleSmall(this.text,
+  const FxText.titleSmall(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -891,7 +894,7 @@ class FxText extends StatelessWidget {
       this.textScaleFactor,
       this.textWidthBasis});
 
-  FxText.labelLarge(this.text,
+  const FxText.labelLarge(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -916,7 +919,7 @@ class FxText extends StatelessWidget {
       this.textScaleFactor,
       this.textWidthBasis});
 
-  FxText.labelMedium(this.text,
+  const FxText.labelMedium(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -941,7 +944,7 @@ class FxText extends StatelessWidget {
       this.textScaleFactor,
       this.textWidthBasis});
 
-  FxText.labelSmall(this.text,
+  const FxText.labelSmall(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -966,7 +969,7 @@ class FxText extends StatelessWidget {
       this.textScaleFactor,
       this.textWidthBasis});
 
-  FxText.bodyLarge(this.text,
+  const FxText.bodyLarge(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -991,7 +994,7 @@ class FxText extends StatelessWidget {
       this.textScaleFactor,
       this.textWidthBasis});
 
-  FxText.bodyMedium(this.text,
+  const FxText.bodyMedium(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,
@@ -1016,7 +1019,7 @@ class FxText extends StatelessWidget {
       this.textScaleFactor,
       this.textWidthBasis});
 
-  FxText.bodySmall(this.text,
+  const FxText.bodySmall(this.text,
       {this.style,
       this.fontWeight,
       this.muted = false,

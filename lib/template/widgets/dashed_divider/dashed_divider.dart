@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// ignore_for_file: use_key_in_widget_constructors
+
 /// [FxDashedDivider] - Provides a dashed line to the screen for the given width and height.
+library;
 
 import 'package:flutter/material.dart';
-
 
 class FxDashedDivider extends StatelessWidget {
   final double height;
@@ -13,7 +15,11 @@ class FxDashedDivider extends StatelessWidget {
   final double dashWidth;
   final double dashSpace;
 
-  const FxDashedDivider({this.height = 1, this.color = Colors.black, this.dashWidth=10, this.dashSpace=10});
+  const FxDashedDivider(
+      {this.height = 1,
+      this.color = Colors.black,
+      this.dashWidth = 10,
+      this.dashSpace = 10});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +29,8 @@ class FxDashedDivider extends StatelessWidget {
         final dashHeight = height;
         final dashCount = (boxWidth / (dashWidth + dashSpace)).floor();
         return Flex(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          direction: Axis.horizontal,
           children: List.generate(dashCount, (_) {
             return SizedBox(
               width: dashWidth,
@@ -32,8 +40,6 @@ class FxDashedDivider extends StatelessWidget {
               ),
             );
           }),
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          direction: Axis.horizontal,
         );
       },
     );
