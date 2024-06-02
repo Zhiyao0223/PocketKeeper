@@ -1,1 +1,3 @@
-bool isGoogleSignIn = false;
+class MemberConstant {
+  static bool isGoogleSignIn = false;
+}

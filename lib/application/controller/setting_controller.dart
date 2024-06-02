@@ -1,9 +1,7 @@
 import '../../template/state_management/controller.dart';
 
-class HomePageController extends FxController {
+class SettingController extends FxController {
   bool isDataFetched = false;
-
-  late int counter;
 
   @override
   void initState() {
@@ -13,21 +11,13 @@ class HomePageController extends FxController {
   }
 
   void fetchData() async {
-    counter = 0;
-
     isDataFetched = true;
 
-    // Update() is same with setState(), rebuild UI
-    update();
-  }
-
-  void incrementCounter() {
-    counter++;
     update();
   }
 
   @override
   String getTag() {
-    return "HomePageController";
+    return "SettingController";
   }
 }

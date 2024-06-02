@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pocketkeeper/application/service/firebase_options.dart';
-import 'package:pocketkeeper/application/view/login_screen.dart';
+import 'package:pocketkeeper/application/view/navigation_screen.dart';
 import 'package:pocketkeeper/theme/app_theme.dart';
 
 Future main() async {
@@ -30,7 +30,8 @@ class MyApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
-      home: const LoginScreen(),
+      // home: const LoginScreen(),
+      home: const NavigationScreen(),
     );
   }
 }

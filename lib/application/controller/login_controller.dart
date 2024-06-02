@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pocketkeeper/application/member_constant.dart';
+import 'package:pocketkeeper/application/model/users.dart';
 import 'package:pocketkeeper/application/service/api_service.dart';
 import 'package:pocketkeeper/application/service/authentication.dart';
 import 'package:pocketkeeper/utils/custom_animation.dart';
@@ -65,22 +67,39 @@ class LoginController extends FxController {
     );
   }
 
-  // TODO
-  Future<List<String>> onGoogleAccountLoginClick() async {
+  // Google Sign In
+  Future<bool> onGoogleAccountLoginClick() async {
     User? user = await Authentication.signInWithGoogle(context: context);
 
     if (user != null && user.email != null) {
-      // Check for database if user exist, if no go register page with prefilled data
+      // Check for database if user exist, if no auto register user and redirect to home page
       Map<String, dynamic> apiResponse = await checkUserExist(user.email!);
-      if (apiResponse["status"] == 200) {
-        return ["0"];
+
+      // If user exist, proceed to store user data and redirect to home page
+      if (apiResponse["status"] == 200 && apiResponse["body"] != "-1") {
+        await onSuccessLogin(userId: apiResponse["body"]);
+
+        return true;
       }
+
+      // If user does not exist, auto register user and redirect to home page
+      Users tmpUser = Users(
+        tmpName: user.displayName ?? "User",
+        tmpEmail: user.email ?? "",
+        tmpPassword: "",
+      );
+      String socialImgUrl = user.photoURL ?? "";
+
+      return await autoRegisterOnFirstSocialLogin(
+        tmpUser: tmpUser,
+        socialImgUrl: socialImgUrl,
+      );
     } else {
       showToast(
         customMessage: "Error occurred using Google Sign In. Try again.",
       );
     }
-    return ["-1"];
+    return false;
   }
 
   Future<Map<String, dynamic>> checkUserExist(String tmpEmail) async {
@@ -97,6 +116,36 @@ class LoginController extends FxController {
     );
 
     return responseJson;
+  }
+
+  Future<bool> autoRegisterOnFirstSocialLogin({
+    required Users tmpUser,
+    required String socialImgUrl,
+  }) async {
+    // Variables
+    const String filename = "register.php";
+    Map<String, dynamic> requestBody = {
+      "username": tmpUser.name,
+      "email": tmpUser.email,
+      "password": tmpUser.password,
+      "image_url": socialImgUrl,
+      "process": "social_register",
+    };
+
+    Map<String, dynamic> responseJson = await ApiService.post(
+      filename: filename,
+      body: requestBody,
+    );
+
+    // Store share preferences if is valid user
+    if (responseJson["status"] == 200) {
+      await onSuccessLogin(userId: responseJson["body"]["user_id"]);
+
+      return true;
+    }
+    // Indicate error message
+    showToast(customMessage: responseJson["message"]);
+    return false;
   }
 
   void togglePasswordVisibility() {
@@ -126,17 +175,23 @@ class LoginController extends FxController {
 
     // Store share preferences if is valid user
     if (responseJson["status"] == 200) {
-      // Indicate success login
-      showToast(customMessage: "Login successful!");
-
-      // Store user id for future access
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString("user_id", responseJson["body"]["user_id"]);
+      await onSuccessLogin(userId: responseJson["body"]["user_id"]);
 
       return true;
     }
 
     return false;
+  }
+
+  Future<void> onSuccessLogin({required String userId}) async {
+    // Indicate success login
+    showToast(customMessage: "Login successful!");
+
+    // Store user id for future access
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("user_id", userId);
+
+    MemberConstant.isGoogleSignIn = true;
   }
 
   //

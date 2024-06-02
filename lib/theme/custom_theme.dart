@@ -36,6 +36,7 @@ class CustomTheme {
       yellow,
       orange,
       black,
+      grey,
       white;
 
   final Color iconReminder, iconPayment, iconReport, iconNotification, iconChat;
@@ -78,6 +79,7 @@ class CustomTheme {
     this.orange = const Color(0xffFFA500),
     this.black = const Color(0xff000000),
     this.white = const Color(0xffffffff),
+    this.grey = const Color(0xff808080),
 
     // Icon Color Scheme
     this.iconReminder = const Color(0xffFF0000),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/app_constant.dart';
 import 'package:pocketkeeper/application/controller/login_controller.dart';
 import 'package:pocketkeeper/application/view/forget_password_email_screen.dart';
-import 'package:pocketkeeper/application/view/home_screen.dart';
+import 'package:pocketkeeper/application/view/navigation_screen.dart';
 import 'package:pocketkeeper/application/view/register_screen.dart';
 import 'package:pocketkeeper/template/utils/spacing.dart';
 import 'package:pocketkeeper/template/widgets/widgets.dart';
@@ -116,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen>
                           if (authorized) {
                             Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
-                                builder: (context) => const HomeScreen(),
+                                builder: (context) => const NavigationScreen(),
                               ),
                               (route) => false,
                             );
@@ -308,7 +308,18 @@ class _LoginScreenState extends State<LoginScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FxButton.rounded(
-              onPressed: controller.onGoogleAccountLoginClick,
+              onPressed: () {
+                controller.onGoogleAccountLoginClick().then((authorized) {
+                  if (authorized) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) => const NavigationScreen(),
+                      ),
+                      (route) => false,
+                    );
+                  }
+                });
+              },
               backgroundColor: customTheme.white,
               child: Row(
                 children: [
