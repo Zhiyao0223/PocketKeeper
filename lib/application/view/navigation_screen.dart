@@ -105,7 +105,7 @@ class _HomeScreenState extends State<NavigationScreen> {
 
   Widget _buildCenterFloatingButton() {
     return FloatingActionButton(
-      elevation: 5,
+      elevation: 10,
       clipBehavior: Clip.antiAlias,
       onPressed: () {},
       shape: const CircleBorder(),

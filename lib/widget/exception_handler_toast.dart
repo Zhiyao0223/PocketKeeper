@@ -14,27 +14,27 @@ class ExceptionHandler {
 
     log(exception.toString());
 
+    // A toast is already showing, don't enqueue another one
     if (isToastShowing) {
-      // A toast is already showing, don't enqueue another one
       return;
     }
     try {
       if (exception is SocketException) {
         errorMessage =
-            "[Error] - Unable to load due to slow or no internet connection. Please try again later.";
+            "[Error] Slow or no internet connection. Please try again later.";
       } else if (exception is HttpException) {
         errorMessage =
-            "[Error] - Unable to load due to server technical difficulties. Please try again later.";
+            "[Error] Unable to load due to server technical difficulties. Please try again later.";
       } else if (exception is FormatException) {
         errorMessage =
-            "[Error] - Unable to load due to format technical difficulties. Please try again later.";
+            "[Error] Unable to load due to technical issues. Please try again later.";
       } else {
         errorMessage =
-            "[Error] - An unexpected error occurred. Please try again later.";
+            "[Error] An unexpected error occurred. Please try again later.";
       }
     } catch (e) {
       errorMessage =
-          "[Error] - An unexpected error occurred. Please try again later.";
+          "[Error] An unexpected error occurred. Please try again later.";
     }
 
     showToastMessage(errorMessage);
