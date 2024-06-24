@@ -11,7 +11,7 @@ void showToast({String? customMessage}) {
     toastLength: Toast.LENGTH_LONG,
     gravity: ToastGravity.BOTTOM,
     timeInSecForIosWeb: 1, // Duration for iOS
-    backgroundColor: Colors.black87,
+    backgroundColor: Colors.black87.withOpacity(0.7),
     textColor: Colors.white,
     fontSize: 16.0,
   );

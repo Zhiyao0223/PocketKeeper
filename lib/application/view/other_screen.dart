@@ -5,7 +5,7 @@ import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
 import '../../template/state_management/state_management.dart';
 
 class OtherScreen extends StatefulWidget {
-  const OtherScreen({Key? key}) : super(key: key);
+  const OtherScreen({super.key});
 
   @override
   State<OtherScreen> createState() {
@@ -44,11 +44,11 @@ class _OtherScreenState extends State<OtherScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Other Screen"),
+        title: const Text("Other Screen"),
       ),
       body: Container(
-        padding: EdgeInsets.all(16),
-        child: Column(
+        padding: const EdgeInsets.all(16),
+        child: const Column(
           children: [
             Text("Other Screen"),
           ],

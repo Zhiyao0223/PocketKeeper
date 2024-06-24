@@ -44,11 +44,11 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Analytics"),
+        title: const Text("Analytics"),
       ),
       body: Container(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: const Column(
           children: [
             Text("Analytics"),
           ],

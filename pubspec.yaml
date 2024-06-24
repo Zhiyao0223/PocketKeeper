@@ -27,18 +27,36 @@ dependencies:
   # Image
   image_picker: ^1.1.1
   flutter_image_compress: ^2.3.0
+  cached_network_image: ^3.3.1
 
   # Google Sign In
   google_sign_in: ^6.2.1
   firebase_core: ^2.31.1
   firebase_auth: ^4.19.6
 
-  # Misc
-  http: ^1.2.1
+  # Database
+  objectbox: ^4.0.1
+  objectbox_flutter_libs: any
+  path_provider: ^2.1.3
+  path: ^1.9.0
+
   shared_preferences: ^2.2.2
 
+  # Check internet
+  connectivity_plus: ^6.0.3
+
+  # Open external link
+  url_launcher: ^6.3.0
+
+  # Misc
+  http: ^1.2.1
+  intl: ^0.19.0
 
 dev_dependencies:
+  # Local database
+  build_runner: ^2.0.0
+  objectbox_generator: any
+
   flutter_test:
     sdk: flutter
 

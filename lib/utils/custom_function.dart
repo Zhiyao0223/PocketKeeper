@@ -1,10 +1,10 @@
+import 'dart:io';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+
 /*
   Check for image file size
   Return compressed image if file size is larger than 10MB
   */
-import 'dart:io';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-
 Future<XFile> compressImageSize(XFile xFile) async {
   const maxFileSize = 10000000; // 10MB
 

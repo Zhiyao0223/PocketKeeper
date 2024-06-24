@@ -55,10 +55,10 @@ class CustomTheme {
     this.colorSuccess = const Color(0xff3cd278),
     this.shadowColor = const Color(0xff1f1f1f),
     this.onInfo = const Color(0xffffffff),
-    this.onWarning = const Color(0xffffffff),
-    this.onSuccess = const Color(0xffffffff),
+    this.onWarning = const Color(0xffffc837),
+    this.onSuccess = const Color(0xff3cd278),
     this.colorError = const Color(0xfff0323c),
-    this.onError = const Color(0xffffffff),
+    this.onError = const Color(0xfff0323c),
     this.customPrimary = const Color(0x003548f2),
 
     //Color

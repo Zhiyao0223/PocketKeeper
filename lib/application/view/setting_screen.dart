@@ -1,6 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:pocketkeeper/application/app_constant.dart';
 import 'package:pocketkeeper/application/controller/setting_controller.dart';
+import 'package:pocketkeeper/application/member_constant.dart';
+import 'package:pocketkeeper/application/view/analytic_screen.dart';
+import 'package:pocketkeeper/application/view/login_screen.dart';
 import 'package:pocketkeeper/template/utils/spacing.dart';
+import 'package:pocketkeeper/template/widgets/button/button.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
 import 'package:pocketkeeper/theme/custom_theme.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
@@ -38,6 +44,12 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
+  @override
+  void dispose() {
+    FxControllerStore.delete(controller);
+    super.dispose();
+  }
+
   Widget _buildBody() {
     // Check if all data loaded
     if (!controller.isDataFetched) {
@@ -54,21 +66,22 @@ class _SettingScreenState extends State<SettingScreen> {
           children: [
             // Appbar
             _buildAppBarHeader(),
-
-            // Profile
-            _buildProfileHeader(),
             FxSpacing.height(20),
 
             // General Setting
             _buildGeneralSettings(),
-            FxSpacing.height(20),
+            FxSpacing.height(15),
 
-            // Transactional Setting
-            _buildTransactionalSettings(),
-            FxSpacing.height(20),
+            // Tools
+            _buildToolSettings(),
+            FxSpacing.height(15),
 
             // Additional Setting
             _buildAdditionalSettings(),
+            FxSpacing.height(15),
+
+            // About Us Setting
+            _buildAboutUsSettings(),
           ],
         ),
       ),
@@ -82,22 +95,26 @@ class _SettingScreenState extends State<SettingScreen> {
         bottom: MediaQuery.of(context).size.height * 0.02,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // FxText.titleMedium(
-          //   'Settings',
-          //   style: TextStyle(
-          //     fontSize: 18,
-          //     fontWeight: FontWeight.w600,
-          //   ),
-          // ),
+          _buildProfileHeader(),
+
           // Logout button
-          const Spacer(),
           GestureDetector(
             onTap: () {
-              // TODO Handle logout
-              showToast();
+              // Handle logout
+              controller.onLogoutClick().then((value) {
+                showToast(customMessage: "Logout Success");
+
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
+                  ),
+                  (route) => false,
+                );
+              });
             },
             child: Row(
               children: [
@@ -114,41 +131,33 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget _buildProfileHeader() {
     return Row(
       children: [
-        const CircleAvatar(
-          radius: 30,
-          backgroundImage: NetworkImage(
-            'https://th.bing.com/th/id/OIP.HP55nAQfHY4mlb4v9MxJKAHaEK?rs=1&pid=ImgDetMain',
-          ),
+        // This technique is used to prevent no internet image error
+        Stack(
+          children: [
+            // Placeholder image
+            const CircleAvatar(
+              radius: 30,
+              backgroundImage: AssetImage('assets/images/user_placeholder.jpg'),
+            ),
+            if (MemberConstant.user.profilePictureUrl !=
+                    "user_placeholder.jpg" &&
+                controller.hasInternetConnection)
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: CachedNetworkImageProvider(
+                  '$backendProfileImageUrl${MemberConstant.user.profilePictureUrl}',
+                ),
+              ),
+          ],
         ),
         FxSpacing.width(16),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const FxText.bodyMedium(
-              'John Doe',
-              style: TextStyle(
+            FxText.bodyMedium(
+              MemberConstant.user.name,
+              style: const TextStyle(
                 fontWeight: FontWeight.w600,
-              ),
-            ),
-            FxSpacing.height(4),
-            GestureDetector(
-              onTap: () {
-                // TODO Handle edit profile
-                showToast();
-              },
-              child: Row(
-                children: [
-                  FxText.labelSmall(
-                    'Edit',
-                    style: TextStyle(
-                      color: customTheme.colorPrimary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  FxSpacing.width(4),
-                  Icon(Icons.edit, color: customTheme.colorPrimary, size: 16),
-                ],
               ),
             ),
           ],
@@ -160,13 +169,17 @@ class _SettingScreenState extends State<SettingScreen> {
   // Section Header
   Widget _buildSectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 3.0),
       child: FxText.labelLarge(title),
     );
   }
 
   // Settings Item
-  Widget _buildSettingsItem(IconData icon, String title) {
+  Widget _buildSettingsItem({
+    required IconData icon,
+    required String title,
+    required Function() onTapFunction,
+  }) {
     return ListTile(
       leading: Icon(icon, color: customTheme.colorPrimary),
       title: FxText.labelMedium(
@@ -178,10 +191,8 @@ class _SettingScreenState extends State<SettingScreen> {
         color: customTheme.grey.withOpacity(0.6),
         size: 16,
       ),
-      onTap: () {
-        // TODO Handle navigation to respective screen
-        showToast();
-      },
+      onTap: onTapFunction,
+      contentPadding: EdgeInsets.zero,
     );
   }
 
@@ -192,41 +203,222 @@ class _SettingScreenState extends State<SettingScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionHeader('General Settings'),
-        _buildSettingsItem(Icons.person, 'Account Preferences'),
-        _buildSettingsItem(Icons.lock, 'Password & Account'),
-        _buildSettingsItem(Icons.notifications, 'Notifications Settings'),
-        _buildSettingsItem(Icons.language, 'Change Language'),
+        _buildSettingsItem(
+          icon: Icons.person,
+          title: 'Account Settings',
+          onTapFunction: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AnalyticScreen(),
+            ),
+          ),
+        ),
+        _buildSettingsItem(
+          icon: Icons.security,
+          title: 'Security Settings',
+          onTapFunction: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AnalyticScreen(),
+            ),
+          ),
+        ),
+        _buildSettingsItem(
+          icon: Icons.notifications,
+          title: 'Notifications Settings',
+          onTapFunction: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AnalyticScreen(),
+            ),
+          ),
+        ),
+        // _buildSettingsItem(Icons.color_lens, 'Change App Theme') // Future Enhancement
+        // _buildSettingsItem(Icons.language, 'Change Language'), // Future Enhancement
       ],
     );
   }
 
-  Widget _buildTransactionalSettings() {
+  // Tools Section
+  Widget _buildToolSettings() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader('Transactional Settings'),
-        _buildSettingsItem(Icons.flag, 'Set Financial Goals'),
-        _buildSettingsItem(Icons.attach_money, 'Set Budgeting Preferences'),
-        _buildSettingsItem(Icons.credit_card, 'Manage Your Cards'),
-        _buildSettingsItem(Icons.timeline, 'Track financial progress'),
-        const SizedBox(height: 20),
+        _buildSectionHeader('Tools'),
+        _buildSettingsItem(
+          icon: Icons.person,
+          title: 'Currency Converter',
+          onTapFunction: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AnalyticScreen(),
+            ),
+          ),
+        ),
       ],
     );
   }
 
+  // Additional Settings Section
   Widget _buildAdditionalSettings() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader('Additional Settings'),
-        _buildSettingsItem(Icons.security, 'Two-Factor Authentication'),
-        _buildSettingsItem(Icons.color_lens, 'Change App Theme'),
-        _buildSettingsItem(Icons.backup, 'Backup Your Account'),
+        _buildSectionHeader('Transactional Settings'),
+        _buildSettingsItem(
+          icon: Icons.flag,
+          title: 'Set Financial Goals',
+          onTapFunction: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AnalyticScreen(),
+            ),
+          ),
+        ),
+        _buildSettingsItem(
+          icon: Icons.attach_money,
+          title: 'Set Budgeting Preferences',
+          onTapFunction: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AnalyticScreen(),
+            ),
+          ),
+        ),
+        _buildSettingsItem(
+          icon: Icons.credit_card,
+          title: 'Manage Your Cards',
+          onTapFunction: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AnalyticScreen(),
+            ),
+          ),
+        ),
+        _buildSettingsItem(
+          icon: Icons.timeline,
+          title: 'Track financial progress',
+          onTapFunction: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AnalyticScreen(),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
       ],
+    );
+  }
+
+  // Abous Us Section
+  Widget _buildAboutUsSettings() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionHeader('About Us'),
+        _buildSettingsItem(
+          icon: Icons.contact_mail,
+          title: 'Contact Us',
+          onTapFunction: controller.launchEmail,
+        ),
+        _buildSettingsItem(
+          icon: Icons.privacy_tip,
+          title: 'Privacy Policy',
+          onTapFunction: _showPrivacyPolicyPopup,
+        ),
+        ListTile(
+          leading: Icon(Icons.backup, color: customTheme.colorPrimary),
+          title: const FxText.labelMedium(
+            'About',
+            xMuted: true,
+          ),
+          // ignore: deprecated_member_use_from_same_package
+          subtitle: FxText.caption(
+            'Version ${MemberConstant.appSetting.appVersion}',
+            xMuted: true,
+          ),
+          contentPadding: EdgeInsets.zero,
+        ),
+      ],
+    );
+  }
+
+  // Privacy policy popup
+  void _showPrivacyPolicyPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const FxText.labelLarge(
+            'Privacy Policy',
+            fontSize: 20,
+          ),
+          content: const SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FxText.bodyMedium(
+                  'This Privacy Policy describes how we collect, use, and disclose information when you use our mobile application.',
+                  textAlign: TextAlign.justify,
+                ),
+                SizedBox(height: 20),
+                FxText.labelMedium(
+                  'Information Collection and Use',
+                ),
+                SizedBox(height: 10),
+                FxText.bodyMedium(
+                  'We may collect certain information automatically when you use our app, including:',
+                  textAlign: TextAlign.justify,
+                ),
+                FxText.bodyMedium(
+                  '• Device Information: We may collect device-specific information such as your device model, operating system version, unique device identifiers, and mobile network information.',
+                  textAlign: TextAlign.justify,
+                ),
+                FxText.bodyMedium(
+                  '• Usage Information: We may collect information about how you interact with our app, including the features you use, the pages you visit, and your interactions with advertisements.',
+                  textAlign: TextAlign.justify,
+                ),
+                SizedBox(height: 20),
+                FxText.labelMedium(
+                  'Information Sharing',
+                ),
+                SizedBox(height: 10),
+                FxText.bodyMedium(
+                  'We may share information with third-party service providers that help us operate and improve our app, such as analytics providers, advertising networks, and payment processors. We may also share information as required by law or to protect our rights.',
+                  textAlign: TextAlign.justify,
+                ),
+                SizedBox(height: 20),
+                FxText.labelMedium(
+                  'Contact Us',
+                ),
+                SizedBox(height: 10),
+                FxText.bodyMedium(
+                  'If you have any questions about this Privacy Policy, please contact us at zhiyao0223@gmail.com.',
+                  textAlign: TextAlign.justify,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            FxButton.rounded(
+              onPressed: () {
+                Navigator.pop(context); // Close the popup
+              },
+              backgroundColor: customTheme.colorPrimary,
+              child: FxText.labelMedium(
+                'Close',
+                color: customTheme.white,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

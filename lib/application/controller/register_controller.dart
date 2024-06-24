@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pocketkeeper/application/model/users.dart';
+import 'package:pocketkeeper/application/model/user.dart';
 import 'package:pocketkeeper/application/service/api_service.dart';
 import 'package:pocketkeeper/utils/custom_animation.dart';
 import 'package:pocketkeeper/utils/validators/custom_validator.dart';

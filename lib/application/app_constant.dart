@@ -5,6 +5,7 @@ Backend URL Constant
 const hostUrl = "http://xiaowuproject.com/pocketkeeper/";
 const apiUrl = "${hostUrl}api/";
 const backendImageUrl = "${hostUrl}assets/images/";
+const backendProfileImageUrl = "${backendImageUrl}profile/";
 
 /*
 App Constant
