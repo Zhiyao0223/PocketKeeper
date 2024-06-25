@@ -17,10 +17,13 @@ extension NumberExtension on num {
   }
 
   // Convert double to whole number if no decimal
-  String toWholeNumber(double tempTotal) {
+  String removeExtraDecimal() {
     // Only convert to no decimal if it is whole number
-    return (tempTotal % 1 == 0)
-        ? tempTotal.toStringAsFixed(2)
-        : tempTotal.toStringAsFixed(2);
+    return (this % 1 == 0) ? toStringAsFixed(0) : toStringAsFixed(2);
+  }
+
+  // Round off to whole number
+  String toWholeNumber() {
+    return round().toString();
   }
 }

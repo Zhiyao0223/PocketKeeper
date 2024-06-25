@@ -11,6 +11,7 @@ class AppSetting {
   late String appVersion;
   late String appTheme;
   late String appLanguage;
+  late String currencyCode;
 
   late bool isGoogleSignIn;
 
@@ -21,5 +22,6 @@ class AppSetting {
     appTheme = AppTheme.lightTheme.name;
     appLanguage = Language.en.name;
     isGoogleSignIn = false;
+    currencyCode = "USD";
   }
 }

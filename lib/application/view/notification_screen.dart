@@ -88,6 +88,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     );
   }
 
+  // Build notification box
   Widget _buildNotificationItem(
     Notifications notificationItem,
   ) {

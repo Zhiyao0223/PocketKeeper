@@ -16,4 +16,13 @@ class NotificationService extends ObjectboxService<Notifications> {
     // Update all
     putMany(notifications);
   }
+
+  // Get total unread notification count
+  int getUnreadNotificationCount() {
+    final List<Notifications> notifications = getAll();
+    return notifications
+        .where((Notifications notification) =>
+            notification.readStatus != ReadStatus.read.index)
+        .length;
+  }
 }

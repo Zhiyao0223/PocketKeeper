@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/dashboard_controller.dart';
+import 'package:pocketkeeper/application/member_constant.dart';
 import 'package:pocketkeeper/application/view/notification_screen.dart';
+import 'package:pocketkeeper/template/widgets/text/text.dart';
 import 'package:pocketkeeper/theme/custom_theme.dart';
+import 'package:pocketkeeper/utils/converters/number.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
+import 'package:pocketkeeper/widget/circular_progress_indicator_icon.dart';
+import 'package:pocketkeeper/widget/multi_section_progress_indicator.dart';
 import '../../template/state_management/state_management.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -43,291 +48,407 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-        centerTitle: true,
-        backgroundColor: Colors.teal,
-        elevation: 0,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const NotificationScreen(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.notifications),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: Colors.teal,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Hi, Welcome Back',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              AppBar(
+                title: const FxText.titleMedium('Dashboard'),
+                centerTitle: true,
+                backgroundColor: customTheme.white,
+                scrolledUnderElevation: 0,
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationScreen(),
+                        ),
+                      );
+                    },
+                    icon: Stack(
+                      children: <Widget>[
+                        const Padding(
+                          padding: EdgeInsets.only(right: 5.0),
+                          child: Icon(Icons.notifications),
+                        ),
+                        // Only display if more than one notification
+                        if (controller.notificationCount > 0)
+                          Positioned(
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(1),
+                              decoration: BoxDecoration(
+                                color: customTheme.red,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 12,
+                                minHeight: 12,
+                              ),
+                              child: FxText.labelSmall(
+                                controller.notificationCount.toString(),
+                                style: TextStyle(
+                                  color: customTheme.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          )
+                      ],
                     ),
                   ),
-                  const Text(
-                    'Good Morning',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildBalanceCard(
-                          'Total Balance', '\$7,783.00', Colors.white),
-                      _buildBalanceCard(
-                          'Total Expense', '-\$1,187.40', Colors.redAccent),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  const LinearProgressIndicator(
-                    value: 0.3,
-                    backgroundColor: Colors.white24,
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Colors.lightGreenAccent),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    '30% Of Your Expenses, Looks Good.',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  _buildSavingsGoals(),
-                  const SizedBox(height: 20),
-                  _buildWeeklySummary(),
                 ],
               ),
-            ),
-            const SizedBox(height: 20),
-            _buildTransactionDetails(),
-          ],
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: customTheme.colorPrimary.withOpacity(0.9),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Greeting Section
+                    _buildGreetingMessage(),
+                    const SizedBox(height: 20),
+
+                    // Progress Indicator section
+                    _buildFinancialProgressIndicator(),
+
+                    // Financial Status Message
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.check_circle,
+                          color: customTheme.white,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 5),
+                        FxText.bodySmall(
+                          controller.financialStatusMessage,
+                          color: customTheme.white,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                color: customTheme.colorPrimary.withOpacity(0.9),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: customTheme.white.withOpacity(0.87),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                  ),
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      _buildSavingsGoals(),
+                      const SizedBox(height: 20),
+                      _buildAccountSection(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildBalanceCard(String title, String amount, Color amountColor) {
+  Widget _buildGreetingMessage() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: const TextStyle(color: Colors.white70, fontSize: 16),
+        FxText.titleMedium(
+          'Hi, ${MemberConstant.user.name}',
+          color: customTheme.white,
+          fontWeight: 700,
         ),
-        Text(
-          amount,
-          style: TextStyle(
-              color: amountColor, fontSize: 24, fontWeight: FontWeight.bold),
+        FxText.titleSmall(
+          controller.greeting,
+          color: customTheme.white,
+          fontSize: 14,
+          // xMuted: true,
         ),
+      ],
+    );
+  }
+
+  Widget _buildFinancialProgressIndicator() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Column(
+          children: [
+            // Month and total amount spend
+            FxText.titleMedium(
+              controller.currentMonthYear,
+              color: customTheme.white,
+            ),
+            FxText.titleLarge(
+              '${controller.currencyIndicator}${controller.totalExpenses.removeExtraDecimal()}',
+              color: customTheme.white,
+              fontWeight: 900,
+              fontSize: 24,
+            ),
+
+            // Progress Indiciator
+            Container(
+              width: MediaQuery.of(context).size.width * 0.85,
+              margin: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height * 0.02,
+                bottom: MediaQuery.of(context).size.height * 0.01,
+              ),
+              padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height * 0.02,
+                horizontal: MediaQuery.of(context).size.width * 0.05,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: customTheme.white.withOpacity(0.87),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FxText.bodySmall(
+                            'Left to spend',
+                            color: customTheme.black,
+                          ),
+                          FxText.titleMedium(
+                            '${controller.currencyIndicator}${controller.remainingBalance.toWholeNumber()}',
+                            fontWeight: 900,
+                            color: customTheme.black,
+                            textAlign: TextAlign.start,
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          FxText.bodySmall(
+                            'Monthly Budget',
+                            color: customTheme.black,
+                          ),
+                          FxText.titleMedium(
+                            '${controller.currencyIndicator}${controller.monthlyBudget.toWholeNumber()}',
+                            fontWeight: 900,
+                            color: customTheme.black,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Progress Indicator
+                  MultiSectionProgressBar(
+                    sections: [
+                      ProgressSection(
+                        name: 'Food',
+                        value: 0.3,
+                      ),
+                      ProgressSection(
+                        name: 'Shopping',
+                        value: 0.6,
+                      ), // Food
+                      ProgressSection(
+                        name: 'Bill Payment',
+                        value: 0.1,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ],
+        )
       ],
     );
   }
 
   Widget _buildSavingsGoals() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildGoalCard(Icons.car_repair, 'Savings On Goals', Colors.blue),
-        _buildGoalCard(Icons.fastfood, 'Food Last Week\n-\$100.00', Colors.red),
-        // _buildGoalCard(
-        //     Icons.attach_money, 'Revenue Last Week\n\$4,000.00', Colors.green),
-      ],
-    );
-  }
-
-  Widget _buildGoalCard(IconData icon, String title, Color iconColor) {
-    return Column(
-      children: [
-        Icon(icon, color: iconColor, size: 40),
-        const SizedBox(height: 10),
-        Text(
-          title,
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.white, fontSize: 14),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildWeeklySummary() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'This Week (26 Nov to 30 Nov)',
-          style: TextStyle(color: Colors.white70, fontSize: 16),
-        ),
-        const Text(
-          'Travel -\$10,000',
-          style: TextStyle(color: Colors.redAccent, fontSize: 16),
-        ),
-        const SizedBox(height: 10),
-        const Text(
-          'Last Week (19 Nov to 25 Nov)',
-          style: TextStyle(color: Colors.white70, fontSize: 16),
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildExpenseItem('Food', '-\$2,000', '24-11-23', Icons.fastfood),
-            _buildExpenseItem(
-                'Shopping', '-\$3,000', '23-11-23', Icons.shopping_cart),
-            _buildExpenseItem(
-                'Bill Payment', '-\$1,500', '20-11-23', Icons.payment),
-          ],
-        ),
-        const SizedBox(height: 10),
-        const Text(
-          'Last Week (12 Nov to 18 Nov)',
-          style: TextStyle(color: Colors.white70, fontSize: 16),
-        ),
-        _buildExpenseItem('Recharge', '-\$1,500', '17-11-23', Icons.phone),
-      ],
-    );
-  }
-
-  Widget _buildExpenseItem(
-      String title, String amount, String date, IconData icon) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Icon(icon, color: Colors.white70),
-            const SizedBox(width: 10),
-            Text(
-              title,
-              style: const TextStyle(color: Colors.white70, fontSize: 16),
-            ),
-          ],
-        ),
-        Text(
-          '$amount ($date)',
-          style: const TextStyle(color: Colors.redAccent, fontSize: 16),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTransactionDetails() {
     return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        ),
+      decoration: BoxDecoration(
+        color: customTheme.colorPrimary.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(20),
       ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Transaction details',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-              DropdownButton<String>(
-                items: <String>['Nov 2023', 'Dec 2023'].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (_) {},
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildFilterButton('View All'),
-              _buildFilterButton('Food'),
-              _buildFilterButton('Shopping'),
-              const Icon(Icons.search),
-            ],
-          ),
-          const SizedBox(height: 20),
-          _buildExpenseDetails(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFilterButton(String title) {
-    return TextButton(
-      onPressed: () {},
-      child: Text(
-        title,
-        style: const TextStyle(color: Colors.black54, fontSize: 16),
-      ),
-    );
-  }
-
-  Widget _buildExpenseDetails() {
-    return Column(
-      children: [
-        _buildExpenseDetailItem(
-            'Travel', '-10,000', '26-11-23', Icons.travel_explore),
-        _buildExpenseDetailItem('Food', '-2,000', '24-11-23', Icons.fastfood),
-        _buildExpenseDetailItem(
-            'Shopping', '-3,000', '23-11-23', Icons.shopping_cart),
-        _buildExpenseDetailItem(
-            'Bill Payment', '-1,500', '20-11-23', Icons.payment),
-        _buildExpenseDetailItem('Recharge', '-1,500', '17-11-23', Icons.phone),
-      ],
-    );
-  }
-
-  Widget _buildExpenseDetailItem(
-      String title, String amount, String date, IconData icon) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+      child: IntrinsicHeight(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Icon(icon, color: Colors.black54),
-            const SizedBox(width: 10),
-            Text(
-              title,
-              style: const TextStyle(color: Colors.black87, fontSize: 16),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressWithIcon(
+                  icon: controller.savingGoalIcon,
+                  progressValue: controller.savingGoalProgress,
+                ),
+                const SizedBox(height: 10),
+                FxText.bodySmall('Saving On Goal', color: customTheme.white),
+              ],
+            ),
+            VerticalDivider(
+              color: customTheme.white,
+              thickness: 2,
+            ),
+            IntrinsicWidth(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.account_balance_wallet,
+                        color: customTheme.white,
+                        size: 24,
+                      ),
+                      const SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FxText.bodySmall(
+                            'Revenue Last Week',
+                            color: customTheme.white,
+                          ),
+                          FxText.labelLarge(
+                            '${controller.currencyIndicator}${controller.revenueLastWeek.toWholeNumber()}',
+                            color: customTheme.white,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Divider(
+                    color: customTheme.white,
+                    thickness: 2,
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.account_balance_wallet,
+                        color: customTheme.white,
+                        size: 24,
+                      ),
+                      const SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FxText.bodySmall(
+                            controller.topCategoryLastWeek.categoryName,
+                            color: customTheme.white,
+                          ),
+                          FxText.labelLarge(
+                            '${controller.currencyIndicator}${controller.topCategoryAmountLastWeek.toWholeNumber()}',
+                            color: customTheme.white,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),
-        Text(
-          '$amount ($date)',
-          style: const TextStyle(color: Colors.redAccent, fontSize: 16),
+      ),
+    );
+  }
+
+  Widget _buildAccountSection() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            FxText.titleMedium(
+              'Account',
+              color: customTheme.black,
+            ),
+            Icon(
+              Icons.account_balance_wallet,
+              color: customTheme.black,
+              size: 24,
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Container(
+          decoration: BoxDecoration(
+            color: customTheme.white.withOpacity(0.87),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  FxText.bodySmall(
+                    'Total Balance',
+                    color: customTheme.black,
+                  ),
+                  FxText.titleMedium(
+                    '${controller.currencyIndicator}${controller.totalExpenses.removeExtraDecimal()}',
+                    color: customTheme.black,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Divider(
+                color: customTheme.black,
+                thickness: 2,
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  FxText.bodySmall(
+                    'Total Income',
+                    color: customTheme.black,
+                  ),
+                  FxText.titleMedium(
+                    '${controller.currencyIndicator}${controller.totalExpenses.removeExtraDecimal()}',
+                    color: customTheme.black,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Divider(
+                color: customTheme.black,
+                thickness: 2,
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  FxText.bodySmall(
+                    'Total Expenses',
+                    color: customTheme.black,
+                  ),
+                  FxText.titleMedium(
+                    '${controller.currencyIndicator}${controller.totalExpenses.removeExtraDecimal()}',
+                    color: customTheme.black,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ],
     );

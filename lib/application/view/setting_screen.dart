@@ -57,32 +57,38 @@ class _SettingScreenState extends State<SettingScreen> {
     }
 
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 32,
-          vertical: MediaQuery.of(context).padding.top,
-        ),
-        child: ListView(
-          children: [
-            // Appbar
-            _buildAppBarHeader(),
-            FxSpacing.height(20),
+      body: Container(
+        color: customTheme.colorPrimary,
+        child: Container(
+          color: customTheme.white.withOpacity(0.92),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 32,
+              vertical: MediaQuery.of(context).padding.top,
+            ),
+            child: ListView(
+              children: [
+                // Appbar
+                _buildAppBarHeader(),
+                FxSpacing.height(20),
 
-            // General Setting
-            _buildGeneralSettings(),
-            FxSpacing.height(15),
+                // General Setting
+                _buildGeneralSettings(),
+                FxSpacing.height(15),
 
-            // Tools
-            _buildToolSettings(),
-            FxSpacing.height(15),
+                // Tools
+                _buildToolSettings(),
+                FxSpacing.height(15),
 
-            // Additional Setting
-            _buildAdditionalSettings(),
-            FxSpacing.height(15),
+                // Additional Setting
+                _buildAdditionalSettings(),
+                FxSpacing.height(15),
 
-            // About Us Setting
-            _buildAboutUsSettings(),
-          ],
+                // About Us Setting
+                _buildAboutUsSettings(),
+              ],
+            ),
+          ),
         ),
       ),
     );

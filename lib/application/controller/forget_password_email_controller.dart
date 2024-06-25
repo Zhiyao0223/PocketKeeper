@@ -30,9 +30,6 @@ class FPEmailController extends FxController {
     // Initialize controller
     emailController = TextEditingController();
 
-    /// Remove this later ///
-    emailController.text = "test@gmail.com";
-
     fetchData();
   }
 
