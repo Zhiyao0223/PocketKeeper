@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -364,5 +366,23 @@ class ObjectBox {
     );
 
     return ObjectBox._create(store);
+  }
+
+  /// Close the store.
+  /// Call this method when the app is closed.
+  /// This method should be called only once.
+  void close() {
+    store.close();
+  }
+
+  /// Clear all data from the store.
+  /// This method should be called only once.
+  /// This method is useful for testing purposes.
+  void clear() async {
+    close();
+
+    Directory docDir = await getApplicationDocumentsDirectory();
+    Directory('${docDir.path}/pocketkeeper').delete().then(
+        (FileSystemEntity value) => print("DB Deleted: ${value.existsSync()}"));
   }
 }

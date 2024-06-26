@@ -1,3 +1,4 @@
+import 'package:filter_list/filter_list.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/view_all_expenses_controller.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
@@ -29,16 +30,15 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
     super.initState();
     customTheme = CustomTheme();
 
-    controller = FxControllerStore.put(ViewAllExpensesController(this));
+    controller = FxControllerStore.put(ViewAllExpensesController());
 
     tabController = TabController(length: 2, vsync: this);
 
     // Add listener to detect tab changes
     tabController.addListener(() {
       if (tabController.index != controller.selectedTabIndex) {
-        setState(() {
-          controller.selectedTabIndex = tabController.index;
-        });
+        controller.selectedTabIndex = tabController.index;
+        controller.clearFilter();
       }
     });
   }
@@ -89,9 +89,11 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
                       icon: Icon(Icons.filter_alt_outlined,
                           color: customTheme.white),
                       onPressed: () {
-                        setState(() {
-                          controller.isShowFilter = !controller.isShowFilter;
-                        });
+                        openFilterDialog();
+                        // setState(() {
+                        //   controller.isShowFilter = !controller.isShowFilter;
+
+                        // });
                       },
                     ),
                   ],
@@ -121,22 +123,20 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
                 ),
               ];
             },
-            body: TabBarView(
-              controller: tabController,
-              children: [
-                _buildlTab(),
-                _buildlTab(isIncome: true),
-              ],
-            ),
+            body: Stack(children: [
+              // if (controller.isShowFilter) _buildFilterWidget(),
+              TabBarView(
+                controller: tabController,
+                children: [
+                  _buildlTab(),
+                  _buildlTab(isIncome: true),
+                ],
+              ),
+            ]),
           ),
         ),
       ),
     );
-  }
-
-  Widget _buildFilterWidget() {
-    // TODO
-    return const SizedBox();
   }
 
   Widget _buildlTab({bool isIncome = false}) {
@@ -158,12 +158,16 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
             child: Center(
               child: FxTextField(
                 controller: controller.searchController,
+                onChanged: (value) {
+                  controller.searchQuery = value;
+                  controller.filterData();
+                },
                 decoration: InputDecoration(
-                  hintText: 'Search..',
+                  hintText: 'Search Description...',
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: IconButton(
                     onPressed: () {
-                      controller.searchController.clear();
+                      controller.clearFilter();
                     },
                     icon: const Icon(Icons.clear),
                   ),
@@ -181,7 +185,11 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
 
                 return Column(
                   children: [
-                    _buildDateHeader(controller.groupDate[index], 200, 300),
+                    _buildDateHeader(
+                      controller.groupDate[index],
+                      controller.totalAmount[controller.groupDate[index]]![0],
+                      controller.totalAmount[controller.groupDate[index]]![1],
+                    ),
                     _buildExpensesBox(expensesList),
                     const SizedBox(height: 10),
                   ],
@@ -302,6 +310,30 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
           ),
         ],
       ),
+    );
+  }
+
+  // Filter Menu
+  // References: https://pub.dev/packages/filter_list
+  void openFilterDialog() async {
+    await FilterListDialog.display<String>(
+      context,
+      listData: controller.categoryNames,
+      selectedListData: controller.selectedCategory,
+      choiceChipLabel: (item) => item!,
+      validateSelectedItem: (list, val) => list!.contains(val),
+      onItemSearch: (item, query) {
+        return controller.categoryNames.contains(query.toLowerCase());
+      },
+      onApplyButtonClick: (list) {
+        // Update selected category
+        controller.selectedCategory = list ?? [];
+
+        controller.filterData();
+        Navigator.pop(context);
+      },
+      headlineText: 'Filter Category',
+      hideSearchField: true,
     );
   }
 }

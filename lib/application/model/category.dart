@@ -7,6 +7,7 @@ class Category {
   int categoryId = 0;
 
   late String categoryName;
+  late int categoryType; // 0 = Expense, 1 = Income
   late int status;
   late IconData icon;
   late DateTime createdDate;
@@ -16,6 +17,7 @@ class Category {
   Category({
     String? tmpCategoryName,
     int? tmpStatus,
+    int? tmpCategoryType,
     IconData? tmpIcon,
     DateTime? tmpCreatedDate,
     DateTime? tmpUpdatedDate,
@@ -23,6 +25,7 @@ class Category {
   }) {
     categoryName = tmpCategoryName ?? '';
     status = tmpStatus ?? 0;
+    categoryType = tmpCategoryType ?? 0;
     icon = tmpIcon ?? Icons.category;
     createdDate = tmpCreatedDate ?? DateTime.now();
     updatedDate = tmpUpdatedDate ?? DateTime.now();
