@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pocketkeeper/application/model/category.dart';
+import 'package:pocketkeeper/application/model/expense.dart';
+import 'package:pocketkeeper/application/model/money_account.dart';
 import 'package:pocketkeeper/application/service/notification_service.dart';
 
 import '../../template/state_management/controller.dart';
@@ -24,6 +26,10 @@ class DashboardController extends FxController {
   late double revenueLastWeek;
   late Category topCategoryLastWeek;
   late double topCategoryAmountLastWeek;
+
+  // Account box section
+  late List<Accounts> walletAccounts;
+  late Map<int, List<Expenses>> expensesList;
 
   @override
   void initState() {
@@ -82,12 +88,100 @@ class DashboardController extends FxController {
     topCategoryLastWeek = Category(
       tmpCategoryId: 1,
       tmpCategoryName: "Food & Drinks",
-      tmpIcon: const Icon(Icons.fastfood),
+      tmpIcon: Icons.fastfood,
     );
 
     // Get top category amount last week
     // TODO
     topCategoryAmountLastWeek = 200.00;
+
+    // Get wallet accounts
+    // TODO
+    walletAccounts = [
+      Accounts(
+        accountId: 0,
+        accountName: "Cash",
+        accountIcon: Icons.account_balance_wallet,
+      ),
+      Accounts(
+        accountId: 1,
+        accountName: "Bank",
+        accountIcon: Icons.account_balance,
+      ),
+    ];
+
+    // Get expenses list
+    // TODO
+    expensesList = {
+      0: [
+        Expenses(
+          tmpExpensesId: 0,
+          tmpCategory: Category(
+            tmpCategoryId: 1,
+            tmpCategoryName: "Food & Drinks",
+            tmpIcon: Icons.fastfood,
+          ),
+          tmpAmount: 200.00,
+          tmpExpensesDate: DateTime.now(),
+          tmpDescription: "Lunch",
+          tmpAccount: Accounts(
+            accountId: 0,
+            accountName: "Cash",
+            accountIcon: Icons.account_balance_wallet,
+          ),
+        ),
+        Expenses(
+          tmpExpensesId: 1,
+          tmpCategory: Category(
+            tmpCategoryId: 2,
+            tmpCategoryName: "Transport",
+            tmpIcon: Icons.directions_bus,
+          ),
+          tmpAmount: 50.00,
+          tmpExpensesDate: DateTime.now(),
+          tmpDescription: "Bus Fare",
+          tmpAccount: Accounts(
+            accountId: 0,
+            accountName: "Cash",
+            accountIcon: Icons.account_balance_wallet,
+          ),
+        ),
+      ],
+      1: [
+        Expenses(
+          tmpExpensesId: 2,
+          tmpCategory: Category(
+            tmpCategoryId: 3,
+            tmpCategoryName: "Shopping",
+            tmpIcon: Icons.shopping_cart,
+          ),
+          tmpAmount: 100.00,
+          tmpExpensesDate: DateTime.now(),
+          tmpDescription: "Grocery",
+          tmpAccount: Accounts(
+            accountId: 1,
+            accountName: "Bank",
+            accountIcon: Icons.account_balance,
+          ),
+        ),
+        Expenses(
+          tmpExpensesId: 3,
+          tmpCategory: Category(
+            tmpCategoryId: 4,
+            tmpCategoryName: "Health",
+            tmpIcon: Icons.local_hospital,
+          ),
+          tmpAmount: 100.00,
+          tmpExpensesDate: DateTime.now(),
+          tmpDescription: "Medicine",
+          tmpAccount: Accounts(
+            accountId: 1,
+            accountName: "Bank",
+            accountIcon: Icons.account_balance,
+          ),
+        ),
+      ],
+    };
 
     isDataFetched = true;
 

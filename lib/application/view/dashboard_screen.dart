@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/dashboard_controller.dart';
 import 'package:pocketkeeper/application/member_constant.dart';
+import 'package:pocketkeeper/application/model/expense.dart';
+import 'package:pocketkeeper/application/model/money_account.dart';
 import 'package:pocketkeeper/application/view/notification_screen.dart';
+import 'package:pocketkeeper/application/view/view_all_expenses_screen.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
 import 'package:pocketkeeper/theme/custom_theme.dart';
+import 'package:pocketkeeper/utils/converters/date.dart';
 import 'package:pocketkeeper/utils/converters/number.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
 import 'package:pocketkeeper/widget/circular_progress_indicator_icon.dart';
@@ -52,55 +56,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              AppBar(
-                title: const FxText.titleMedium('Dashboard'),
-                centerTitle: true,
-                backgroundColor: customTheme.white,
-                scrolledUnderElevation: 0,
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const NotificationScreen(),
-                        ),
-                      );
-                    },
-                    icon: Stack(
-                      children: <Widget>[
-                        const Padding(
-                          padding: EdgeInsets.only(right: 5.0),
-                          child: Icon(Icons.notifications),
-                        ),
-                        // Only display if more than one notification
-                        if (controller.notificationCount > 0)
-                          Positioned(
-                            right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(1),
-                              decoration: BoxDecoration(
-                                color: customTheme.red,
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              constraints: const BoxConstraints(
-                                minWidth: 12,
-                                minHeight: 12,
-                              ),
-                              child: FxText.labelSmall(
-                                controller.notificationCount.toString(),
-                                style: TextStyle(
-                                  color: customTheme.white,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -150,7 +105,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Column(
                     children: [
                       _buildSavingsGoals(),
-                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: Divider(
+                          color: customTheme.white,
+                          thickness: 2,
+                        ),
+                      ),
                       _buildAccountSection(),
                     ],
                   ),
@@ -164,19 +125,61 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildGreetingMessage() {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        FxText.titleMedium(
-          'Hi, ${MemberConstant.user.name}',
-          color: customTheme.white,
-          fontWeight: 700,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            FxText.titleMedium(
+              'Hi, ${MemberConstant.user.name}',
+              color: customTheme.white,
+              fontWeight: 700,
+            ),
+            FxText.titleSmall(
+              controller.greeting,
+              color: customTheme.white,
+              fontSize: 14,
+            ),
+          ],
         ),
-        FxText.titleSmall(
-          controller.greeting,
+        IconButton(
+          iconSize: 24,
           color: customTheme.white,
-          fontSize: 14,
-          // xMuted: true,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const NotificationScreen(),
+              ),
+            );
+          },
+          icon: Stack(
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.only(right: 5.0),
+                child: Icon(Icons.notifications),
+              ),
+              // Only display if more than one notification
+              if (controller.notificationCount > 0)
+                Positioned(
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                      color: customTheme.red,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 12,
+                      minHeight: 12,
+                    ),
+                    child: const SizedBox(),
+                  ),
+                )
+            ],
+          ),
         ),
       ],
     );
@@ -298,14 +301,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   progressValue: controller.savingGoalProgress,
                 ),
                 const SizedBox(height: 10),
-                FxText.bodySmall('Saving On Goal', color: customTheme.white),
+                FxText.bodySmall(
+                  'Saving On Goal',
+                  color: customTheme.white,
+                  fontSize: 10,
+                ),
               ],
             ),
             VerticalDivider(
               color: customTheme.white,
               thickness: 2,
             ),
-            IntrinsicWidth(
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.4,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -321,12 +329,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           FxText.bodySmall(
-                            'Revenue Last Week',
+                            'Revenue This Month',
                             color: customTheme.white,
+                            fontSize: 10,
                           ),
                           FxText.labelLarge(
                             '${controller.currencyIndicator}${controller.revenueLastWeek.toWholeNumber()}',
-                            color: customTheme.white,
+                            color: customTheme.lime,
                           ),
                         ],
                       ),
@@ -337,11 +346,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     color: customTheme.white,
                     thickness: 2,
                   ),
-                  const SizedBox(height: 10),
                   Row(
                     children: [
                       Icon(
-                        Icons.account_balance_wallet,
+                        controller.topCategoryLastWeek.icon,
                         color: customTheme.white,
                         size: 24,
                       ),
@@ -352,10 +360,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           FxText.bodySmall(
                             controller.topCategoryLastWeek.categoryName,
                             color: customTheme.white,
+                            fontSize: 10,
                           ),
                           FxText.labelLarge(
                             '${controller.currencyIndicator}${controller.topCategoryAmountLastWeek.toWholeNumber()}',
-                            color: customTheme.white,
+                            color: customTheme.red,
                           ),
                         ],
                       ),
@@ -374,82 +383,152 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            FxText.titleMedium(
-              'Account',
+            FxText.labelLarge(
+              'Transaction details',
               color: customTheme.black,
-            ),
-            Icon(
-              Icons.account_balance_wallet,
-              color: customTheme.black,
-              size: 24,
             ),
           ],
         ),
         const SizedBox(height: 10),
-        Container(
-          decoration: BoxDecoration(
-            color: customTheme.white.withOpacity(0.87),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          padding: const EdgeInsets.all(20),
-          child: Column(
+
+        // Build all account box
+        for (Accounts tmpAccount in controller.walletAccounts)
+          _buildAccountBox(account: tmpAccount),
+      ],
+    );
+  }
+
+  Widget _buildAccountBox({required Accounts account}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: customTheme.white.withOpacity(0.87),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.all(15),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  FxText.bodySmall(
-                    'Total Balance',
+                  Icon(
+                    account.accountIcon,
                     color: customTheme.black,
+                    size: 20,
                   ),
-                  FxText.titleMedium(
-                    '${controller.currencyIndicator}${controller.totalExpenses.removeExtraDecimal()}',
+                  const SizedBox(width: 10),
+                  FxText.labelMedium(
+                    account.accountName,
                     color: customTheme.black,
+                    fontSize: 14,
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
-              Divider(
-                color: customTheme.black,
-                thickness: 2,
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  FxText.bodySmall(
-                    'Total Income',
-                    color: customTheme.black,
-                  ),
-                  FxText.titleMedium(
-                    '${controller.currencyIndicator}${controller.totalExpenses.removeExtraDecimal()}',
-                    color: customTheme.black,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Divider(
-                color: customTheme.black,
-                thickness: 2,
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  FxText.bodySmall(
-                    'Total Expenses',
-                    color: customTheme.black,
-                  ),
-                  FxText.titleMedium(
-                    '${controller.currencyIndicator}${controller.totalExpenses.removeExtraDecimal()}',
-                    color: customTheme.black,
-                  ),
-                ],
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ViewAllExpensesScreen(
+                        filterAccountId: account.accountId,
+                      ),
+                    ),
+                  );
+                },
+                child: FxText.labelSmall(
+                  'View all >',
+                  color: customTheme.colorPrimary,
+                ),
               ),
             ],
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            child: Divider(
+              color: customTheme.grey.withOpacity(0.3),
+              thickness: 1.5,
+            ),
+          ),
+          _buildExpensesBox(account.accountId),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExpensesBox(int accountId) {
+    return Column(
+      children: [
+        for (Expenses tmpExpenses in controller.expensesList[accountId]!)
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 5),
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: customTheme.grey.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: customTheme.white,
+                        border: Border.all(
+                          color: customTheme.colorPrimary,
+                          width: 1.5,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        tmpExpenses.category.icon,
+                        color: customTheme.colorPrimary,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FxText.labelSmall(
+                          tmpExpenses.category.categoryName,
+                          color: customTheme.black,
+                        ),
+                        FxText.bodySmall(
+                          tmpExpenses.description,
+                          color: customTheme.black,
+                          xMuted: true,
+                          fontSize: 12,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    FxText.bodySmall(
+                      tmpExpenses.expensesDate
+                          .toDateString(dateFormat: "dd MMM yyyy"),
+                      fontSize: 10,
+                      color: customTheme.black,
+                    ),
+                    FxText.labelLarge(
+                      '${tmpExpenses.expensesType == 0 ? '-' : ''}${tmpExpenses.amount.removeExtraDecimal()}',
+                      color: tmpExpenses.expensesType == 0
+                          ? customTheme.red
+                          : customTheme.green,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
       ],
     );
   }

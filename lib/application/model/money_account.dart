@@ -7,14 +7,20 @@ class Accounts {
   int accountId = 0;
 
   late String accountName;
-  late String accountType;
   late IconData accountIcon;
+
+  late int status; // 0 - Active, 1 - Inactive
+  late DateTime createdDate;
+  late DateTime updatedDate;
 
   // Constructor
   Accounts({
     this.accountId = 0,
     required this.accountName,
-    required this.accountType,
     this.accountIcon = Icons.account_balance_wallet_outlined,
-  });
+    this.status = 0,
+  }) {
+    createdDate = DateTime.now();
+    updatedDate = DateTime.now();
+  }
 }

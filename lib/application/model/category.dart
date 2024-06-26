@@ -8,7 +8,7 @@ class Category {
 
   late String categoryName;
   late int status;
-  late Icon icon;
+  late IconData icon;
   late DateTime createdDate;
   late DateTime updatedDate;
 
@@ -16,14 +16,14 @@ class Category {
     int? tmpCategoryId,
     String? tmpCategoryName,
     int? tmpStatus,
-    Icon? tmpIcon,
+    IconData? tmpIcon,
     DateTime? tmpCreatedDate,
     DateTime? tmpUpdatedDate,
   }) {
     categoryId = tmpCategoryId ?? 0;
     categoryName = tmpCategoryName ?? '';
     status = tmpStatus ?? 0;
-    icon = tmpIcon ?? const Icon(Icons.category);
+    icon = tmpIcon ?? Icons.category;
     createdDate = tmpCreatedDate ?? DateTime.now();
     updatedDate = tmpUpdatedDate ?? DateTime.now();
   }
