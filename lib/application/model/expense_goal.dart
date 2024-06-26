@@ -4,7 +4,7 @@ import 'package:pocketkeeper/application/model/enum/sync_status.dart';
 @Entity()
 class ExpenseGoal {
   @Id(assignable: true)
-  late int goalId;
+  int goalId = 0;
 
   late String description;
   late int syncStatus;
@@ -13,14 +13,12 @@ class ExpenseGoal {
   late DateTime updatedDate;
 
   ExpenseGoal({
-    int? tmpGoalId,
     String? tmpDescription,
     SyncStatus? tmpSyncStatus,
     int? tmpStatus,
     DateTime? tmpCreatedDate,
     DateTime? tmpUpdatedDate,
   }) {
-    goalId = tmpGoalId ?? 0;
     description = tmpDescription ?? '';
     syncStatus = tmpSyncStatus?.index ?? SyncStatus.none.index;
     status = tmpStatus ?? 0;

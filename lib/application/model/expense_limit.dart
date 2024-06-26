@@ -5,7 +5,7 @@ import 'package:pocketkeeper/application/model/enum/sync_status.dart';
 @Entity()
 class ExpenseLimit {
   @Id(assignable: true)
-  late int limitId;
+  int limitId = 0;
 
   late Category categoryId;
   late double amount;
@@ -15,7 +15,6 @@ class ExpenseLimit {
   late DateTime updatedDate;
 
   ExpenseLimit({
-    int? tmpLimitId,
     Category? tmpCategoryId,
     double? tmpAmount,
     SyncStatus? tmpSyncStatus,
@@ -23,7 +22,6 @@ class ExpenseLimit {
     DateTime? tmpCreatedDate,
     DateTime? tmpUpdatedDate,
   }) {
-    limitId = tmpLimitId ?? 0;
     categoryId = tmpCategoryId ?? Category();
     amount = tmpAmount ?? 0.0;
     syncStatus = tmpSyncStatus?.index ?? SyncStatus.none.index;

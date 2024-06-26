@@ -19,7 +19,6 @@ class Users {
   late DateTime updatedDate;
 
   Users({
-    int? tmpId,
     String? tmpName,
     String? tmpEmail,
     String? tmpPassword,
@@ -29,7 +28,6 @@ class Users {
     String? tmpCreatedDate,
     String? tmpUpdatedDate,
   }) {
-    userId = tmpId ?? 0;
     name = tmpName ?? "";
     email = tmpEmail ?? "";
     password = tmpPassword ?? "";

@@ -5,7 +5,6 @@ import 'package:pocketkeeper/application/model/user.dart';
 
 class MemberConstant {
   static Users user = Users(
-    tmpId: 1,
     tmpName: "Xiiaowu",
     tmpEmail: "john@gmail.com",
     tmpProfilePictureUrl: "user_placeholder.jpg",

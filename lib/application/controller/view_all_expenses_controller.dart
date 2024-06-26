@@ -30,9 +30,7 @@ class ViewAllExpensesController extends FxController {
     // Give expenses sample data
     expenses = [
       Expenses(
-        tmpExpensesId: 1,
         tmpCategory: Category(
-          tmpCategoryId: 1,
           tmpCategoryName: "Food",
           tmpIcon: Icons.fastfood,
         ),
@@ -40,112 +38,90 @@ class ViewAllExpensesController extends FxController {
         tmpExpensesDate: DateTime(2024, 6, 25),
         tmpDescription: "Lunch",
         tmpAccount: Accounts(
-          accountId: 1,
           accountName: "Cash",
           accountIcon: Icons.account_balance_wallet,
         ),
       ),
       Expenses(
-        tmpExpensesId: 2,
         tmpCategory: Category(
-          tmpCategoryId: 2,
           tmpCategoryName: "Transport",
           tmpIcon: Icons.directions_bus,
         ),
         tmpAmount: 2000,
         tmpExpensesDate: DateTime(2024, 6, 26),
         tmpAccount: Accounts(
-          accountId: 2,
           accountName: "Bank",
           accountIcon: Icons.account_balance,
         ),
       ),
       Expenses(
-        tmpExpensesId: 3,
         tmpCategory: Category(
-          tmpCategoryId: 3,
           tmpCategoryName: "Shopping",
           tmpIcon: Icons.shopping_cart,
         ),
         tmpAmount: 3000,
         tmpExpensesDate: DateTime(2024, 6, 24),
         tmpAccount: Accounts(
-          accountId: 3,
           accountName: "Credit Card",
           accountIcon: Icons.credit_card,
         ),
       ),
       Expenses(
-        tmpExpensesId: 4,
         tmpCategory: Category(
-          tmpCategoryId: 4,
           tmpCategoryName: "Entertainment",
           tmpIcon: Icons.movie,
         ),
         tmpAmount: 4000,
         tmpExpensesDate: DateTime(2023, 12, 25),
         tmpAccount: Accounts(
-          accountId: 4,
           accountName: "Cash",
           accountIcon: Icons.account_balance_wallet,
         ),
       ),
       Expenses(
-        tmpExpensesId: 5,
         tmpCategory: Category(
-          tmpCategoryId: 5,
           tmpCategoryName: "Health",
           tmpIcon: Icons.local_hospital,
         ),
         tmpAmount: 5000,
         tmpExpensesDate: DateTime.now(),
         tmpAccount: Accounts(
-          accountId: 5,
           accountName: "Bank",
           accountIcon: Icons.account_balance,
         ),
       ),
       Expenses(
-        tmpExpensesId: 6,
         tmpCategory: Category(
-          tmpCategoryId: 6,
           tmpCategoryName: "Education",
           tmpIcon: Icons.school,
         ),
         tmpAmount: 6000,
         tmpExpensesDate: DateTime.now(),
         tmpAccount: Accounts(
-          accountId: 6,
           accountName: "Credit Card",
           accountIcon: Icons.credit_card,
         ),
       ),
       Expenses(
-        tmpExpensesId: 7,
         tmpCategory: Category(
-          tmpCategoryId: 7,
           tmpCategoryName: "Others",
           tmpIcon: Icons.category,
         ),
         tmpAmount: 7000,
         tmpExpensesDate: DateTime.now(),
         tmpAccount: Accounts(
-          accountId: 7,
           accountName: "Cash",
           accountIcon: Icons.account_balance_wallet,
         ),
       ),
       Expenses(
-        tmpExpensesId: 8,
         tmpCategory: Category(
-          tmpCategoryId: 8,
           tmpCategoryName: "Salary",
           tmpIcon: Icons.monetization_on,
         ),
         tmpAmount: 8000,
         tmpExpensesDate: DateTime.now(),
         tmpAccount: Accounts(
-          accountId: 8,
           accountName: "Bank",
           accountIcon: Icons.account_balance,
         ),

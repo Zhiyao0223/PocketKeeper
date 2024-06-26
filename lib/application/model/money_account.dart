@@ -15,7 +15,6 @@ class Accounts {
 
   // Constructor
   Accounts({
-    this.accountId = 0,
     required this.accountName,
     this.accountIcon = Icons.account_balance_wallet_outlined,
     this.status = 0,

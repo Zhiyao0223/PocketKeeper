@@ -5,7 +5,7 @@ import 'package:pocketkeeper/application/model/enum/language.dart';
 @Entity()
 class AppSetting {
   @Id(assignable: true)
-  int settingId = 1;
+  int settingId = 0;
 
   late String appName;
   late String appVersion;

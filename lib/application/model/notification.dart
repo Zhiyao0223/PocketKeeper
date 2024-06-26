@@ -19,7 +19,6 @@ class Notifications {
   late DateTime updatedDate;
 
   Notifications({
-    int? tmpNotificationId,
     String? tmpTitle,
     String? tmpDescription,
     NotificationType? tmpNotificationType,
@@ -29,7 +28,6 @@ class Notifications {
     DateTime? tmpCreatedDate,
     DateTime? tmpUpdatedDate,
   }) {
-    notificationId = tmpNotificationId ?? 0;
     title = tmpTitle ?? '';
     description = tmpDescription ?? '';
     notificationType =

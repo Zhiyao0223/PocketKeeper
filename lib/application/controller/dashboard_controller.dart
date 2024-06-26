@@ -86,7 +86,6 @@ class DashboardController extends FxController {
     // Get top category last week
     // TODO
     topCategoryLastWeek = Category(
-      tmpCategoryId: 1,
       tmpCategoryName: "Food & Drinks",
       tmpIcon: Icons.fastfood,
     );
@@ -99,12 +98,10 @@ class DashboardController extends FxController {
     // TODO
     walletAccounts = [
       Accounts(
-        accountId: 0,
         accountName: "Cash",
         accountIcon: Icons.account_balance_wallet,
       ),
       Accounts(
-        accountId: 1,
         accountName: "Bank",
         accountIcon: Icons.account_balance,
       ),
@@ -115,9 +112,7 @@ class DashboardController extends FxController {
     expensesList = {
       0: [
         Expenses(
-          tmpExpensesId: 0,
           tmpCategory: Category(
-            tmpCategoryId: 1,
             tmpCategoryName: "Food & Drinks",
             tmpIcon: Icons.fastfood,
           ),
@@ -125,15 +120,12 @@ class DashboardController extends FxController {
           tmpExpensesDate: DateTime.now(),
           tmpDescription: "Lunch",
           tmpAccount: Accounts(
-            accountId: 0,
             accountName: "Cash",
             accountIcon: Icons.account_balance_wallet,
           ),
         ),
         Expenses(
-          tmpExpensesId: 1,
           tmpCategory: Category(
-            tmpCategoryId: 2,
             tmpCategoryName: "Transport",
             tmpIcon: Icons.directions_bus,
           ),
@@ -141,7 +133,6 @@ class DashboardController extends FxController {
           tmpExpensesDate: DateTime.now(),
           tmpDescription: "Bus Fare",
           tmpAccount: Accounts(
-            accountId: 0,
             accountName: "Cash",
             accountIcon: Icons.account_balance_wallet,
           ),
@@ -149,9 +140,7 @@ class DashboardController extends FxController {
       ],
       1: [
         Expenses(
-          tmpExpensesId: 2,
           tmpCategory: Category(
-            tmpCategoryId: 3,
             tmpCategoryName: "Shopping",
             tmpIcon: Icons.shopping_cart,
           ),
@@ -159,15 +148,12 @@ class DashboardController extends FxController {
           tmpExpensesDate: DateTime.now(),
           tmpDescription: "Grocery",
           tmpAccount: Accounts(
-            accountId: 1,
             accountName: "Bank",
             accountIcon: Icons.account_balance,
           ),
         ),
         Expenses(
-          tmpExpensesId: 3,
           tmpCategory: Category(
-            tmpCategoryId: 4,
             tmpCategoryName: "Health",
             tmpIcon: Icons.local_hospital,
           ),
@@ -175,7 +161,6 @@ class DashboardController extends FxController {
           tmpExpensesDate: DateTime.now(),
           tmpDescription: "Medicine",
           tmpAccount: Accounts(
-            accountId: 1,
             accountName: "Bank",
             accountIcon: Icons.account_balance,
           ),
