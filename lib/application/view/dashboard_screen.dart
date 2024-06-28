@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/dashboard_controller.dart';
-import 'package:pocketkeeper/application/member_constant.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/application/model/money_account.dart';
 import 'package:pocketkeeper/application/view/notification_screen.dart';
@@ -133,7 +133,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FxText.titleMedium(
-              'Hi, ${MemberConstant.user.name}',
+              'Hi, ${MemberCache.user.name}',
               color: customTheme.white,
               fontWeight: 700,
             ),
@@ -349,7 +349,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Row(
                     children: [
                       Icon(
-                        controller.topCategoryLastWeek.icon,
+                        IconData(
+                          controller.topCategoryLastWeek.iconHex,
+                          fontFamily: 'MaterialIcons',
+                        ),
                         color: customTheme.white,
                         size: 24,
                       ),
@@ -416,7 +419,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Row(
                 children: [
                   Icon(
-                    account.accountIcon,
+                    IconData(
+                      account.accountIconHex,
+                      fontFamily: 'MaterialIcons',
+                    ),
                     color: customTheme.black,
                     size: 20,
                   ),
@@ -428,22 +434,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ],
               ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ViewAllExpensesScreen(
-                        filterAccountId: account.accountId,
+              if (controller.expensesList[account.id]!.isNotEmpty)
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ViewAllExpensesScreen(
+                          filterAccountId: account.id,
+                        ),
                       ),
-                    ),
-                  );
-                },
-                child: FxText.labelSmall(
-                  'View all >',
-                  color: customTheme.colorPrimary,
+                    );
+                  },
+                  child: FxText.labelSmall(
+                    'View all >',
+                    color: customTheme.colorPrimary,
+                  ),
                 ),
-              ),
             ],
           ),
           Padding(
@@ -453,7 +460,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               thickness: 1.5,
             ),
           ),
-          _buildExpensesBox(account.accountId),
+          _buildExpensesBox(account.id),
         ],
       ),
     );
@@ -462,6 +469,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildExpensesBox(int accountId) {
     return Column(
       children: [
+        // If no record found
+        if (controller.expensesList[accountId]!.isEmpty)
+          FxText.bodySmall(
+            'No record found',
+            color: customTheme.black,
+          ),
         for (Expenses tmpExpenses in controller.expensesList[accountId]!)
           Container(
             margin: const EdgeInsets.symmetric(vertical: 5),
@@ -486,7 +499,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
-                        tmpExpenses.category.icon,
+                        IconData(
+                          tmpExpenses.category.target!.iconHex,
+                          fontFamily: 'MaterialIcons',
+                        ),
                         color: customTheme.colorPrimary,
                         size: 20,
                       ),
@@ -496,7 +512,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         FxText.labelSmall(
-                          tmpExpenses.category.categoryName,
+                          tmpExpenses.category.target!.categoryName,
                           color: customTheme.black,
                         ),
                         FxText.bodySmall(

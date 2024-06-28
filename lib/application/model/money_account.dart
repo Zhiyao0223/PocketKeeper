@@ -1,24 +1,29 @@
-import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/model/objectbox/objectbox.g.dart';
 
 @Entity()
 class Accounts {
-  @Id(assignable: true)
-  int accountId = 0;
+  int id = 0;
 
   late String accountName;
-  late IconData accountIcon;
+  late int accountIconHex;
 
   late int status; // 0 - Active, 1 - Inactive
+
+  @Property(type: PropertyType.date)
   late DateTime createdDate;
+
+  @Property(type: PropertyType.date)
   late DateTime updatedDate;
 
   // Constructor
   Accounts({
+    int? tmpId,
     required this.accountName,
-    this.accountIcon = Icons.account_balance_wallet_outlined,
+    int? tmpAccountIconHex,
     this.status = 0,
   }) {
+    id = tmpId ?? 0;
+    accountIconHex = tmpAccountIconHex ?? 0;
     createdDate = DateTime.now();
     updatedDate = DateTime.now();
   }

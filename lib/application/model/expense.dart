@@ -5,25 +5,30 @@ import 'package:pocketkeeper/application/model/objectbox/objectbox.g.dart';
 
 @Entity()
 class Expenses {
-  @Id(assignable: true)
-  int expensesId = 0;
+  int id = 0;
 
   late String description;
   late double amount;
-  late Category category;
-  late Accounts account;
   late int expensesType; // 0 - Expense, 1 - Income
   late int syncStatus; // sync, notSynced, none
   late int status;
+
+  @Property(type: PropertyType.date)
   late DateTime expensesDate;
+
+  @Property(type: PropertyType.date)
   late DateTime createdDate;
+
+  @Property(type: PropertyType.date)
   late DateTime updatedDate;
+
+  // Database use
+  final category = ToOne<Category>();
+  final account = ToOne<Accounts>();
 
   Expenses({
     double? tmpAmount,
-    Category? tmpCategory,
     DateTime? tmpExpensesDate,
-    Accounts? tmpAccount,
     String? tmpDescription,
     int? tmpExpensesType,
     SyncStatus? tmpSyncStatus,
@@ -33,8 +38,6 @@ class Expenses {
   }) {
     description = tmpDescription ?? '';
     amount = tmpAmount ?? 0.0;
-    category = tmpCategory ?? Category();
-    account = tmpAccount ?? Accounts(accountName: '');
     expensesDate = tmpExpensesDate ?? DateTime.now();
     expensesType = tmpExpensesType ?? 0;
     syncStatus = tmpSyncStatus?.index ?? SyncStatus.notSynced.index;

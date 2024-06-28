@@ -2,6 +2,7 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/view/analytic_screen.dart';
 import 'package:pocketkeeper/application/view/dashboard_screen.dart';
+import 'package:pocketkeeper/application/view/form_add_expenses_screen.dart';
 import 'package:pocketkeeper/application/view/other_screen.dart';
 import 'package:pocketkeeper/application/view/setting_screen.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
@@ -107,7 +108,16 @@ class _HomeScreenState extends State<NavigationScreen> {
     return FloatingActionButton(
       elevation: 10,
       clipBehavior: Clip.antiAlias,
-      onPressed: () {},
+      onPressed: () {
+        // Go to manual add screen
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return const FormAddExpensesScreen();
+            },
+          ),
+        );
+      },
       shape: const CircleBorder(),
       backgroundColor: customTheme.colorPrimary.withOpacity(0.8),
       child: Icon(

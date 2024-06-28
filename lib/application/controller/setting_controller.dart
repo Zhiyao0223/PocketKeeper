@@ -1,4 +1,4 @@
-import 'package:pocketkeeper/application/member_constant.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/utils/connectivity_service.dart';
 import 'package:pocketkeeper/widget/show_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,7 +47,7 @@ class SettingController extends FxController {
     });
 
     // Reset cache
-    MemberConstant().reset();
+    MemberCache().reset();
 
     return true;
   }

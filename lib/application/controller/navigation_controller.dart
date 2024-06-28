@@ -1,3 +1,10 @@
+import 'package:pocketkeeper/application/expense_cache.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
+import 'package:pocketkeeper/application/service/account_service.dart';
+import 'package:pocketkeeper/application/service/category_service.dart';
+import 'package:pocketkeeper/application/service/expense_service.dart';
+import 'package:pocketkeeper/application/service/setting_service.dart';
+
 import '../../template/state_management/controller.dart';
 
 class NavigationController extends FxController {
@@ -14,8 +21,16 @@ class NavigationController extends FxController {
   }
 
   void fetchData() async {
-    isDataFetched = true;
+    // Fetch all data and store in global variable
+    ExpenseCache.expenseCategories = CategoryService().getExpenseCategories();
+    ExpenseCache.incomeCategories = CategoryService().getIncomeCategories();
+    ExpenseCache.expenses = ExpenseService().getAllActiveExpenses();
+    ExpenseCache.incomes = ExpenseService().getAllActiveIncomes();
+    ExpenseCache.accounts = AccountService().getAllActiveAccounts();
 
+    MemberCache.appSetting = SettingService().getAppSetting();
+
+    isDataFetched = true;
     update();
   }
 

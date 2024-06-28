@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pocketkeeper/application/expense_cache.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/application/model/money_account.dart';
+import 'package:pocketkeeper/application/service/expense_service.dart';
 import 'package:pocketkeeper/application/service/notification_service.dart';
 
 import '../../template/state_management/controller.dart';
@@ -29,7 +32,7 @@ class DashboardController extends FxController {
 
   // Account box section
   late List<Accounts> walletAccounts;
-  late Map<int, List<Expenses>> expensesList;
+  Map<int, List<Expenses>> expensesList = {};
 
   @override
   void initState() {
@@ -55,8 +58,7 @@ class DashboardController extends FxController {
     currentMonthYear = DateFormat('MMMM yyyy').format(now);
 
     // Get currency indicator
-    // TODO
-    currencyIndicator = "\$";
+    currencyIndicator = MemberCache.appSetting.currencyIndicator;
 
     // Get financial status message
     // TODO
@@ -87,7 +89,7 @@ class DashboardController extends FxController {
     // TODO
     topCategoryLastWeek = Category(
       tmpCategoryName: "Food & Drinks",
-      tmpIcon: Icons.fastfood,
+      tmpIconHex: Icons.fastfood.codePoint,
     );
 
     // Get top category amount last week
@@ -95,81 +97,24 @@ class DashboardController extends FxController {
     topCategoryAmountLastWeek = 200.00;
 
     // Get wallet accounts
-    // TODO
-    walletAccounts = [
-      Accounts(
-        accountName: "Cash",
-        accountIcon: Icons.account_balance_wallet,
-      ),
-      Accounts(
-        accountName: "Bank",
-        accountIcon: Icons.account_balance,
-      ),
-    ];
+    walletAccounts = ExpenseCache.accounts;
 
     // Get expenses list
-    // TODO
-    expensesList = {
-      0: [
-        Expenses(
-          tmpCategory: Category(
-            tmpCategoryName: "Food & Drinks",
-            tmpIcon: Icons.fastfood,
-          ),
-          tmpAmount: 200.00,
-          tmpExpensesDate: DateTime.now(),
-          tmpDescription: "Lunch",
-          tmpAccount: Accounts(
-            accountName: "Cash",
-            accountIcon: Icons.account_balance_wallet,
-          ),
-        ),
-        Expenses(
-          tmpCategory: Category(
-            tmpCategoryName: "Transport",
-            tmpIcon: Icons.directions_bus,
-          ),
-          tmpAmount: 50.00,
-          tmpExpensesDate: DateTime.now(),
-          tmpDescription: "Bus Fare",
-          tmpAccount: Accounts(
-            accountName: "Cash",
-            accountIcon: Icons.account_balance_wallet,
-          ),
-        ),
-      ],
-      1: [
-        Expenses(
-          tmpCategory: Category(
-            tmpCategoryName: "Shopping",
-            tmpIcon: Icons.shopping_cart,
-          ),
-          tmpAmount: 100.00,
-          tmpExpensesDate: DateTime.now(),
-          tmpDescription: "Grocery",
-          tmpAccount: Accounts(
-            accountName: "Bank",
-            accountIcon: Icons.account_balance,
-          ),
-        ),
-        Expenses(
-          tmpCategory: Category(
-            tmpCategoryName: "Health",
-            tmpIcon: Icons.local_hospital,
-          ),
-          tmpAmount: 100.00,
-          tmpExpensesDate: DateTime.now(),
-          tmpDescription: "Medicine",
-          tmpAccount: Accounts(
-            accountName: "Bank",
-            accountIcon: Icons.account_balance,
-          ),
-        ),
-      ],
-    };
+    for (final Accounts account in walletAccounts) {
+      expensesList[account.id] =
+          ExpenseService().getExpensesByAccountId(account.id);
+
+      // Sort expenses by date and sublist
+      expensesList[account.id]!.sort((Expenses a, Expenses b) {
+        return b.expensesDate.compareTo(a.expensesDate);
+      });
+
+      if (expensesList[account.id]!.length > 4) {
+        expensesList[account.id] = expensesList[account.id]!.sublist(0, 4);
+      }
+    }
 
     isDataFetched = true;
-
     update();
   }
 

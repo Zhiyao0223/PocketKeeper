@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/app_constant.dart';
 import 'package:pocketkeeper/application/controller/setting_controller.dart';
-import 'package:pocketkeeper/application/member_constant.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/view/analytic_screen.dart';
 import 'package:pocketkeeper/application/view/login_screen.dart';
 import 'package:pocketkeeper/template/utils/spacing.dart';
@@ -145,13 +145,12 @@ class _SettingScreenState extends State<SettingScreen> {
               radius: 30,
               backgroundImage: AssetImage('assets/images/user_placeholder.jpg'),
             ),
-            if (MemberConstant.user.profilePictureUrl !=
-                    "user_placeholder.jpg" &&
+            if (MemberCache.user.profilePictureUrl != "user_placeholder.jpg" &&
                 controller.hasInternetConnection)
               CircleAvatar(
                 radius: 30,
                 backgroundImage: CachedNetworkImageProvider(
-                  '$backendProfileImageUrl${MemberConstant.user.profilePictureUrl}',
+                  '$backendProfileImageUrl${MemberCache.user.profilePictureUrl}',
                 ),
               ),
           ],
@@ -161,7 +160,7 @@ class _SettingScreenState extends State<SettingScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FxText.bodyMedium(
-              MemberConstant.user.name,
+              MemberCache.user.name,
               style: const TextStyle(
                 fontWeight: FontWeight.w600,
               ),
@@ -346,7 +345,7 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
           // ignore: deprecated_member_use_from_same_package
           subtitle: FxText.caption(
-            'Version ${MemberConstant.appSetting.appVersion}',
+            'Version ${MemberCache.appSetting.appVersion}',
             xMuted: true,
           ),
           contentPadding: EdgeInsets.zero,

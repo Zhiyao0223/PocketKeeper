@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:pocketkeeper/application/member_constant.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/user.dart';
 import 'package:pocketkeeper/application/service/api_service.dart';
 import 'package:pocketkeeper/application/service/authentication.dart';
@@ -191,7 +191,7 @@ class LoginController extends FxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("user_id", userId);
 
-    MemberConstant.appSetting.isGoogleSignIn = true;
+    MemberCache.appSetting.isGoogleSignIn = true;
   }
 
   //

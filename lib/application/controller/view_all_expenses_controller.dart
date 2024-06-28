@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:pocketkeeper/application/expense_cache.dart';
+import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
-import 'package:pocketkeeper/application/service/category_service.dart';
-import 'package:pocketkeeper/application/service/expense_service.dart';
 
 import '../../template/state_management/controller.dart';
 
 class ViewAllExpensesController extends FxController {
-  bool isDataFetched = false, isShowFilter = false;
+  bool isDataFetched = false, isShowFilter = false, isShowClearButton = false;
   int selectedTabIndex = 0;
 
-  List<Expenses> expenses = [], filteredExpenses = [], filteredIncomes = [];
+  List<Expenses> records = [], filteredData = [];
   List<DateTime> groupDate = [];
-  List<String> categoryNames = [], selectedCategory = [];
-  Map<DateTime, List<double>> totalAmount = {};
+  List<Category> categories = [], selectedCategory = [];
+  Map<DateTime, double> totalAmount = {};
   Map<DateTime, List<Expenses>> groupedData = {};
 
   // Search bar
@@ -28,28 +28,6 @@ class ViewAllExpensesController extends FxController {
 
     // Fetch data
     fetchData();
-
-    clearFilter();
-  }
-
-  void fetchData() {
-    // Get category names from objectbox
-    if (selectedTabIndex == 0) {
-      categoryNames = CategoryService()
-          .getExpenseCategories()
-          .map((e) => e.categoryName)
-          .toSet()
-          .toList();
-    } else {
-      categoryNames = CategoryService()
-          .getIncomeCategories()
-          .map((e) => e.categoryName)
-          .toSet()
-          .toList();
-    }
-
-    // Fetch expenses from objectbox
-    expenses = ExpenseService().getExpenses();
   }
 
   @override
@@ -59,20 +37,63 @@ class ViewAllExpensesController extends FxController {
     super.dispose();
   }
 
-  void groupAndSortData() async {
-    // Reinitialize variables based on filter
-    List<Expenses> tempExpenses = (selectedTabIndex == 0)
-        ? filteredExpenses.isNotEmpty
-            ? filteredExpenses
-            : expenses.where((element) => element.expensesType == 0).toList()
-        : filteredIncomes.isNotEmpty
-            ? filteredIncomes
-            : expenses.where((element) => element.expensesType == 1).toList();
+  // Fetch require data from cache
+  void fetchData() {
+    clearFilter();
 
-    // Group expenses by date
-    groupedData = {};
+    // Get category names from objectbox
+    categories = (selectedTabIndex == 0)
+        ? ExpenseCache.expenseCategories
+        : ExpenseCache.incomeCategories;
 
-    for (Expenses element in tempExpenses) {
+    records = (selectedTabIndex == 0)
+        ? [...ExpenseCache.expenses]
+        : [...ExpenseCache.incomes];
+
+    filterData();
+  }
+
+  // Reset filter
+  void clearFilter() {
+    searchQuery = "";
+    isShowFilter = false;
+    selectedCategory.clear();
+    searchController.clear();
+  }
+
+  // Filter data based on search query and categories
+  void filterData() {
+    // Reset filtered data to same with records
+    filteredData = [...records];
+
+    // Filter data based on search query
+    if (searchQuery.isNotEmpty) {
+      // Remove not matching records
+      filteredData.removeWhere((record) => !record.description
+          .toLowerCase()
+          .contains(searchQuery.toLowerCase()));
+    }
+
+    // Filter based on category
+    if (selectedCategory.isNotEmpty) {
+      // Remove element from filtered list if not in selected category (Check by name)
+      filteredData.removeWhere((expense) {
+        // Compare name
+        return !selectedCategory.any((category) =>
+            category.categoryName == expense.category.target!.categoryName);
+      });
+    }
+
+    // Perform grouping and sorting
+    _groupAndSortData();
+  }
+
+  // Group data based on date and sort them based on time
+  void _groupAndSortData() async {
+    groupedData.clear();
+    totalAmount.clear();
+
+    for (Expenses element in filteredData) {
       DateTime dateOnly = DateTime(
         element.expensesDate.year,
         element.expensesDate.month,
@@ -81,91 +102,26 @@ class ViewAllExpensesController extends FxController {
 
       if (!groupedData.containsKey(dateOnly)) {
         groupedData[dateOnly] = [];
+        totalAmount[dateOnly] = 0; // Initialize total expense and income
       }
+
       groupedData[dateOnly]!.add(element);
+
+      // Calculate totals
+      totalAmount[dateOnly] = totalAmount[dateOnly]! + element.amount;
     }
 
-    // Sort the groups by date in descending order
-    groupedData.keys.toList().sort((a, b) => b.compareTo(a));
+    // Convert keys to list and sort by date in descending order
+    groupDate = groupedData.keys.toList()..sort((a, b) => b.compareTo(a));
 
-    // Convert key to list
-    groupDate = groupedData.keys.toList();
-
-    // Calculate total amount for each group
-    totalAmount = {};
+    // Sort elements in each group by time in descending order
     for (DateTime date in groupDate) {
-      double tmpTotalExpense = 0, tmpTotalIncome = 0;
-      for (Expenses element in groupedData[date]!) {
-        if (element.expensesType == 0) {
-          tmpTotalExpense += element.amount;
-        } else {
-          tmpTotalIncome += element.amount;
-        }
-      }
-      totalAmount[date] = [tmpTotalExpense, tmpTotalIncome];
+      groupedData[date]!
+          .sort((a, b) => b.expensesDate.compareTo(a.expensesDate));
     }
 
     isDataFetched = true;
-
     update();
-  }
-
-  void filterData() {
-    // Clear cache
-    filteredExpenses.clear();
-    filteredIncomes.clear();
-
-    // Filter data based on search query
-    if (searchQuery.isNotEmpty) {
-      for (Expenses element in expenses) {
-        if (element.description
-            .toLowerCase()
-            .contains(searchQuery.toLowerCase())) {
-          if (element.expensesType == 0) {
-            filteredExpenses.add(element);
-          } else {
-            filteredIncomes.add(element);
-          }
-        }
-      }
-    }
-
-    // Filter based on category
-    if (selectedCategory.isNotEmpty) {
-      // Check if filter search
-      if (filteredExpenses.isNotEmpty || filteredIncomes.isNotEmpty) {
-        // Remove element from filtered list if not in selected category
-        filteredExpenses.removeWhere((element) =>
-            !selectedCategory.contains(element.category.categoryName));
-        filteredIncomes.removeWhere((element) =>
-            !selectedCategory.contains(element.category.categoryName));
-      }
-      // Loop over expenses and add to filtered list if in selected category
-      else {
-        for (Expenses element in expenses) {
-          if (selectedCategory.contains(element.category.categoryName)) {
-            if (element.expensesType == 0) {
-              filteredExpenses.add(element);
-            } else {
-              filteredIncomes.add(element);
-            }
-          }
-        }
-      }
-    }
-
-    // Perform grouping and sorting
-    groupAndSortData();
-  }
-
-  // Reset filter
-  void clearFilter() {
-    searchQuery = "";
-    searchController.clear();
-    isShowFilter = false;
-    selectedCategory.clear();
-
-    filterData();
   }
 
   @override

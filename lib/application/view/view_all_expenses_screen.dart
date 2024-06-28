@@ -1,10 +1,12 @@
 import 'package:filter_list/filter_list.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/view_all_expenses_controller.dart';
+import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/template/widgets/widgets.dart';
 import 'package:pocketkeeper/utils/converters/date.dart';
 import 'package:pocketkeeper/utils/converters/number.dart';
+import 'package:pocketkeeper/utils/validators/string_validator.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
 import '../../theme/custom_theme.dart';
 import '../../template/state_management/state_management.dart';
@@ -35,10 +37,13 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
     tabController = TabController(length: 2, vsync: this);
 
     // Add listener to detect tab changes
-    tabController.addListener(() {
-      if (tabController.index != controller.selectedTabIndex) {
-        controller.selectedTabIndex = tabController.index;
-        controller.clearFilter();
+    tabController.animation?.addListener(() {
+      int tabControllerIndex =
+          tabController.index + tabController.offset.round();
+
+      if (tabControllerIndex != controller.selectedTabIndex) {
+        controller.selectedTabIndex = tabControllerIndex;
+        controller.fetchData();
       }
     });
   }
@@ -54,85 +59,81 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
   }
 
   Widget _buildBody() {
-    // Prevent load UI if data is not finish load
-    if (!controller.isDataFetched) {
-      // Display spinner while loading
-      return buildCircularLoadingIndicator();
-    }
-
-    return DefaultTabController(
-      length: 2,
-      initialIndex: 0,
-      animationDuration: const Duration(milliseconds: 300),
-      child: Scaffold(
-        body: SafeArea(
-          child: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                SliverAppBar(
-                  backgroundColor: customTheme.lightPurple,
-                  leading: IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      color: customTheme.white,
-                    ),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  floating: true,
-                  pinned: true,
-                  snap: false,
-                  centerTitle: true,
-                  title: FxText.bodyMedium('History', color: customTheme.white),
-                  actions: [
-                    IconButton(
-                      icon: Icon(Icons.filter_alt_outlined,
-                          color: customTheme.white),
-                      onPressed: () {
-                        openFilterDialog();
-                        // setState(() {
-                        //   controller.isShowFilter = !controller.isShowFilter;
-
-                        // });
-                      },
-                    ),
-                  ],
-                  bottom: TabBar(
-                    controller: tabController,
-                    tabs: [
-                      Tab(
-                        child: FxText.bodyMedium(
-                          'Expenses',
-                          fontWeight:
-                              (controller.selectedTabIndex == 0) ? 600 : 500,
-                          color: customTheme.white,
-                        ),
+    return GestureDetector(
+      onVerticalDragDown: (details) => FocusScope.of(context).unfocus(),
+      child: DefaultTabController(
+        length: 2,
+        initialIndex: 0,
+        animationDuration: const Duration(milliseconds: 300),
+        child: Scaffold(
+          body: SafeArea(
+            child: NestedScrollView(
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverAppBar(
+                    backgroundColor: customTheme.lightPurple,
+                    leading: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: customTheme.white,
                       ),
-                      Tab(
-                        child: FxText.bodyMedium(
-                          'Income',
-                          fontWeight:
-                              (controller.selectedTabIndex == 1) ? 600 : 500,
-                          color: customTheme.white,
-                        ),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    floating: true,
+                    pinned: true,
+                    snap: false,
+                    centerTitle: true,
+                    title:
+                        FxText.bodyMedium('History', color: customTheme.white),
+                    actions: [
+                      IconButton(
+                        icon: Icon(Icons.filter_alt_outlined,
+                            color: customTheme.white),
+                        onPressed: () => openFilterDialog(),
                       ),
                     ],
-                    indicatorColor: customTheme.white,
-                    indicatorWeight: 2.0,
+                    bottom: TabBar(
+                      controller: tabController,
+                      tabs: [
+                        Tab(
+                          child: FxText.bodyMedium(
+                            'Expenses',
+                            fontWeight:
+                                (controller.selectedTabIndex == 0) ? 600 : 500,
+                            color: customTheme.white,
+                          ),
+                        ),
+                        Tab(
+                          child: FxText.bodyMedium(
+                            'Income',
+                            fontWeight:
+                                (controller.selectedTabIndex == 1) ? 600 : 500,
+                            color: customTheme.white,
+                          ),
+                        ),
+                      ],
+                      automaticIndicatorColorAdjustment: true,
+                      indicatorColor: customTheme.white,
+                      indicatorWeight: 2.0,
+                    ),
                   ),
-                ),
-              ];
-            },
-            body: Stack(children: [
-              // if (controller.isShowFilter) _buildFilterWidget(),
-              TabBarView(
-                controller: tabController,
-                children: [
-                  _buildlTab(),
-                  _buildlTab(isIncome: true),
-                ],
-              ),
-            ]),
+                ];
+              },
+              body: (!controller.isDataFetched)
+                  ? buildCircularLoadingIndicator()
+                  : Stack(
+                      children: [
+                        TabBarView(
+                          controller: tabController,
+                          children: [
+                            _buildlTab(),
+                            _buildlTab(isIncome: true),
+                          ],
+                        ),
+                      ],
+                    ),
+            ),
           ),
         ),
       ),
@@ -159,44 +160,54 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
               child: FxTextField(
                 controller: controller.searchController,
                 onChanged: (value) {
+                  controller.isShowClearButton = !validateEmptyString(value);
                   controller.searchQuery = value;
                   controller.filterData();
                 },
                 decoration: InputDecoration(
                   hintText: 'Search Description...',
                   prefixIcon: const Icon(Icons.search),
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      controller.clearFilter();
-                    },
-                    icon: const Icon(Icons.clear),
-                  ),
+                  suffixIcon: (controller.isShowClearButton)
+                      ? IconButton(
+                          onPressed: () {
+                            controller.isShowClearButton = false;
+                            controller.fetchData();
+                          },
+                          icon: const Icon(Icons.clear),
+                        )
+                      : null,
                   border: InputBorder.none,
                 ),
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: controller.groupedData.length,
-              itemBuilder: (context, index) {
-                List<Expenses> expensesList =
-                    controller.groupedData.values.toList()[index];
+          // Show message if no data found else show data
+          (controller.filteredData.isEmpty)
+              ? FxText.bodyMedium(
+                  'No record found',
+                  color: customTheme.grey,
+                )
+              : Expanded(
+                  child: ListView.builder(
+                    itemCount: controller.groupedData.length,
+                    itemBuilder: (context, index) {
+                      List<Expenses> expensesList =
+                          controller.groupedData.values.toList()[index];
 
-                return Column(
-                  children: [
-                    _buildDateHeader(
-                      controller.groupDate[index],
-                      controller.totalAmount[controller.groupDate[index]]![0],
-                      controller.totalAmount[controller.groupDate[index]]![1],
-                    ),
-                    _buildExpensesBox(expensesList),
-                    const SizedBox(height: 10),
-                  ],
-                );
-              },
-            ),
-          ),
+                      return Column(
+                        children: [
+                          _buildDateHeader(
+                            controller.groupDate[index],
+                            controller
+                                .totalAmount[controller.groupDate[index]]!,
+                          ),
+                          _buildExpensesBox(expensesList),
+                          const SizedBox(height: 10),
+                        ],
+                      );
+                    },
+                  ),
+                ),
         ],
       ),
     );
@@ -229,7 +240,10 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
-                        tmpExpenses.category.icon,
+                        IconData(
+                          tmpExpenses.category.target!.iconHex,
+                          fontFamily: 'MaterialIcons',
+                        ),
                         color: customTheme.colorPrimary,
                         size: 20,
                       ),
@@ -239,7 +253,7 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         FxText.labelSmall(
-                          tmpExpenses.category.categoryName,
+                          tmpExpenses.category.target!.categoryName,
                           color: customTheme.black,
                         ),
                         FxText.bodySmall(
@@ -262,7 +276,7 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
                       color: customTheme.black,
                     ),
                     FxText.labelLarge(
-                      '${tmpExpenses.expensesType == 0 ? '-' : ''}${tmpExpenses.amount.removeExtraDecimal()}',
+                      '${tmpExpenses.expensesType == 0 ? '-' : '+'}${tmpExpenses.amount.removeExtraDecimal()}',
                       color: tmpExpenses.expensesType == 0
                           ? customTheme.red
                           : customTheme.green,
@@ -276,7 +290,7 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
     );
   }
 
-  Widget _buildDateHeader(DateTime date, double totalUsed, double totalEarned) {
+  Widget _buildDateHeader(DateTime date, double total) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -302,11 +316,9 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
             xMuted: true,
           ),
           const Spacer(),
-          FxText.labelLarge("+${totalEarned.removeExtraDecimal()}"),
-          const SizedBox(width: 8),
           FxText.labelLarge(
-            "-${totalUsed.removeExtraDecimal()}",
-            color: customTheme.red,
+            "${(controller.selectedTabIndex == 0) ? '-' : '+'}${total.removeExtraDecimal()}",
+            color: customTheme.black,
           ),
         ],
       ),
@@ -316,14 +328,14 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
   // Filter Menu
   // References: https://pub.dev/packages/filter_list
   void openFilterDialog() async {
-    await FilterListDialog.display<String>(
+    await FilterListDialog.display<Category>(
       context,
-      listData: controller.categoryNames,
+      listData: controller.categories,
       selectedListData: controller.selectedCategory,
-      choiceChipLabel: (item) => item!,
+      choiceChipLabel: (item) => item!.categoryName,
       validateSelectedItem: (list, val) => list!.contains(val),
       onItemSearch: (item, query) {
-        return controller.categoryNames.contains(query.toLowerCase());
+        return item.categoryName.toLowerCase().contains(query.toLowerCase());
       },
       onApplyButtonClick: (list) {
         // Update selected category

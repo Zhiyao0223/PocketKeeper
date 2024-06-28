@@ -3,32 +3,39 @@ import 'package:pocketkeeper/application/model/objectbox/objectbox.g.dart';
 
 @Entity()
 class Category {
-  @Id(assignable: true)
-  int categoryId = 0;
+  int id = 0;
 
   late String categoryName;
   late int categoryType; // 0 = Expense, 1 = Income
   late int status;
-  late IconData icon;
+  late int iconHex;
+
+  @Property(type: PropertyType.date)
   late DateTime createdDate;
+
+  @Property(type: PropertyType.date)
   late DateTime updatedDate;
-  late Color iconColor;
+
+  // Store color as ARGB integer
+  late int iconColor;
 
   Category({
+    int? tmpId,
     String? tmpCategoryName,
     int? tmpStatus,
     int? tmpCategoryType,
-    IconData? tmpIcon,
+    int? tmpIconHex,
     DateTime? tmpCreatedDate,
     DateTime? tmpUpdatedDate,
     Color? tmpIconColor,
   }) {
+    id = tmpId ?? 0;
     categoryName = tmpCategoryName ?? '';
     status = tmpStatus ?? 0;
     categoryType = tmpCategoryType ?? 0;
-    icon = tmpIcon ?? Icons.category;
+    iconHex = tmpIconHex ?? Icons.store.codePoint;
     createdDate = tmpCreatedDate ?? DateTime.now();
     updatedDate = tmpUpdatedDate ?? DateTime.now();
-    iconColor = tmpIconColor ?? Colors.blue;
+    iconColor = tmpIconColor?.value ?? Colors.blue.value;
   }
 }

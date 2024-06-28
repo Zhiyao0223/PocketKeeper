@@ -9,7 +9,11 @@ class ExpenseGoal {
   late String description;
   late int syncStatus;
   late int status;
+
+  @Property(type: PropertyType.date)
   late DateTime createdDate;
+
+  @Property(type: PropertyType.date)
   late DateTime updatedDate;
 
   ExpenseGoal({

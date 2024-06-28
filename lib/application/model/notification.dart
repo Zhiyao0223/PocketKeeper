@@ -6,7 +6,7 @@ import 'package:pocketkeeper/application/model/enum/sync_status.dart';
 @Entity()
 class Notifications {
   @Id(assignable: true)
-  late int notificationId;
+  int id = 0;
 
   late String title;
   late String description;
@@ -15,7 +15,11 @@ class Notifications {
 
   late int syncStatus;
   late int status;
+
+  @Property(type: PropertyType.date)
   late DateTime createdDate;
+
+  @Property(type: PropertyType.date)
   late DateTime updatedDate;
 
   Notifications({

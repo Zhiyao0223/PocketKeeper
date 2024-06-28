@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:pocketkeeper/application/member_constant.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/objectbox/objectbox.dart';
 import 'package:pocketkeeper/application/service/firebase_options.dart';
 import 'package:pocketkeeper/application/view/navigation_screen.dart';
@@ -19,7 +19,7 @@ Future main() async {
   );
 
   // Initialize local database
-  MemberConstant.objectBox = await ObjectBox.create();
+  MemberCache.objectBox = await ObjectBox.create();
 
   runApp(const MyApp());
 }
