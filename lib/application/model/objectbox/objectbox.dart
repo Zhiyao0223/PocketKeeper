@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class ObjectBox {
       try {
         await dbDir.delete(recursive: true);
       } catch (e) {
-        print("Error deleting database directory: $e");
+        log("Error deleting database directory: $e");
       }
     }
 
@@ -265,6 +266,6 @@ class ObjectBox {
 
     Directory docDir = await getApplicationDocumentsDirectory();
     Directory('${docDir.path}/pocketkeeper').delete().then(
-        (FileSystemEntity value) => print("DB Deleted: ${value.existsSync()}"));
+        (FileSystemEntity value) => log("DB Deleted: ${value.existsSync()}"));
   }
 }

@@ -1,4 +1,5 @@
 import 'package:pocketkeeper/application/member_cache.dart';
+import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/application/service/objectbox_service.dart';
 
@@ -33,5 +34,32 @@ class ExpenseService extends ObjectboxService<Expenses> {
         .where((Expenses expense) =>
             expense.status == 0 && expense.account.target!.id == accountId)
         .toList();
+  }
+
+  // Get the top 1 expenses category in the month
+  Map<Category, double> getTopSpendCategory(int month) {
+    final List<Expenses> expenses = getAllActiveExpenses();
+    final Map<Category, double> categoryMap = <Category, double>{};
+
+    for (final Expenses expense in expenses) {
+      // Only consider expenses in the same month
+      if (expense.expensesDate.month != month) {
+        continue;
+      }
+
+      final Category category = expense.category.target!;
+      if (categoryMap.containsKey(category)) {
+        categoryMap[category] = categoryMap[category]! + expense.amount;
+      } else {
+        categoryMap[category] = expense.amount;
+      }
+    }
+
+    final List<MapEntry<Category, double>> sortedEntries = categoryMap.entries
+        .toList()
+      ..sort((MapEntry<Category, double> a, MapEntry<Category, double> b) =>
+          b.value.compareTo(a.value));
+
+    return Map.fromEntries(sortedEntries.take(1));
   }
 }

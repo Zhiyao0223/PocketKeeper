@@ -9,6 +9,7 @@ class ExpenseLimit {
   late double amount;
   late int syncStatus;
   late int status;
+
   @Property(type: PropertyType.date)
   late DateTime createdDate;
 

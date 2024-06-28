@@ -42,6 +42,6 @@ class _QrCodeScannerState extends State<QrCodeScannerScreen> {
       return buildCircularLoadingIndicator();
     }
 
-    return Scaffold();
+    return const Scaffold();
   }
 }

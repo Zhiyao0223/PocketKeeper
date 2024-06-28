@@ -13,7 +13,11 @@ class AppSetting {
   late String appLanguage;
   late String currencyIndicator;
 
+  // Credential
   late bool isGoogleSignIn;
+
+  // Budget Setting
+  late double budgetLimit;
 
   // Constructor
   AppSetting() {
@@ -23,5 +27,6 @@ class AppSetting {
     appLanguage = Language.en.name;
     isGoogleSignIn = false;
     currencyIndicator = "\$";
+    budgetLimit = 1500;
   }
 }
