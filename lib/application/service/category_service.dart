@@ -22,4 +22,11 @@ class CategoryService extends ObjectboxService<Category> {
             category.categoryType == 1 && category.status == 0)
         .toList();
   }
+
+  // Get category by name
+  Category? getCategoryByName(String name) {
+    final List<Category> categories = getAll();
+    return categories
+        .firstWhere((Category category) => category.categoryName == name);
+  }
 }

@@ -1,7 +1,11 @@
+import 'dart:typed_data';
+
+import 'package:image_picker/image_picker.dart';
 import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/enum/sync_status.dart';
 import 'package:pocketkeeper/application/model/money_account.dart';
 import 'package:pocketkeeper/application/model/objectbox/objectbox.g.dart';
+import 'package:pocketkeeper/utils/converters/image.dart';
 
 @Entity()
 class Expenses {
@@ -12,6 +16,10 @@ class Expenses {
   late int expensesType; // 0 - Expense, 1 - Income
   late int syncStatus; // sync, notSynced, none
   late int status;
+
+  // Image
+  @Property(type: PropertyType.byteVector)
+  Uint8List? image;
 
   @Property(type: PropertyType.date)
   late DateTime expensesDate;
@@ -44,5 +52,13 @@ class Expenses {
     status = tmpStatus ?? 0;
     createdDate = tmpCreatedDate ?? DateTime.now();
     updatedDate = tmpUpdatedDate ?? DateTime.now();
+  }
+
+  void setCategory(Category tmpCategory) {
+    category.target = tmpCategory;
+  }
+
+  void setImage(XFile tmpFile) async {
+    image = await tmpFile.getBytesFromImage();
   }
 }

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pocketkeeper/application/expense_cache.dart';
 import 'package:pocketkeeper/application/model/category.dart';
+import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/application/service/category_service.dart';
+import 'package:pocketkeeper/application/service/expense_service.dart';
+import 'package:pocketkeeper/application/service/gemini_service.dart';
 import 'package:pocketkeeper/utils/converters/date.dart';
 import 'package:pocketkeeper/utils/custom_animation.dart';
 import 'package:pocketkeeper/utils/validators/string_validator.dart';
@@ -10,6 +14,9 @@ import '../../template/state_management/controller.dart';
 
 class FormAddExpensesController extends FxController {
   bool isDataFetched = false;
+
+  // Disable this to prevent overuse API
+  bool isGeminiEnable = true;
 
   int selectedExpensesType = 0; // 0 = Expense, 1 = Income
   List<Category> incomeCategories = [], expenseCategories = [];
@@ -62,6 +69,7 @@ class FormAddExpensesController extends FxController {
     selectedCategory = (selectedExpensesType == 0)
         ? expenseCategories[0]
         : incomeCategories[0];
+    categoryController.text = selectedCategory.categoryName;
 
     isDataFetched = true;
     update();
@@ -136,10 +144,55 @@ class FormAddExpensesController extends FxController {
   }
 
   // Form submit
-  void submitForm() {
+  bool submitForm() {
     if (formKey.currentState!.validate()) {
-      // Save data
-      // saveData();
+      // Save data to objectbox
+      Expenses expense = Expenses(
+        tmpAmount: double.parse(amountController.text),
+        tmpDescription: remarkController.text,
+        tmpExpensesDate: selectedDate,
+        tmpExpensesType: selectedExpensesType,
+      );
+      expense.setCategory(selectedCategory);
+
+      if (selectedImage != null) {
+        expense.setImage(selectedImage!);
+      }
+
+      ExpenseService().add(expense);
+
+      // Add to cache (Check if it is expense or income)
+      if (selectedExpensesType == 0) {
+        ExpenseCache.expenses.add(expense);
+      } else {
+        ExpenseCache.incomes.add(expense);
+      }
+
+      return true;
+    }
+    return false;
+  }
+
+  // Auto detect category
+  void autoDetectCategory() async {
+    // Check if gemini enabled or remark is empty
+    if (!isGeminiEnable || validateEmptyString(remarkController.text)) {
+      return;
+    }
+
+    GeminiService geminiService = GeminiService();
+    String categoryString =
+        await geminiService.predictCategory(remarkController.text);
+
+    // Detect error in prediction by checking if categoryString is empty or lengthy
+    if (categoryString.isEmpty || categoryString.contains("Error")) {
+      return;
+    }
+
+    Category? category = CategoryService().getCategoryByName(categoryString);
+    if (category != null) {
+      setCategory(category);
+      update();
     }
   }
 

@@ -62,38 +62,7 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
     }
 
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: kToolbarHeight + 1, // Make bottom border invisible
-        title: FxText.labelLarge(
-          'Add New Record',
-          color: customTheme.white,
-        ),
-        centerTitle: true,
-        backgroundColor: customTheme.lightPurple,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: customTheme.white,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        actions: [
-          // QR Code Scanner
-          IconButton(
-            icon: Icon(Icons.qr_code_scanner, color: customTheme.white),
-            onPressed: () {
-              // Go to QR page
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const QrCodeScannerScreen();
-                  },
-                ),
-              );
-            },
-          ),
-        ],
-      ),
+      appBar: _buildAppbar(),
       body: SafeArea(
         child: SizedBox.expand(
           child: Container(
@@ -112,11 +81,11 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
                         child: Container(
                           margin: EdgeInsets.symmetric(
                             horizontal:
-                                MediaQuery.of(context).size.height * 0.03,
+                                MediaQuery.of(context).size.height * 0.02,
                           ),
                           padding: EdgeInsets.symmetric(
                             horizontal:
-                                MediaQuery.of(context).size.width * 0.02,
+                                MediaQuery.of(context).size.width * 0.03,
                           ),
                           decoration: BoxDecoration(
                             color: customTheme.white,
@@ -124,15 +93,21 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
                           ),
                           child: Column(
                             children: [
-                              _buildRemarkField(),
-                              const Divider(),
-                              _buildDateField(),
-                              const Divider(),
-                              _buildTimeField(),
-                              const Divider(),
-                              _buildCategoryField(),
-                              const Divider(),
-                              _buildAttachImage(),
+                              Column(
+                                children: [
+                                  _buildRemarkField(),
+                                  const Divider(),
+                                  _buildDateField(),
+                                  const Divider(),
+                                  _buildTimeField(),
+                                  const Divider(),
+                                  _buildCategoryField(),
+                                  const Divider(),
+                                  _buildAttachImage(),
+                                  const Divider(),
+                                ],
+                              ),
+                              _buildSaveButton(),
                             ],
                           ),
                         ),
@@ -151,6 +126,41 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
               onPressed: () => amountFocusNode.requestFocus(),
               child: FxText.bodyMedium('123', color: customTheme.white),
             ),
+    );
+  }
+
+  AppBar _buildAppbar() {
+    return AppBar(
+      toolbarHeight: kToolbarHeight + 1, // Make bottom border invisible
+      title: FxText.labelLarge(
+        'Add New Record',
+        color: customTheme.white,
+      ),
+      centerTitle: true,
+      backgroundColor: customTheme.lightPurple,
+      leading: IconButton(
+        icon: Icon(
+          Icons.arrow_back_ios_new_rounded,
+          color: customTheme.white,
+        ),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      actions: [
+        // QR Code Scanner
+        IconButton(
+          icon: Icon(Icons.qr_code_scanner, color: customTheme.white),
+          onPressed: () {
+            // Go to QR page
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return const QrCodeScannerScreen();
+                },
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 
@@ -254,6 +264,12 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
                 child: TextFormField(
                   onTap: () {
                     amountFocusNode.requestFocus();
+
+                    // Set cursor to end of text
+                    controller.amountController.selection = TextSelection(
+                      baseOffset: controller.amountController.text.length,
+                      extentOffset: controller.amountController.text.length,
+                    );
                   },
                   onChanged: (value) {
                     // Update to 0 if empty
@@ -337,8 +353,18 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
                 controller: controller.remarkController,
                 validator: controller.validateRemark,
                 cursorColor: customTheme.black,
-                onTapOutside: (_) =>
-                    FocusManager.instance.primaryFocus?.unfocus(),
+                onTapOutside: (_) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+                onEditingComplete: () {
+                  // If amount empty, focus on amount field
+                  if (controller.amountController.text == "0") {
+                    amountFocusNode.requestFocus();
+                  }
+
+                  // Auto detect category based on remark
+                  controller.autoDetectCategory();
+                },
               ),
             ),
           ),
@@ -377,11 +403,11 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
                     minDate: DateTime(2000),
                     maxDate: DateTime(2100),
                     barrierLabel: 'Close',
-                    currentDateDecoration: const BoxDecoration(
+                    currentDateDecoration: BoxDecoration(
                       // Underline border
                       border: Border(
                         bottom: BorderSide(
-                          color: Colors.blueAccent,
+                          color: customTheme.colorPrimary,
                           width: 2,
                         ),
                       ),
@@ -632,12 +658,38 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
     );
   }
 
+  Widget _buildSaveButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: ElevatedButton(
+        onPressed: () {
+          // Submit form
+          if (controller.submitForm()) {
+            // Close screen if successful added
+            Navigator.of(context).pop();
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: customTheme.colorPrimary,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        ),
+        child: FxText.bodyMedium(
+          'Add',
+          color: customTheme.white,
+        ),
+      ),
+    );
+  }
+
   void _showCategoryBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         return SizedBox(
-          height: MediaQuery.of(context).size.height * 0.3,
+          height: MediaQuery.of(context).size.height * 0.45,
           child: ListView.builder(
             itemCount: (controller.selectedExpensesType == 0)
                 ? controller.expenseCategories.length

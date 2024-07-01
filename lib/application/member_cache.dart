@@ -6,7 +6,6 @@ class MemberCache {
   static Users user = Users(
     tmpName: "Xiiaowu",
     tmpEmail: "john@gmail.com",
-    tmpProfilePictureUrl: "user_placeholder.jpg",
     tmpStatus: 0,
     tmpCreatedDate: "2024-05-26 16:22:52",
     tmpUpdatedDate: "2024-05-26 16:22:52",

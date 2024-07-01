@@ -1,5 +1,8 @@
 import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 /*
   Check for image file size
@@ -29,4 +32,24 @@ Future<XFile> compressImageSize(XFile xFile) async {
   }
 
   return xFile;
+}
+
+Future<XFile> loadAssetAsXFile(String assetPath) async {
+  // Load the asset as ByteData
+  ByteData byteData = await rootBundle.load(assetPath);
+
+  // Convert ByteData to Uint8List
+  Uint8List bytes = byteData.buffer.asUint8List();
+
+  // Get the temporary directory
+  Directory tempDir = await getTemporaryDirectory();
+
+  // Create a temporary file
+  File file = await File(path.join(tempDir.path, 'temp_image.jpg')).create();
+
+  // Write bytes to the file
+  file.writeAsBytesSync(bytes);
+
+  // Convert File to XFile
+  return XFile(file.path);
 }

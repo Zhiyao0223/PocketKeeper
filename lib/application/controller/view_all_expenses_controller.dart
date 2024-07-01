@@ -114,11 +114,12 @@ class ViewAllExpensesController extends FxController {
     // Convert keys to list and sort by date in descending order
     groupDate = groupedData.keys.toList()..sort((a, b) => b.compareTo(a));
 
-    // Sort elements in each group by time in descending order
-    for (DateTime date in groupDate) {
-      groupedData[date]!
-          .sort((a, b) => b.expensesDate.compareTo(a.expensesDate));
-    }
+    // Arrange groupdata based on groupDate
+    groupedData = Map.fromEntries(
+      groupDate.map(
+        (date) => MapEntry(date, groupedData[date]!),
+      ),
+    );
 
     isDataFetched = true;
     update();
