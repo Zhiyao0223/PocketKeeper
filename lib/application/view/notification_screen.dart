@@ -7,6 +7,7 @@ import 'package:pocketkeeper/application/model/notification.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
 import 'package:pocketkeeper/theme/custom_theme.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
+import 'package:pocketkeeper/widget/show_toast.dart';
 import '../../template/state_management/state_management.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -73,6 +74,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             onPressed: () {
               setState(() {
                 controller.markAllAsRead();
+                showToast(customMessage: 'All notifications marked as read');
               });
             },
           ),

@@ -2,6 +2,8 @@ import 'package:date_picker_plus/date_picker_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pocketkeeper/application/controller/form_add_expenses_controller.dart';
+import 'package:pocketkeeper/application/model/expense.dart';
+import 'package:pocketkeeper/application/model/money_account.dart';
 import 'package:pocketkeeper/application/view/qr_code_scanner_screen.dart';
 import 'package:pocketkeeper/template/utils/spacing.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
@@ -12,7 +14,12 @@ import '../../theme/custom_theme.dart';
 import '../../template/state_management/state_management.dart';
 
 class FormAddExpensesScreen extends StatefulWidget {
-  const FormAddExpensesScreen({super.key});
+  final Expenses? selectedExpense;
+
+  const FormAddExpensesScreen({
+    super.key,
+    this.selectedExpense,
+  });
 
   @override
   State<FormAddExpensesScreen> createState() {
@@ -35,7 +42,8 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
     super.initState();
     customTheme = CustomTheme();
 
-    controller = FxControllerStore.put(FormAddExpensesController(this));
+    controller = FxControllerStore.put(FormAddExpensesController(this,
+        selectedExpenseForEdit: widget.selectedExpense));
   }
 
   @override
@@ -103,6 +111,8 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
                                   const Divider(),
                                   _buildCategoryField(),
                                   const Divider(),
+                                  _buildAccountField(),
+                                  const Divider(),
                                   _buildAttachImage(),
                                   const Divider(),
                                 ],
@@ -133,7 +143,7 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
     return AppBar(
       toolbarHeight: kToolbarHeight + 1, // Make bottom border invisible
       title: FxText.labelLarge(
-        'Add New Record',
+        controller.isEditing ? 'Edit Record' : 'Add New Record',
         color: customTheme.white,
       ),
       centerTitle: true,
@@ -146,20 +156,21 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
         onPressed: () => Navigator.of(context).pop(),
       ),
       actions: [
-        // QR Code Scanner
-        IconButton(
-          icon: Icon(Icons.qr_code_scanner, color: customTheme.white),
-          onPressed: () {
-            // Go to QR page
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) {
-                  return const QrCodeScannerScreen();
-                },
-              ),
-            );
-          },
-        ),
+        // QR Code Scanner (Only show in Add New Record)
+        if (!controller.isEditing)
+          IconButton(
+            icon: Icon(Icons.qr_code_scanner, color: customTheme.white),
+            onPressed: () {
+              // Go to QR page
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const QrCodeScannerScreen();
+                  },
+                ),
+              );
+            },
+          ),
       ],
     );
   }
@@ -444,6 +455,7 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
                   isDense: true,
                   filled: true,
                   fillColor: customTheme.white,
+                  contentPadding: FxSpacing.all(10),
                   hintText: "Select date here",
                   hintStyle: FxTextStyle.bodyMedium(xMuted: true),
                   isCollapsed: true,
@@ -658,6 +670,109 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
     );
   }
 
+  Widget _buildAccountField() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.account_balance_wallet,
+              color: customTheme.grey,
+              size: 20,
+            ),
+            const SizedBox(width: 10.0),
+            const FxText.bodyMedium('Account'),
+            const SizedBox(width: 5.0),
+          ],
+        ),
+        Expanded(
+          child: Theme(
+            data: ThemeData(
+              canvasColor: customTheme.white,
+              focusColor: customTheme.colorPrimary,
+            ),
+            child: DropdownButtonFormField<String>(
+              value: controller.selectedAccount.accountName,
+              hint: const FxText.bodyMedium(
+                'Select an account',
+                xMuted: true,
+              ),
+              decoration: InputDecoration(
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                filled: true,
+                fillColor: customTheme.white,
+                contentPadding: FxSpacing.all(10),
+                border: InputBorder.none,
+              ),
+              items: controller.accounts.map((Accounts account) {
+                return DropdownMenuItem<String>(
+                  value: account.accountName,
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 16,
+                        child: Icon(
+                          IconData(
+                            account.accountIconHex,
+                            fontFamily: 'MaterialIcons',
+                          ),
+                          color: customTheme.grey,
+                          size: 16.0,
+                        ),
+                      ),
+                      const SizedBox(width: 5.0),
+                      FxText.bodyMedium(
+                        account.accountName,
+                        color: customTheme.black,
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+              selectedItemBuilder: (BuildContext context) {
+                return controller.accounts.map((Accounts account) {
+                  return Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 16,
+                        child: Icon(
+                          IconData(
+                            account.accountIconHex,
+                            fontFamily: 'MaterialIcons',
+                          ),
+                          color: customTheme.grey,
+                          size: 16.0,
+                        ),
+                      ),
+                      const SizedBox(width: 5.0),
+                      FxText.bodyMedium(
+                        account.accountName,
+                        color: customTheme.black,
+                      ),
+                    ],
+                  );
+                }).toList();
+              },
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  setState(() {
+                    controller.selectedAccount = controller.accounts.firstWhere(
+                        (account) => account.accountName == newValue);
+                  });
+                }
+              },
+              icon: const Icon(
+                Icons.arrow_forward_ios_outlined,
+                size: 15,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildSaveButton() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -665,7 +780,10 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
         onPressed: () {
           // Submit form
           if (controller.submitForm()) {
-            // Close screen if successful added
+            // Close keyboard
+            FocusManager.instance.primaryFocus?.unfocus();
+
+            // Close screen
             Navigator.of(context).pop();
           }
         },
@@ -677,7 +795,7 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
           ),
         ),
         child: FxText.bodyMedium(
-          'Add',
+          controller.isEditing ? 'Update' : 'Add',
           color: customTheme.white,
         ),
       ),
@@ -691,37 +809,62 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
         return SizedBox(
           height: MediaQuery.of(context).size.height * 0.45,
           child: ListView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            itemExtent: 50.0,
             itemCount: (controller.selectedExpensesType == 0)
                 ? controller.expenseCategories.length
                 : controller.incomeCategories.length,
             itemBuilder: (BuildContext context, int index) {
+              Color categoryColor = (controller.selectedExpensesType == 0)
+                  ? controller.expenseCategories[index] ==
+                          controller.selectedCategory
+                      ? customTheme.colorPrimary.withOpacity(0.2)
+                      : Colors.transparent
+                  : controller.incomeCategories[index] ==
+                          controller.selectedCategory
+                      ? customTheme.colorPrimary.withOpacity(0.2)
+                      : Colors.transparent;
+
               return ListTile(
-                title: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Color(
-                        (controller.selectedExpensesType == 0)
-                            ? controller.expenseCategories[index].iconColor
-                            : controller.incomeCategories[index].iconColor,
+                title: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: customTheme.border,
+                        width: 1,
                       ),
-                      child: Icon(
-                        IconData(
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: categoryColor,
+                  ),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 16,
+                        backgroundColor: Color(
                           (controller.selectedExpensesType == 0)
-                              ? controller.expenseCategories[index].iconHex
-                              : controller.incomeCategories[index].iconHex,
-                          fontFamily: 'MaterialIcons',
+                              ? controller.expenseCategories[index].iconColor
+                              : controller.incomeCategories[index].iconColor,
                         ),
-                        color: customTheme.white,
+                        child: Icon(
+                          IconData(
+                            (controller.selectedExpensesType == 0)
+                                ? controller.expenseCategories[index].iconHex
+                                : controller.incomeCategories[index].iconHex,
+                            fontFamily: 'MaterialIcons',
+                          ),
+                          color: customTheme.white,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 10.0),
-                    FxText.bodyMedium(
-                      (controller.selectedExpensesType == 0)
-                          ? controller.expenseCategories[index].categoryName
-                          : controller.incomeCategories[index].categoryName,
-                    ),
-                  ],
+                      const SizedBox(width: 10.0),
+                      FxText.bodyMedium(
+                        (controller.selectedExpensesType == 0)
+                            ? controller.expenseCategories[index].categoryName
+                            : controller.incomeCategories[index].categoryName,
+                      ),
+                    ],
+                  ),
                 ),
                 onTap: () {
                   if (controller.selectedExpensesType == 0) {

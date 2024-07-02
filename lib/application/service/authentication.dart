@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/widget/show_toast.dart';
 
 /*
@@ -31,6 +32,10 @@ class Authentication {
             await auth.signInWithCredential(credential);
 
         user = userCredential.user;
+
+        // Store oAuth token in user cache
+        MemberCache.oauthAccessToken =
+            (await googleSignInAccount.authentication).accessToken;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
           showToast(

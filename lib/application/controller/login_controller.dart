@@ -35,8 +35,8 @@ class LoginController extends FxController {
     super.initState();
 
     // Initialize controller
-    emailController = TextEditingController();
-    passwordController = TextEditingController();
+    emailController = TextEditingController(text: "xiaowu0223@gmail.com");
+    passwordController = TextEditingController(text: "test@123");
 
     fetchData();
   }
@@ -77,7 +77,17 @@ class LoginController extends FxController {
 
       // If user exist, proceed to store user data and redirect to home page
       if (apiResponse["status"] == 200 && apiResponse["body"] != "-1") {
-        await onSuccessLogin(userId: apiResponse["body"]);
+        MemberCache.appSetting.isGoogleSignIn = true;
+
+        Users tmpuser = Users(
+          tmpId: int.parse(apiResponse["body"]["user_id"]),
+          tmpName: apiResponse["body"]["username"],
+          tmpEmail: apiResponse["body"]["email"],
+          tmpStatus: int.parse(apiResponse["body"]["status"]),
+          tmpCreatedDate: apiResponse["body"]["created_date"],
+          tmpUpdatedDate: apiResponse["body"]["updated_date"],
+        );
+        await onSuccessLogin(tmpuser);
 
         return true;
       }
@@ -139,7 +149,16 @@ class LoginController extends FxController {
 
     // Store share preferences if is valid user
     if (responseJson["status"] == 200) {
-      await onSuccessLogin(userId: responseJson["body"]["user_id"]);
+      Users tmpuser = Users(
+        tmpId: int.parse(responseJson["body"]["user_id"]),
+        tmpName: responseJson["body"]["username"],
+        tmpEmail: responseJson["body"]["email"],
+        tmpStatus: int.parse(responseJson["body"]["status"]),
+        tmpCreatedDate: responseJson["body"]["created_date"],
+        tmpUpdatedDate: responseJson["body"]["updated_date"],
+      );
+
+      await onSuccessLogin(tmpuser);
 
       return true;
     }
@@ -175,7 +194,16 @@ class LoginController extends FxController {
 
     // Store share preferences if is valid user
     if (responseJson["status"] == 200) {
-      await onSuccessLogin(userId: responseJson["body"]["user_id"]);
+      Users tmpuser = Users(
+        tmpId: int.parse(responseJson["body"]["user_id"]),
+        tmpName: responseJson["body"]["username"],
+        tmpEmail: responseJson["body"]["email"],
+        tmpStatus: int.parse(responseJson["body"]["status"]),
+        tmpCreatedDate: responseJson["body"]["created_date"],
+        tmpUpdatedDate: responseJson["body"]["updated_date"],
+      );
+
+      await onSuccessLogin(tmpuser);
 
       return true;
     }
@@ -183,15 +211,15 @@ class LoginController extends FxController {
     return false;
   }
 
-  Future<void> onSuccessLogin({required String userId}) async {
+  Future<void> onSuccessLogin(Users user) async {
     // Indicate success login
     showToast(customMessage: "Login successful!");
 
     // Store user id for future access
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString("user_id", userId);
+    MemberCache.user = user;
 
-    MemberCache.appSetting.isGoogleSignIn = true;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("user_id", user.id.toString());
   }
 
   //

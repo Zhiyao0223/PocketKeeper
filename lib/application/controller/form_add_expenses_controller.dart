@@ -3,24 +3,32 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pocketkeeper/application/expense_cache.dart';
 import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
+import 'package:pocketkeeper/application/model/money_account.dart';
+import 'package:pocketkeeper/application/service/account_service.dart';
 import 'package:pocketkeeper/application/service/category_service.dart';
 import 'package:pocketkeeper/application/service/expense_service.dart';
 import 'package:pocketkeeper/application/service/gemini_service.dart';
 import 'package:pocketkeeper/utils/converters/date.dart';
+import 'package:pocketkeeper/utils/converters/number.dart';
 import 'package:pocketkeeper/utils/custom_animation.dart';
+import 'package:pocketkeeper/utils/custom_function.dart';
 import 'package:pocketkeeper/utils/validators/string_validator.dart';
 
 import '../../template/state_management/controller.dart';
 
 class FormAddExpensesController extends FxController {
-  bool isDataFetched = false;
+  bool isDataFetched = false, isEditing = false;
 
   // Disable this to prevent overuse API
-  bool isGeminiEnable = true;
+  bool isGeminiEnable = false;
 
   int selectedExpensesType = 0; // 0 = Expense, 1 = Income
+  List<Accounts> accounts = [];
+  late Accounts selectedAccount;
+
   List<Category> incomeCategories = [], expenseCategories = [];
   late Category selectedCategory;
+  Expenses? selectedExpenseForEdit;
 
   // Form
   late TickerProvider ticker;
@@ -41,10 +49,12 @@ class FormAddExpensesController extends FxController {
   XFile? selectedImage;
 
   // Contructor
-  FormAddExpensesController(this.ticker) {
+  FormAddExpensesController(this.ticker, {this.selectedExpenseForEdit}) {
     remarkAnimation = CustomAnimation(ticker: ticker);
     dateAnimation = CustomAnimation(ticker: ticker);
     timeAnimation = CustomAnimation(ticker: ticker);
+
+    if (selectedExpenseForEdit != null) isEditing = true;
   }
 
   @override
@@ -56,20 +66,52 @@ class FormAddExpensesController extends FxController {
   }
 
   void fetchData() async {
-    // Initialize date to current date and time
-    DateTime now = DateTime.now();
-    dateController.text = now.toDateString(dateFormat: "dd EEE, yyyy");
-    timeController.text = now.toDateString(dateFormat: "hh:mm a");
+    // Fetch accounts
+    accounts = AccountService().getAllActiveAccounts();
+    selectedAccount = accounts[0];
 
     // Fetch categories
     incomeCategories = CategoryService().getIncomeCategories();
     expenseCategories = CategoryService().getExpenseCategories();
 
-    // Set default selected category
-    selectedCategory = (selectedExpensesType == 0)
-        ? expenseCategories[0]
-        : incomeCategories[0];
-    categoryController.text = selectedCategory.categoryName;
+    // If editing data
+    if (isEditing) {
+      Expenses tmpExpense = selectedExpenseForEdit!;
+
+      amountController.text = tmpExpense.amount.removeExtraDecimal();
+      remarkController.text = tmpExpense.description;
+
+      selectedDate = tmpExpense.expensesDate;
+      dateController.text =
+          tmpExpense.expensesDate.toDateString(dateFormat: "dd EEE, yyyy");
+
+      // Convert to 12 hour format
+      timeController.text =
+          tmpExpense.expensesDate.toDateString(dateFormat: "hh:mm a");
+
+      selectedExpensesType = tmpExpense.expensesType;
+
+      // Set category
+      selectedCategory = tmpExpense.category.target!;
+      categoryController.text = tmpExpense.category.target!.categoryName;
+
+      // Set image
+      if (tmpExpense.image != null) {
+        selectedImage = await loadUint8ListAsXFile(tmpExpense.image!);
+        imageController.text = selectedImage!.name;
+      }
+    } else {
+      // Initialize date to current date and time
+      DateTime now = DateTime.now();
+      dateController.text = now.toDateString(dateFormat: "dd EEE, yyyy");
+      timeController.text = now.toDateString(dateFormat: "hh:mm a");
+
+      // Set default selected category
+      selectedCategory = (selectedExpensesType == 0)
+          ? expenseCategories[0]
+          : incomeCategories[0];
+      categoryController.text = selectedCategory.categoryName;
+    }
 
     isDataFetched = true;
     update();
@@ -97,7 +139,7 @@ class FormAddExpensesController extends FxController {
     );
 
     // Convert to 12 hour format
-    timeController.text = TimeOfDay.fromDateTime(selectedDate).format(context);
+    timeController.text = selectedDate.toDateString(dateFormat: "hh:mm a");
   }
 
   void setCategory(Category category) {
@@ -154,9 +196,32 @@ class FormAddExpensesController extends FxController {
         tmpExpensesType: selectedExpensesType,
       );
       expense.setCategory(selectedCategory);
+      expense.setAccount(selectedAccount);
 
       if (selectedImage != null) {
         expense.setImage(selectedImage!);
+      }
+
+      // Update if editing
+      if (isEditing) {
+        expense.id = selectedExpenseForEdit!.id;
+        ExpenseService().put(expense);
+
+        // Update cache
+        int listIndex = 0;
+        if (selectedExpensesType == 0) {
+          listIndex = ExpenseCache.expenses
+              .indexWhere((element) => element.id == expense.id);
+
+          if (listIndex != -1) ExpenseCache.expenses[listIndex] = expense;
+        } else {
+          listIndex = ExpenseCache.incomes
+              .indexWhere((element) => element.id == expense.id);
+
+          if (listIndex != -1) ExpenseCache.incomes[listIndex] = expense;
+        }
+
+        return true;
       }
 
       ExpenseService().add(expense);

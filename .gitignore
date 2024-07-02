@@ -33,3 +33,4 @@ android/app/google-services.json
 firebase.json
 .vscode/settings.json
 lib/application/service/firebase_options.dart
+client_secret.json

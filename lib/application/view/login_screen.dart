@@ -8,6 +8,7 @@ import 'package:pocketkeeper/template/utils/spacing.dart';
 import 'package:pocketkeeper/template/widgets/widgets.dart';
 import 'package:pocketkeeper/theme/themes.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
+import 'package:pocketkeeper/widget/show_toast.dart';
 import '../../theme/custom_theme.dart';
 import '../../template/state_management/state_management.dart';
 
@@ -120,6 +121,9 @@ class _LoginScreenState extends State<LoginScreen>
                               ),
                               (route) => false,
                             );
+                          } else {
+                            showToast(
+                                customMessage: 'Invalid email or password');
                           }
                         });
                       },

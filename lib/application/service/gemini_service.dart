@@ -1,15 +1,18 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
+import 'package:pocketkeeper/application/service/oauth_client_service.dart';
 
 class GeminiService {
   late final GenerativeModel model;
+  bool isPermissionGranted = false;
 
   GeminiService() {
     init();
   }
 
   // Initialize the service
-  void init() {
+  void init() async {
     // Generation Config
     GenerationConfig generationConfig = GenerationConfig(
       temperature: 0.9,
@@ -19,10 +22,15 @@ class GeminiService {
       responseMimeType: 'text/plain',
     );
 
+    if (MemberCache.oauthAccessToken == null) {
+      return;
+    }
+
     model = GenerativeModel(
       model: 'tunedModels/expenses-category-v4idghr3vubz',
       apiKey: dotenv.env['GEMINI_API_KEY']!,
       generationConfig: generationConfig,
+      httpClient: OauthHttpClient(MemberCache.oauthAccessToken ?? ''),
     );
   }
 

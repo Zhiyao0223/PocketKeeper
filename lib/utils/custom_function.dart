@@ -34,6 +34,25 @@ Future<XFile> compressImageSize(XFile xFile) async {
   return xFile;
 }
 
+// Load Uint8List to XFile
+Future<XFile> loadUint8ListAsXFile(Uint8List bytes) async {
+  // Get the temporary directory
+  Directory tempDir = await getTemporaryDirectory();
+
+  // Random file name
+  String randomFileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+  // Create a temporary file
+  File file =
+      await File(path.join(tempDir.path, '$randomFileName.jpg')).create();
+
+  // Write bytes to the file
+  file.writeAsBytesSync(bytes);
+
+  // Convert File to XFile
+  return XFile(file.path);
+}
+
 Future<XFile> loadAssetAsXFile(String assetPath) async {
   // Load the asset as ByteData
   ByteData byteData = await rootBundle.load(assetPath);

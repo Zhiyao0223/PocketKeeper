@@ -58,6 +58,10 @@ class Expenses {
     category.target = tmpCategory;
   }
 
+  void setAccount(Accounts tmpAccount) {
+    account.target = tmpAccount;
+  }
+
   void setImage(XFile tmpFile) async {
     image = await tmpFile.getBytesFromImage();
   }

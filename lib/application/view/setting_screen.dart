@@ -145,7 +145,7 @@ class _SettingScreenState extends State<SettingScreen> {
               radius: 30,
               backgroundImage: AssetImage('assets/images/user_placeholder.jpg'),
             ),
-            if (MemberCache.user.profilePictureUrl != "user_placeholder.jpg" &&
+            if (MemberCache.user.profilePictureUrl != null &&
                 controller.hasInternetConnection)
               CircleAvatar(
                 radius: 30,

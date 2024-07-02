@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/view_all_expenses_controller.dart';
 import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
+import 'package:pocketkeeper/application/view/single_expenses_screen.dart';
 import 'package:pocketkeeper/template/widgets/widgets.dart';
 import 'package:pocketkeeper/utils/converters/date.dart';
 import 'package:pocketkeeper/utils/converters/number.dart';
@@ -217,73 +218,89 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
     return Column(
       children: [
         for (Expenses tmpExpenses in tmpExpensesList)
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: customTheme.grey.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: customTheme.white,
-                        border: Border.all(
+          GestureDetector(
+            onTap: () {
+              // Open single expenses screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SingleExpensesScreen(
+                    selectedExpense: tmpExpenses,
+                  ),
+                ),
+              ).then((value) {
+                // Update data after back from single expenses screen to update changes
+                controller.fetchData();
+              });
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 5),
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: customTheme.grey.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: customTheme.white,
+                          border: Border.all(
+                            color: customTheme.colorPrimary,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Icon(
+                          IconData(
+                            tmpExpenses.category.target!.iconHex,
+                            fontFamily: 'MaterialIcons',
+                          ),
                           color: customTheme.colorPrimary,
-                          width: 1.5,
+                          size: 20,
                         ),
-                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Icon(
-                        IconData(
-                          tmpExpenses.category.target!.iconHex,
-                          fontFamily: 'MaterialIcons',
-                        ),
-                        color: customTheme.colorPrimary,
-                        size: 20,
+                      const SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FxText.labelSmall(
+                            tmpExpenses.category.target!.categoryName,
+                            color: customTheme.black,
+                          ),
+                          FxText.bodySmall(
+                            tmpExpenses.description,
+                            color: customTheme.black,
+                            xMuted: true,
+                            fontSize: 12,
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FxText.labelSmall(
-                          tmpExpenses.category.target!.categoryName,
-                          color: customTheme.black,
-                        ),
-                        FxText.bodySmall(
-                          tmpExpenses.description,
-                          color: customTheme.black,
-                          xMuted: true,
-                          fontSize: 12,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    FxText.bodySmall(
-                      tmpExpenses.expensesDate
-                          .toDateString(dateFormat: "hh:mm a"),
-                      fontSize: 10,
-                      color: customTheme.black,
-                    ),
-                    FxText.labelLarge(
-                      '${tmpExpenses.expensesType == 0 ? '-' : '+'}${tmpExpenses.amount.removeExtraDecimal()}',
-                      color: tmpExpenses.expensesType == 0
-                          ? customTheme.red
-                          : customTheme.green,
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      FxText.bodySmall(
+                        tmpExpenses.expensesDate
+                            .toDateString(dateFormat: "hh:mm a"),
+                        fontSize: 10,
+                        color: customTheme.black,
+                      ),
+                      FxText.labelLarge(
+                        '${tmpExpenses.expensesType == 0 ? '-' : '+'}${tmpExpenses.amount.removeExtraDecimal()}',
+                        color: tmpExpenses.expensesType == 0
+                            ? customTheme.red
+                            : customTheme.green,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
       ],

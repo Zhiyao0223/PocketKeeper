@@ -129,7 +129,8 @@ class RegisterController extends FxController {
 
       // Store user id for future access
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString("user_id", responseJson["body"]["user_id"]);
+      await prefs.setString(
+          "user_id", responseJson["body"]["user_id"].toString());
 
       return true;
     }
