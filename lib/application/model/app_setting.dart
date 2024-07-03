@@ -17,7 +17,7 @@ class AppSetting {
   late bool isGoogleSignIn;
 
   // Budget Setting
-  late double budgetLimit;
+  late double monthlyLimit;
 
   // Constructor
   AppSetting() {
@@ -27,6 +27,6 @@ class AppSetting {
     appLanguage = Language.en.name;
     isGoogleSignIn = false;
     currencyIndicator = "\$";
-    budgetLimit = 1500;
+    monthlyLimit = 1500;
   }
 }

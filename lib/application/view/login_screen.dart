@@ -9,6 +9,7 @@ import 'package:pocketkeeper/template/widgets/widgets.dart';
 import 'package:pocketkeeper/theme/themes.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
 import 'package:pocketkeeper/widget/show_toast.dart';
+import 'package:pocketkeeper/widget/will_pop_dialog.dart';
 import '../../theme/custom_theme.dart';
 import '../../template/state_management/state_management.dart';
 
@@ -33,6 +34,8 @@ class _LoginScreenState extends State<LoginScreen>
   @override
   void initState() {
     super.initState();
+
+    // Initialize theme
     customTheme = CustomTheme();
     outlineInputBorder = OutlineInputBorder(
       borderRadius: const BorderRadius.all(Radius.circular(30)),
@@ -61,107 +64,113 @@ class _LoginScreenState extends State<LoginScreen>
       // Display spinner while loading
       return buildCircularLoadingIndicator();
     }
-    return Scaffold(
-      body: SafeArea(
-        top: true,
-        bottom: true,
-        child: Padding(
-          padding: EdgeInsets.only(
-            top: MediaQuery.of(context).size.height * 0.05,
-          ),
-          child: GestureDetector(
-            onVerticalDragDown: (_) =>
-                FocusManager.instance.primaryFocus?.unfocus(),
-            child: SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.1,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  // Top section of login form
-                  _buildTopSection(),
-                  FxSpacing.height(16),
-                  // Form
-                  Form(
-                    key: controller.formKey,
-                    child: _buildForm(),
-                  ),
-                  FxSpacing.height(16),
-                  // Forgot password
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: InkWell(
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              const ForgetPasswordEmailScreen(),
-                        ),
-                      ),
-                      child: FxText.labelMedium(
-                        'Forgot password?',
-                        fontWeight: 600,
-                        color: customTheme.colorPrimary,
-                      ),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) => buildWillPopDialog(context),
+      child: Scaffold(
+        body: SafeArea(
+          top: true,
+          bottom: true,
+          child: Padding(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).size.height * 0.05,
+            ),
+            child: GestureDetector(
+              onVerticalDragDown: (_) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
+              child: SingleChildScrollView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.1,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    // Top section of login form
+                    _buildTopSection(),
+                    FxSpacing.height(16),
+                    // Form
+                    Form(
+                      key: controller.formKey,
+                      child: _buildForm(),
                     ),
-                  ),
-                  FxSpacing.height(16),
-                  // Login button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: FxButton.rounded(
-                      onPressed: () {
-                        controller.onLoginButtonClick().then((authorized) {
-                          if (authorized) {
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                builder: (context) => const NavigationScreen(),
-                              ),
-                              (route) => false,
-                            );
-                          } else {
-                            showToast(
-                                customMessage: 'Invalid email or password');
-                          }
-                        });
-                      },
-                      backgroundColor: customTheme.colorPrimary,
-                      child: FxText.bodyMedium(
-                        'LOG IN',
-                        fontWeight: 700,
-                        color: customTheme.white,
-                      ),
-                    ),
-                  ),
-                  _buildSocialLogin(),
-                  FxSpacing.height(32),
-                  // Sign up
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const FxText.labelMedium(
-                        "Don't have an account? ",
-                        xMuted: true,
-                      ),
-                      InkWell(
+                    FxSpacing.height(16),
+                    // Forgot password
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: InkWell(
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const RegisterScreen(),
+                            builder: (context) =>
+                                const ForgetPasswordEmailScreen(),
                           ),
                         ),
                         child: FxText.labelMedium(
-                          'Sign Up',
-                          color: customTheme.colorPrimary,
+                          'Forgot password?',
                           fontWeight: 600,
+                          color: customTheme.colorPrimary,
                         ),
                       ),
-                      FxSpacing.height(
-                          MediaQuery.of(context).size.height * 0.05),
-                    ],
-                  ),
-                ],
+                    ),
+                    FxSpacing.height(16),
+                    // Login button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: FxButton.rounded(
+                        onPressed: () {
+                          controller.onLoginButtonClick().then((authorized) {
+                            if (authorized) {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const NavigationScreen(),
+                                ),
+                                (route) => false,
+                              );
+                            } else {
+                              showToast(
+                                  customMessage: 'Invalid email or password');
+                            }
+                          });
+                        },
+                        backgroundColor: customTheme.colorPrimary,
+                        child: FxText.bodyMedium(
+                          'LOG IN',
+                          fontWeight: 700,
+                          color: customTheme.white,
+                        ),
+                      ),
+                    ),
+                    _buildSocialLogin(),
+                    FxSpacing.height(32),
+                    // Sign up
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const FxText.labelMedium(
+                          "Don't have an account? ",
+                          xMuted: true,
+                        ),
+                        InkWell(
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const RegisterScreen(),
+                            ),
+                          ),
+                          child: FxText.labelMedium(
+                            'Sign Up',
+                            color: customTheme.colorPrimary,
+                            fontWeight: 600,
+                          ),
+                        ),
+                        FxSpacing.height(
+                            MediaQuery.of(context).size.height * 0.05),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

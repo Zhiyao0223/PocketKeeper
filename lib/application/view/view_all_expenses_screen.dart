@@ -273,7 +273,9 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
                             color: customTheme.black,
                           ),
                           FxText.bodySmall(
-                            tmpExpenses.description,
+                            (tmpExpenses.description.length > 20)
+                                ? '${tmpExpenses.description.substring(0, 20)}...'
+                                : tmpExpenses.description,
                             color: customTheme.black,
                             xMuted: true,
                             fontSize: 12,

@@ -24,9 +24,16 @@ class CategoryService extends ObjectboxService<Category> {
   }
 
   // Get category by name
-  Category? getCategoryByName(String name) {
+  Category? getCategoryByName(String name, [bool isExpenseCategory = true]) {
     final List<Category> categories = getAll();
-    return categories
-        .firstWhere((Category category) => category.categoryName == name);
+
+    try {
+      return categories.firstWhere((Category category) =>
+          category.categoryName == name &&
+          category.categoryType == (isExpenseCategory ? 0 : 1) &&
+          category.status == 0);
+    } catch (e) {
+      return null;
+    }
   }
 }

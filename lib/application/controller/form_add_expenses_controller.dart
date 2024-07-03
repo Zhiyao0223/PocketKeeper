@@ -254,11 +254,19 @@ class FormAddExpensesController extends FxController {
       return;
     }
 
-    Category? category = CategoryService().getCategoryByName(categoryString);
+    Category? category = CategoryService().getCategoryByName(
+      categoryString,
+      selectedExpensesType == 0,
+    );
+
+    // Set to other category if not found
     if (category != null) {
       setCategory(category);
-      update();
+    } else {
+      setCategory((CategoryService()
+          .getCategoryByName("Others", selectedExpensesType == 0))!);
     }
+    update();
   }
 
   @override

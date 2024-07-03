@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:pocketkeeper/application/model/enum/sync_status.dart';
 
@@ -7,8 +8,14 @@ class ExpenseGoal {
   int goalId = 0;
 
   late String description;
+  late double targetAmount;
+  late double currentAmount;
   late int syncStatus;
   late int status;
+  late int iconHex;
+
+  @Property(type: PropertyType.date)
+  DateTime? dueDate;
 
   @Property(type: PropertyType.date)
   late DateTime createdDate;
@@ -18,14 +25,21 @@ class ExpenseGoal {
 
   ExpenseGoal({
     String? tmpDescription,
+    double? tmpCurrentAmount,
+    double? tmpTargetAmount,
     SyncStatus? tmpSyncStatus,
     int? tmpStatus,
     DateTime? tmpCreatedDate,
     DateTime? tmpUpdatedDate,
+    int? tmpIconHex,
+    this.dueDate,
   }) {
     description = tmpDescription ?? '';
+    currentAmount = tmpCurrentAmount ?? 0;
+    targetAmount = tmpTargetAmount ?? 0;
     syncStatus = tmpSyncStatus?.index ?? SyncStatus.none.index;
     status = tmpStatus ?? 0;
+    iconHex = tmpIconHex ?? Icons.account_balance.codePoint;
     createdDate = tmpCreatedDate ?? DateTime.now();
     updatedDate = tmpUpdatedDate ?? DateTime.now();
   }

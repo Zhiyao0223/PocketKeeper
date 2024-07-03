@@ -211,12 +211,7 @@ class _SettingScreenState extends State<SettingScreen> {
         _buildSettingsItem(
           icon: Icons.person,
           title: 'Account Settings',
-          onTapFunction: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AnalyticScreen(),
-            ),
-          ),
+          onTapFunction: () => showToast(customMessage: 'Account Settings'),
         ),
         _buildSettingsItem(
           icon: Icons.security,

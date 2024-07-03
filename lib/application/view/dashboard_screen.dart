@@ -13,6 +13,7 @@ import 'package:pocketkeeper/utils/converters/number.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
 import 'package:pocketkeeper/widget/circular_progress_indicator_icon.dart';
 import 'package:pocketkeeper/widget/multi_section_progress_indicator.dart';
+import 'package:pocketkeeper/widget/will_pop_dialog.dart';
 import '../../template/state_management/state_management.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -52,73 +53,79 @@ class _DashboardScreenState extends State<DashboardScreen> {
       return buildCircularLoadingIndicator();
     }
 
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: customTheme.colorPrimary.withOpacity(0.9),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Greeting Section
-                    _buildGreetingMessage(),
-                    const SizedBox(height: 20),
-
-                    // Progress Indicator section
-                    _buildFinancialProgressIndicator(),
-
-                    // Financial Status Message
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.check_circle,
-                          color: customTheme.white,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 5),
-                        FxText.bodySmall(
-                          controller.financialStatusMessage,
-                          color: customTheme.white,
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                color: customTheme.colorPrimary.withOpacity(0.9),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: customTheme.white.withOpacity(0.87),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
-                    ),
-                  ),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) => buildWillPopDialog(context),
+      child: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
                   padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: customTheme.colorPrimary.withOpacity(0.9),
+                  ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildSavingsGoals(),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: Divider(
-                          color: customTheme.white,
-                          thickness: 2,
-                        ),
+                      // Greeting Section
+                      _buildGreetingMessage(),
+                      const SizedBox(height: 20),
+
+                      // Progress Indicator section
+                      _buildFinancialProgressIndicator(),
+
+                      // Financial Status Message
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            (controller.remainingBalance < 0)
+                                ? Icons.error
+                                : Icons.check_circle,
+                            color: customTheme.white,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 5),
+                          FxText.bodySmall(
+                            controller.financialStatusMessage,
+                            color: customTheme.white,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
-                      _buildAccountSection(),
                     ],
                   ),
                 ),
-              ),
-            ],
+                Container(
+                  color: customTheme.colorPrimary.withOpacity(0.9),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: customTheme.white.withOpacity(0.87),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        _buildSavingsGoals(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: Divider(
+                            color: customTheme.white,
+                            thickness: 2,
+                          ),
+                        ),
+                        _buildAccountSection(),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -232,7 +239,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: customTheme.black,
                           ),
                           FxText.titleMedium(
-                            '${controller.currencyIndicator}${controller.remainingBalance.toWholeNumber()}',
+                            (controller.remainingBalance < 0)
+                                ? '-${controller.currencyIndicator}${(controller.remainingBalance * -1).toWholeNumber()}'
+                                : '${controller.currencyIndicator}${controller.remainingBalance.toWholeNumber()}',
                             fontWeight: 900,
                             color: customTheme.black,
                             textAlign: TextAlign.start,
@@ -260,18 +269,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   // Progress Indicator
                   MultiSectionProgressBar(
                     sections: [
-                      ProgressSection(
-                        name: 'Food',
-                        value: 0.3,
-                      ),
-                      ProgressSection(
-                        name: 'Shopping',
-                        value: 0.6,
-                      ), // Food
-                      ProgressSection(
-                        name: 'Bill Payment',
-                        value: 0.1,
-                      ),
+                      for (MapEntry<String, double> entry
+                          in controller.progressIndicatorData.entries)
+                        ProgressSection(
+                          name: entry.key,
+                          value: entry.value,
+                        ),
                     ],
                   ),
                 ],
@@ -318,6 +321,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Revenue this month
                   Row(
                     children: [
                       Icon(
@@ -335,7 +339,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             fontSize: 10,
                           ),
                           FxText.labelLarge(
-                            '${controller.currencyIndicator}${controller.revenueLastWeek.toWholeNumber()}',
+                            '${controller.currencyIndicator}${controller.revenueThisMonth.toWholeNumber()}',
                             color: customTheme.lime,
                           ),
                         ],
@@ -351,7 +355,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     children: [
                       Icon(
                         IconData(
-                          controller.topCategoryLastWeek.iconHex,
+                          controller.topCategoryThisMonth.iconHex,
                           fontFamily: 'MaterialIcons',
                         ),
                         color: customTheme.white,
@@ -362,7 +366,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           FxText.bodySmall(
-                            controller.topCategoryLastWeek.categoryName,
+                            controller.topCategoryThisMonth.categoryName,
                             color: customTheme.white,
                             fontSize: 10,
                           ),
@@ -532,7 +536,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: customTheme.black,
                           ),
                           FxText.bodySmall(
-                            tmpExpenses.description,
+                            // Cut description if more than 20 characters
+                            tmpExpenses.description.length > 20
+                                ? '${tmpExpenses.description.substring(0, 20)}...'
+                                : tmpExpenses.description,
                             color: customTheme.black,
                             xMuted: true,
                             fontSize: 12,

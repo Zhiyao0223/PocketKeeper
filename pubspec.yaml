@@ -32,6 +32,10 @@ dependencies:
   cached_network_image: ^3.3.1
   photo_view: ^0.15.0
 
+  # OCR
+  camera: ^0.10.5+5
+  cunning_document_scanner: ^1.2.3
+
   # Google Sign In
   google_sign_in: ^6.2.1
   firebase_core: ^2.31.1
@@ -55,6 +59,8 @@ dependencies:
   http: ^1.2.1
   intl: ^0.19.0
   google_generative_ai: ^0.4.3
+  app_settings: ^5.1.1
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   # Local database

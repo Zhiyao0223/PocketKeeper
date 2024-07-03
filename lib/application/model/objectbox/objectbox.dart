@@ -6,6 +6,8 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
+import 'package:pocketkeeper/application/model/expense_goal.dart';
+import 'package:pocketkeeper/application/model/expense_limit.dart';
 import 'package:pocketkeeper/application/model/money_account.dart';
 import 'package:pocketkeeper/application/model/role.dart';
 import 'objectbox.g.dart';
@@ -51,6 +53,8 @@ class ObjectBox {
     store.box<Accounts>().removeAll();
     store.box<Category>().removeAll();
     store.box<Expenses>().removeAll();
+    store.box<ExpenseGoal>().removeAll();
+    store.box<ExpenseLimit>().removeAll();
     store.box<Role>().removeAll();
 
     // Give dummy data
@@ -210,6 +214,57 @@ class ObjectBox {
     store.box<Category>().putMany(categories);
     categories = store.box<Category>().getAll();
 
+    // Goals
+    List<ExpenseGoal> expenseGoals = [
+      ExpenseGoal(
+        tmpCurrentAmount: 500,
+        tmpTargetAmount: 1000,
+        tmpDescription: "New phone",
+        tmpIconHex: Icons.phone.codePoint,
+        tmpStatus: 0,
+      ),
+      ExpenseGoal(
+        tmpCurrentAmount: 1000,
+        tmpTargetAmount: 3500,
+        tmpDescription: "New laptop",
+        tmpIconHex: Icons.laptop.codePoint,
+        tmpStatus: 0,
+      ),
+      ExpenseGoal(
+        tmpCurrentAmount: 2000,
+        tmpTargetAmount: 30000,
+        tmpDescription: "New car",
+        tmpIconHex: Icons.directions_car.codePoint,
+        tmpStatus: 0,
+      ),
+    ];
+    store.box<ExpenseGoal>().putMany(expenseGoals);
+
+    // Limit
+    ExpenseLimit expenseLimit1 = ExpenseLimit(
+      tmpAmount: 1000,
+      tmpStatus: 0,
+    );
+    expenseLimit1.category.target = categories[0];
+
+    ExpenseLimit expenseLimit2 = ExpenseLimit(
+      tmpAmount: 2000,
+      tmpStatus: 0,
+    );
+    expenseLimit2.category.target = categories[1];
+
+    ExpenseLimit expenseLimit3 = ExpenseLimit(
+      tmpAmount: 3000,
+      tmpStatus: 0,
+    );
+    expenseLimit3.category.target = categories[2];
+
+    ExpenseLimit expenseLimit4 = ExpenseLimit(
+      tmpAmount: 4000,
+      tmpStatus: 0,
+    );
+    expenseLimit4.category.target = categories[3];
+
     // Role
     List<Role> roles = [
       Role(
@@ -229,7 +284,7 @@ class ObjectBox {
 
     // Expenses
     Expenses expense1 = Expenses(
-      tmpAmount: 1000,
+      tmpAmount: 10,
       tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
       tmpDescription: "Lunch",
       tmpExpensesType: 0,
@@ -239,9 +294,9 @@ class ObjectBox {
     expense1.account.target = accounts[0];
 
     Expenses expense2 = Expenses(
-      tmpAmount: 2000,
+      tmpAmount: 20,
       tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
-      tmpDescription: "Bus Ticket",
+      tmpDescription: "Daily grocery",
       tmpExpensesType: 0,
       tmpStatus: 0,
     );
@@ -249,9 +304,9 @@ class ObjectBox {
     expense2.account.target = accounts[0];
 
     Expenses expense3 = Expenses(
-      tmpAmount: 3000,
+      tmpAmount: 120,
       tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
-      tmpDescription: "T-Shirt",
+      tmpDescription: "Topup RapidKL card",
       tmpExpensesType: 0,
       tmpStatus: 0,
     );
@@ -259,9 +314,9 @@ class ObjectBox {
     expense3.account.target = accounts[0];
 
     Expenses expense4 = Expenses(
-      tmpAmount: 4000,
+      tmpAmount: 30,
       tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
-      tmpDescription: "Movie",
+      tmpDescription: "T-Shirt",
       tmpExpensesType: 0,
       tmpStatus: 0,
     );
@@ -269,9 +324,9 @@ class ObjectBox {
     expense4.account.target = accounts[0];
 
     Expenses expense5 = Expenses(
-      tmpAmount: 5000,
+      tmpAmount: 500,
       tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
-      tmpDescription: "Medicine",
+      tmpDescription: "Movie",
       tmpExpensesType: 0,
       tmpStatus: 0,
     );
@@ -288,33 +343,33 @@ class ObjectBox {
 
     // Income
     Expenses income1 = Expenses(
-      tmpAmount: 10000,
+      tmpAmount: 4000,
       tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
       tmpDescription: "Salary",
       tmpExpensesType: 1,
       tmpStatus: 0,
     );
-    income1.category.target = categories[5];
+    income1.category.target = categories[16];
     income1.account.target = accounts[1];
 
     Expenses income2 = Expenses(
-      tmpAmount: 20000,
+      tmpAmount: 1000,
       tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
-      tmpDescription: "Bonus",
+      tmpDescription: "KPI Bonus",
       tmpExpensesType: 1,
       tmpStatus: 0,
     );
-    income2.category.target = categories[6];
+    income2.category.target = categories[17];
     income2.account.target = accounts[1];
 
     Expenses income3 = Expenses(
-      tmpAmount: 30000,
+      tmpAmount: 200,
       tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
-      tmpDescription: "Gift",
+      tmpDescription: "Gift from friend",
       tmpExpensesType: 1,
       tmpStatus: 0,
     );
-    income3.category.target = categories[7];
+    income3.category.target = categories[18];
     income3.account.target = accounts[1];
 
     store.box<Expenses>().putMany([

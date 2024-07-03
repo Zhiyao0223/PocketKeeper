@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:pocketkeeper/application/model/app_setting.dart';
 import 'package:pocketkeeper/application/model/objectbox/objectbox.dart';
 import 'package:pocketkeeper/application/model/role.dart';
@@ -15,6 +16,9 @@ class MemberCache {
 
   // Local database
   static ObjectBox? objectBox;
+
+  // Camera
+  static List<CameraDescription> cameras = [];
 
   // This function is to reset cache
   reset() {
