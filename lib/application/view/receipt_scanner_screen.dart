@@ -114,16 +114,22 @@ class _ReceiptScannerState extends State<ReceiptScannerScreen> {
           child: FxButton.rounded(
             padding: FxSpacing.all(16),
             backgroundColor: customTheme.colorPrimary,
-            onPressed: () => controller.confirmReceipt().then((_) {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                  builder: (context) => FormAddExpensesScreen(
-                    selectedExpense: controller.selectedExpenses,
-                  ),
-                ),
-                (route) => false,
-              );
-            }),
+            onPressed: () {
+              _buildWaitingDialog();
+              controller.confirmReceipt().then((_) {
+                Navigator.of(context)
+                  ..pop()
+                  ..pop()
+                  ..pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => FormAddExpensesScreen(
+                        selectedExpense: controller.selectedExpenses,
+                        isFromOCR: true,
+                      ),
+                    ),
+                  );
+              });
+            },
             child: FxText.labelMedium(
               "Confirm",
               color: customTheme.white,
@@ -147,6 +153,28 @@ class _ReceiptScannerState extends State<ReceiptScannerScreen> {
           color: customTheme.white,
         ),
       ),
+    );
+  }
+
+  Future<void> _buildWaitingDialog() {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              buildCircularLoadingIndicator(),
+              FxSpacing.height(16),
+              const FxText.bodyMedium(
+                "Please wait while we process the receipt",
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

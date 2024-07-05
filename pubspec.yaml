@@ -35,6 +35,8 @@ dependencies:
   # OCR
   camera: ^0.10.5+5
   cunning_document_scanner: ^1.2.3
+  google_mlkit_entity_extraction: ^0.13.0
+  google_mlkit_text_recognition: ^0.13.0
 
   # Google Sign In
   google_sign_in: ^6.2.1

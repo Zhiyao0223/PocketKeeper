@@ -15,10 +15,12 @@ import '../../template/state_management/state_management.dart';
 
 class FormAddExpensesScreen extends StatefulWidget {
   final Expenses? selectedExpense;
+  final bool isFromOCR;
 
   const FormAddExpensesScreen({
     super.key,
     this.selectedExpense,
+    this.isFromOCR = false,
   });
 
   @override
@@ -42,8 +44,11 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
     super.initState();
     customTheme = CustomTheme();
 
-    controller = FxControllerStore.put(FormAddExpensesController(this,
-        selectedExpenseForEdit: widget.selectedExpense));
+    controller = FxControllerStore.put(FormAddExpensesController(
+      this,
+      selectedExpenseForEdit: widget.selectedExpense,
+      isFromOCR: widget.isFromOCR,
+    ));
   }
 
   @override

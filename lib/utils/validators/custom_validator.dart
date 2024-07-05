@@ -140,3 +140,17 @@ bool compareTime(TimeOfDay time1, {TimeOfDay? time2}) {
       (time1.hour == (time2 ?? TimeOfDay.now()).hour &&
           time1.minute > (time2 ?? TimeOfDay.now()).minute);
 }
+
+/*
+Check if valid datetime
+*/
+bool validateDateTime(String dateTime) {
+  return DateTime.tryParse(dateTime) != null;
+}
+
+/*
+Check if valid double
+*/
+bool validateDouble(String doubleValue) {
+  return double.tryParse(doubleValue) != null;
+}

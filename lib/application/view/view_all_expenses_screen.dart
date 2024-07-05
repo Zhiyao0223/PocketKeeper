@@ -329,6 +329,18 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
             color: customTheme.black,
             fontWeight: 700,
           ),
+          if (date.year != DateTime.now().year) ...[
+            FxText.titleMedium(
+              date.toDateString(dateFormat: '/'),
+              color: customTheme.grey.withOpacity(0.4),
+              fontWeight: 800,
+            ),
+            FxText.titleSmall(
+              date.toDateString(dateFormat: 'yyyy'),
+              color: customTheme.black,
+              xMuted: true,
+            ),
+          ],
           const SizedBox(width: 8),
           FxText.titleSmall(
             date.toDateString(dateFormat: 'E'),

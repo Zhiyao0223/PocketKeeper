@@ -17,7 +17,7 @@ import 'package:pocketkeeper/utils/validators/string_validator.dart';
 import '../../template/state_management/controller.dart';
 
 class FormAddExpensesController extends FxController {
-  bool isDataFetched = false, isEditing = false;
+  bool isDataFetched = false, isEditing = false, isFromOCR = false;
 
   // Disable this to prevent overuse API
   bool isGeminiEnable = false;
@@ -49,12 +49,16 @@ class FormAddExpensesController extends FxController {
   XFile? selectedImage;
 
   // Contructor
-  FormAddExpensesController(this.ticker, {this.selectedExpenseForEdit}) {
+  FormAddExpensesController(
+    this.ticker, {
+    this.selectedExpenseForEdit,
+    this.isFromOCR = false,
+  }) {
     remarkAnimation = CustomAnimation(ticker: ticker);
     dateAnimation = CustomAnimation(ticker: ticker);
     timeAnimation = CustomAnimation(ticker: ticker);
 
-    if (selectedExpenseForEdit != null) isEditing = true;
+    if (selectedExpenseForEdit != null && !isFromOCR) isEditing = true;
   }
 
   @override
@@ -100,6 +104,38 @@ class FormAddExpensesController extends FxController {
         selectedImage = await loadUint8ListAsXFile(tmpExpense.image!);
         imageController.text = selectedImage!.name;
       }
+    }
+    // If from OCR
+    else if (isFromOCR) {
+      // Set image
+      selectedImage =
+          await loadUint8ListAsXFile(selectedExpenseForEdit!.image!);
+      imageController.text = selectedImage!.name;
+
+      // Set amount
+      amountController.text =
+          selectedExpenseForEdit!.amount.removeExtraDecimal();
+
+      // Set remark
+      remarkController.text = selectedExpenseForEdit!.description;
+
+      // Set date
+      selectedDate = selectedExpenseForEdit!.expensesDate;
+      dateController.text = selectedExpenseForEdit!.expensesDate
+          .toDateString(dateFormat: "dd EEE, yyyy");
+
+      // Set time
+      timeController.text = selectedExpenseForEdit!.expensesDate
+          .toDateString(dateFormat: "hh:mm a");
+
+      // Auto detect category from remark
+      autoDetectCategory();
+
+      // Set default selected category
+      selectedCategory = (selectedExpensesType == 0)
+          ? expenseCategories[0]
+          : incomeCategories[0];
+      categoryController.text = selectedCategory.categoryName;
     } else {
       // Initialize date to current date and time
       DateTime now = DateTime.now();

@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/member_cache.dart';
@@ -180,32 +183,45 @@ class LoginController extends FxController {
     required String password,
   }) async {
     // Variables
-    const String filename = "login.php";
-    Map<String, dynamic> requestBody = {
-      "email": email,
-      "password": password,
-      "process": "login",
-    };
+    try {
+      const String filename = "login.php";
+      Map<String, dynamic> requestBody = {
+        "email": email,
+        "password": password,
+        "process": "login",
+      };
 
-    Map<String, dynamic> responseJson = await ApiService.post(
-      filename: filename,
-      body: requestBody,
-    );
-
-    // Store share preferences if is valid user
-    if (responseJson["status"] == 200) {
-      Users tmpuser = Users(
-        tmpId: int.parse(responseJson["body"]["user_id"]),
-        tmpName: responseJson["body"]["username"],
-        tmpEmail: responseJson["body"]["email"],
-        tmpStatus: int.parse(responseJson["body"]["status"]),
-        tmpCreatedDate: responseJson["body"]["created_date"],
-        tmpUpdatedDate: responseJson["body"]["updated_date"],
+      Map<String, dynamic> responseJson = await ApiService.post(
+        filename: filename,
+        body: requestBody,
       );
 
-      await onSuccessLogin(tmpuser);
+      // Store share preferences if is valid user
+      if (responseJson["status"] == 200) {
+        Users tmpuser = Users(
+          tmpId: int.parse(responseJson["body"]["user_id"]),
+          tmpName: responseJson["body"]["username"],
+          tmpEmail: responseJson["body"]["email"],
+          tmpStatus: int.parse(responseJson["body"]["status"]),
+          tmpCreatedDate: responseJson["body"]["created_date"],
+          tmpUpdatedDate: responseJson["body"]["updated_date"],
+        );
 
-      return true;
+        await onSuccessLogin(tmpuser);
+
+        return true;
+      }
+    } on SocketException catch (e) {
+      log(e.toString());
+      showToast(customMessage: "No internet connection.");
+    } on HttpException catch (e) {
+      log(e.toString());
+      showToast(customMessage: "Unknown Error occurred.");
+    } on FormatException catch (e) {
+      log(e.toString());
+      showToast(customMessage: "Technical Error occurred.");
+    } catch (e) {
+      showToast(customMessage: "Unknown Error occurred.");
     }
 
     return false;
