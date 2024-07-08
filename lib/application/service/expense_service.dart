@@ -1,6 +1,8 @@
 import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
+import 'package:pocketkeeper/application/model/money_account.dart';
+import 'package:pocketkeeper/application/service/account_service.dart';
 import 'package:pocketkeeper/application/service/objectbox_service.dart';
 
 class ExpenseService extends ObjectboxService<Expenses> {
@@ -28,11 +30,19 @@ class ExpenseService extends ObjectboxService<Expenses> {
         .toList();
   }
 
-  List<Expenses> getExpensesByAccountId(int accountId) {
-    final List<Expenses> expenses = getAll();
-    return expenses
+  List<Expenses> getExpensesByAccountId(int accountId, {int? month}) {
+    if (month == null) {
+      return getAllActiveRecords()
+          .where((Expenses expense) =>
+              expense.account.target!.id == accountId && expense.status == 0)
+          .toList();
+    }
+
+    return getAllActiveRecords()
         .where((Expenses expense) =>
-            expense.status == 0 && expense.account.target!.id == accountId)
+            expense.account.target!.id == accountId &&
+            expense.status == 0 &&
+            expense.expensesDate.month == month)
         .toList();
   }
 
@@ -129,5 +139,38 @@ class ExpenseService extends ObjectboxService<Expenses> {
     }
 
     return totalExpenses;
+  }
+
+  // Get all account balances in the month
+  List<double> getAccountBalancesInMonth({int? month}) {
+    AccountService accService = AccountService();
+
+    // If null month, use current month
+    month ??= DateTime.now().month;
+
+    final List<Expenses> expenses = getAllActiveRecords();
+
+    // Generate list based on account total length
+    final List<double> accountBalances = List<double>.filled(
+      accService.getAllActiveAccounts().length,
+      0.0,
+    );
+
+    // Add into account balances based on index
+    for (final Expenses expense in expenses) {
+      // Only consider expenses in the same month
+      if (expense.expensesDate.month != month) {
+        continue;
+      }
+
+      final int index = accService.getAllActiveAccounts().indexWhere(
+          (Accounts account) => account.id == expense.account.target!.id);
+
+      double amount =
+          (expense.expensesType == 0) ? expense.amount * -1 : expense.amount;
+      accountBalances[index] += amount;
+    }
+
+    return accountBalances;
   }
 }

@@ -47,6 +47,9 @@ class SingleExpensesController extends FxController {
   }
 
   void fetchData() async {
+    // Recheck selectedExpenseType
+    selectedExpensesType = selectedExpense.expensesType;
+
     // Compare with ExpenseCache to ensure up to date data
     if (selectedExpensesType == 0) {
       if (ExpenseCache.expenses.isNotEmpty) {

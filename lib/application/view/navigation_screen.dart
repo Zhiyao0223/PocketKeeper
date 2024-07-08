@@ -31,7 +31,7 @@ class _HomeScreenState extends State<NavigationScreen> {
   List<IconData> iconList = [
     Icons.dashboard,
     Icons.analytics,
-    Icons.more_horiz,
+    Icons.tune,
     Icons.settings,
   ];
 
@@ -77,8 +77,6 @@ class _HomeScreenState extends State<NavigationScreen> {
         borderColor: customTheme.border,
         inactiveColor: customTheme.grey,
         backgroundColor: customTheme.white,
-
-        //other params
       ),
     );
   }

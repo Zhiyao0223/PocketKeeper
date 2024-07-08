@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/other_controller.dart';
+import 'package:pocketkeeper/application/view/other/account_screen.dart';
+import 'package:pocketkeeper/application/view/other/bill_screen.dart';
+import 'package:pocketkeeper/application/view/other/goal_screen.dart';
+import 'package:pocketkeeper/application/view/other/limit_screen.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
 import 'package:pocketkeeper/theme/custom_theme.dart';
+import 'package:pocketkeeper/widget/appbar.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
 import '../../template/state_management/state_management.dart';
 
@@ -49,7 +54,11 @@ class _OtherScreenState extends State<OtherScreen>
 
     return Scaffold(
       backgroundColor: customTheme.colorPrimary,
-      appBar: _buildAppbar(),
+      appBar: buildCommonAppBar(
+        headerTitle: 'Configurations',
+        context: context,
+        disableBackButton: true,
+      ),
       body: Container(
         color: customTheme.white.withOpacity(0.87),
         child: Column(
@@ -63,37 +72,56 @@ class _OtherScreenState extends State<OtherScreen>
                   childAspectRatio: 1.25,
                 ),
                 itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    margin: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Color(
-                        controller.categoriesHexColorData.values
-                            .elementAt(index)['color']!,
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        switch (index) {
+                          case 0:
+                            return const GoalScreen();
+                          case 1:
+                            return const LimitScreen();
+                          case 2:
+                            return const BillScreen();
+                          case 3:
+                            return const AccountScreen();
+                          default:
+                            return Container();
+                        }
+                      }));
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Color(
+                          controller.categoriesHexColorData.values
+                              .elementAt(index)['color']!,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          IconData(
-                            controller.categoriesHexColorData.values
-                                .elementAt(index)['categoryCode']!,
-                            fontFamily: 'MaterialIcons',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            IconData(
+                              controller.categoriesHexColorData.values
+                                  .elementAt(index)['categoryCode']!,
+                              fontFamily: 'MaterialIcons',
+                            ),
+                            color: customTheme.white,
+                            size: 40,
                           ),
-                          color: Colors.white,
-                          size: 40,
-                        ),
-                        const SizedBox(height: 8),
-                        Center(
-                          child: FxText.bodyMedium(
-                            controller.categoriesHexColorData.keys
-                                .elementAt(index),
-                            color: Colors.white,
+                          const SizedBox(height: 8),
+                          Center(
+                            child: FxText.bodyMedium(
+                              controller.categoriesHexColorData.keys
+                                  .elementAt(index),
+                              color: customTheme.white,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -102,18 +130,6 @@ class _OtherScreenState extends State<OtherScreen>
           ],
         ),
       ),
-    );
-  }
-
-  AppBar _buildAppbar() {
-    return AppBar(
-      toolbarHeight: kToolbarHeight + 1, // Make bottom border invisible
-      title: FxText.labelLarge(
-        'Configuration',
-        color: customTheme.white,
-      ),
-      centerTitle: true,
-      backgroundColor: customTheme.lightPurple,
     );
   }
 }

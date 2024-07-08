@@ -3,18 +3,18 @@ import 'package:pocketkeeper/application/controller/bill_controller.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
 import 'package:pocketkeeper/theme/custom_theme.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
-import '../../template/state_management/state_management.dart';
+import '../../../template/state_management/state_management.dart';
 
-class BillScreen extends StatefulWidget {
-  const BillScreen({super.key});
+class GoalScreen extends StatefulWidget {
+  const GoalScreen({super.key});
 
   @override
-  State<BillScreen> createState() {
-    return _BillScreenState();
+  State<GoalScreen> createState() {
+    return _GoalScreenState();
   }
 }
 
-class _BillScreenState extends State<BillScreen>
+class _GoalScreenState extends State<GoalScreen>
     with SingleTickerProviderStateMixin {
   late CustomTheme customTheme;
   late BillController controller;
@@ -83,67 +83,8 @@ class _BillScreenState extends State<BillScreen>
           children: [
             const Center(child: Text('Bills Content')),
             const Center(child: Text('Payments Content')),
-            _buildSubscriptionTab(),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildSubscriptionTab() {
-    return ListView(
-      children: [
-        const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text(
-            'Your monthly payment\nfor subscriptions',
-            style: TextStyle(fontSize: 18),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text(
-            '\$61.88',
-            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        _buildSubscriptionItem(
-          'assets/patreon_icon.png',
-          'Patreon membership',
-          '\$19.99/mo',
-        ),
-        _buildSubscriptionItem(
-          'assets/netflix_icon.png',
-          'Netflix',
-          '\$12/mo',
-        ),
-        _buildSubscriptionItem(
-          'assets/apple_icon.png',
-          'Apple payment',
-          '\$19.99/mo',
-        ),
-        _buildSubscriptionItem(
-          'assets/spotify_icon.png',
-          'Spotify',
-          '\$6.99/mo',
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSubscriptionItem(
-      String imageIconUrl, String name, String price) {
-    return ListTile(
-      leading: Image.asset(imageIconUrl, width: 40, height: 40),
-      title: Text(name),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(price),
-          const Icon(Icons.chevron_right),
-        ],
       ),
     );
   }

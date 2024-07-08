@@ -1,5 +1,7 @@
 import 'package:pocketkeeper/application/member_cache.dart';
+import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/application/model/money_account.dart';
+import 'package:pocketkeeper/application/service/expense_service.dart';
 import 'package:pocketkeeper/application/service/objectbox_service.dart';
 
 class AccountService extends ObjectboxService<Accounts> {
@@ -8,5 +10,16 @@ class AccountService extends ObjectboxService<Accounts> {
   List<Accounts> getAllActiveAccounts() {
     final List<Accounts> accounts = getAll();
     return accounts.where((Accounts account) => account.status == 0).toList();
+  }
+
+  bool isAccountNameExist(String name) {
+    final List<Accounts> accounts = getAll();
+    return accounts.any((Accounts account) => account.accountName == name);
+  }
+
+  bool isAnyRecordLinkedToAccount(int accountId) {
+    List<Expenses> expenses = ExpenseService().getAllActiveRecords();
+    return expenses
+        .any((Expenses expense) => expense.account.target!.id == accountId);
   }
 }
