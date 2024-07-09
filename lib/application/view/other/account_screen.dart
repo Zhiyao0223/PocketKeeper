@@ -245,13 +245,15 @@ class _AccountScreenState extends State<AccountScreen>
                               xMuted: true,
                             ),
                           ),
-                          const PopupMenuItem<int>(
-                            value: 1,
-                            child: FxText.bodyMedium(
-                              'Delete',
-                              xMuted: true,
+                          // Disable delete for cash
+                          if (controller.accounts.length > 1)
+                            const PopupMenuItem<int>(
+                              value: 1,
+                              child: FxText.bodyMedium(
+                                'Delete',
+                                xMuted: true,
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ],

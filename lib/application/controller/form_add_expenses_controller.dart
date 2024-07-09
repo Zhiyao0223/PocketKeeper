@@ -87,7 +87,7 @@ class FormAddExpensesController extends FxController {
 
       selectedDate = tmpExpense.expensesDate;
       dateController.text =
-          tmpExpense.expensesDate.toDateString(dateFormat: "dd EEE, yyyy");
+          tmpExpense.expensesDate.toDateString(dateFormat: "dd MMM, yyyy");
 
       // Convert to 12 hour format
       timeController.text =
@@ -122,7 +122,7 @@ class FormAddExpensesController extends FxController {
       // Set date
       selectedDate = selectedExpenseForEdit!.expensesDate;
       dateController.text = selectedExpenseForEdit!.expensesDate
-          .toDateString(dateFormat: "dd EEE, yyyy");
+          .toDateString(dateFormat: "dd MMM, yyyy");
 
       // Set time
       timeController.text = selectedExpenseForEdit!.expensesDate
@@ -139,7 +139,7 @@ class FormAddExpensesController extends FxController {
     } else {
       // Initialize date to current date and time
       DateTime now = DateTime.now();
-      dateController.text = now.toDateString(dateFormat: "dd EEE, yyyy");
+      dateController.text = now.toDateString(dateFormat: "dd MMM, yyyy");
       timeController.text = now.toDateString(dateFormat: "hh:mm a");
 
       // Set default selected category
@@ -162,7 +162,7 @@ class FormAddExpensesController extends FxController {
       selectedDate.minute,
     );
 
-    dateController.text = date.toDateString(dateFormat: "dd EEE, yyyy");
+    dateController.text = date.toDateString(dateFormat: "dd MMM, yyyy");
   }
 
   void setSelectedTime(TimeOfDay time) {

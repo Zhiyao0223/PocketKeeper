@@ -18,6 +18,7 @@ class AppSetting {
 
   // Budget Setting
   late double monthlyLimit;
+  late int endOfMonth; // 1-30, 30 mean last day
 
   // Constructor
   AppSetting() {
@@ -27,6 +28,7 @@ class AppSetting {
     appLanguage = Language.en.name;
     isGoogleSignIn = false;
     currencyIndicator = "\$";
-    monthlyLimit = 1500;
+    monthlyLimit = 5000;
+    endOfMonth = 30;
   }
 }

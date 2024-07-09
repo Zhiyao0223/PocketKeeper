@@ -75,7 +75,6 @@ class _BillScreenState extends State<BillScreen>
               Tab(text: 'Goals'),
               Tab(text: 'Limits'),
               Tab(text: 'Bills'),
-              Tab(text: 'Accounts'),
             ],
           ),
         ),

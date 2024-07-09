@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'package:pocketkeeper/application/member_cache.dart';
 
 /*
   Check for image file size
@@ -71,4 +72,21 @@ Future<XFile> loadAssetAsXFile(String assetPath) async {
 
   // Convert File to XFile
   return XFile(file.path);
+}
+
+// This function is to count remaining days until the end of the month (Set by user)
+int getRemainingDayUntilNextMonth() {
+  final now = DateTime.now();
+  final endOfMonth = MemberCache.appSetting.endOfMonth;
+
+  // Get last day of the month and calculate difference from now
+  if (endOfMonth == 30) {
+    return DateTime(now.year, now.month + 1, 0).day - now.day;
+  }
+  // If end of month is less than current day (eg: user set 7th), calculate remaining days until 7th
+  else if (endOfMonth < now.day) {
+    return DateTime(now.year, now.month + 1, endOfMonth).difference(now).inDays;
+  } else {
+    return endOfMonth - now.day;
+  }
 }

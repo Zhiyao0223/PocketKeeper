@@ -447,7 +447,7 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
                     if (date != null) {
                       controller.setSelectedDate(date);
                       controller.dateController.text =
-                          date.toDateString(dateFormat: "dd EEE, yyyy");
+                          date.toDateString(dateFormat: "dd MMM, yyyy");
                     }
                   });
                 },
@@ -472,7 +472,7 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
                 ),
                 maxLines: 1,
                 controller: controller.dateController,
-                validator: controller.validateRemark,
+                validator: controller.validateDate,
                 cursorColor: customTheme.black,
                 onTapOutside: (_) =>
                     FocusManager.instance.primaryFocus?.unfocus(),

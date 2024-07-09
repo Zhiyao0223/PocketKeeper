@@ -8,8 +8,11 @@ class ExpenseGoal {
   int goalId = 0;
 
   late String description;
+
   late double targetAmount;
   late double currentAmount;
+  late double suggestedAmount;
+
   late int syncStatus;
   late int status;
   late int iconHex;
@@ -27,8 +30,9 @@ class ExpenseGoal {
     String? tmpDescription,
     double? tmpCurrentAmount,
     double? tmpTargetAmount,
+    double? tmpSuggestedAmount,
     SyncStatus? tmpSyncStatus,
-    int? tmpStatus,
+    int? tmpStatus, // 0 - active, 1 - completed, 2 - failed
     DateTime? tmpCreatedDate,
     DateTime? tmpUpdatedDate,
     int? tmpIconHex,
@@ -37,6 +41,7 @@ class ExpenseGoal {
     description = tmpDescription ?? '';
     currentAmount = tmpCurrentAmount ?? 0;
     targetAmount = tmpTargetAmount ?? 0;
+    suggestedAmount = tmpSuggestedAmount ?? 0;
     syncStatus = tmpSyncStatus?.index ?? SyncStatus.none.index;
     status = tmpStatus ?? 0;
     iconHex = tmpIconHex ?? Icons.account_balance.codePoint;

@@ -53,82 +53,105 @@ class _OtherScreenState extends State<OtherScreen>
     }
 
     return Scaffold(
-      backgroundColor: customTheme.colorPrimary,
       appBar: buildCommonAppBar(
         headerTitle: 'Configurations',
         context: context,
         disableBackButton: true,
       ),
-      body: Container(
-        color: customTheme.white.withOpacity(0.87),
-        child: Column(
-          children: [
-            Expanded(
-              child: GridView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: 4,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.25,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.asset(
+            'assets/images/configuration_bg.jpg',
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FxText.labelLarge(
+                  'Your Financial Journey Begins Here!',
+                  color: customTheme.colorPrimary,
                 ),
-                itemBuilder: (BuildContext context, int index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        switch (index) {
-                          case 0:
-                            return const GoalScreen();
-                          case 1:
-                            return const LimitScreen();
-                          case 2:
-                            return const BillScreen();
-                          case 3:
-                            return const AccountScreen();
-                          default:
-                            return Container();
-                        }
-                      }));
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Color(
-                          controller.categoriesHexColorData.values
-                              .elementAt(index)['color']!,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            IconData(
-                              controller.categoriesHexColorData.values
-                                  .elementAt(index)['categoryCode']!,
-                              fontFamily: 'MaterialIcons',
-                            ),
-                            color: customTheme.white,
-                            size: 40,
-                          ),
-                          const SizedBox(height: 8),
-                          Center(
-                            child: FxText.bodyMedium(
-                              controller.categoriesHexColorData.keys
-                                  .elementAt(index),
-                              color: customTheme.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+                FxText.bodySmall(
+                  'Start managing your finance with these options.',
+                  color: customTheme.black,
+                  xMuted: true,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: GridView.builder(
+              shrinkWrap: true,
+              primary: false,
+              padding: const EdgeInsets.all(16),
+              itemCount: 4,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1.25,
+              ),
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      switch (index) {
+                        case 0:
+                          return const GoalScreen();
+                        case 1:
+                          return const LimitScreen();
+                        case 2:
+                          return const BillScreen();
+                        case 3:
+                          return const AccountScreen();
+                        default:
+                          return Container();
+                      }
+                    }));
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Color(
+                        controller.categoriesHexColorData.values
+                            .elementAt(index)['color']!,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          IconData(
+                            controller.categoriesHexColorData.values
+                                .elementAt(index)['categoryCode']!,
+                            fontFamily: 'MaterialIcons',
+                          ),
+                          color: customTheme.white,
+                          size: 40,
+                        ),
+                        const SizedBox(height: 8),
+                        Center(
+                          child: FxText.bodyMedium(
+                            controller.categoriesHexColorData.keys
+                                .elementAt(index),
+                            color: customTheme.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

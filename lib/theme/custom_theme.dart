@@ -37,6 +37,7 @@ class CustomTheme {
       yellow,
       orange,
       black,
+      lightGrey,
       grey,
       lightPurple,
       white;
@@ -78,11 +79,12 @@ class CustomTheme {
     this.brown = const Color(0xffbd631a),
     this.blue = const Color(0xff1a71bd),
     this.lime = const Color.fromARGB(255, 36, 217, 20),
-    this.green = const Color(0xff068425),
+    this.green = const Color.fromARGB(255, 76, 175, 80),
     this.yellow = const Color(0xfffff44f),
     this.orange = const Color(0xffFFA500),
     this.black = const Color(0xff000000),
     this.white = const Color(0xffffffff),
+    this.lightGrey = const Color.fromARGB(255, 234, 232, 232),
     this.grey = const Color(0xff808080),
 
     // Icon Color Scheme

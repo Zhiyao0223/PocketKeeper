@@ -66,7 +66,7 @@ class SingleExpensesController extends FxController {
     amountController.text = selectedExpense.amount.removeExtraDecimal();
     remarkController.text = selectedExpense.description;
     dateController.text =
-        selectedExpense.expensesDate.toDateString(dateFormat: "dd EEE, yyyy");
+        selectedExpense.expensesDate.toDateString(dateFormat: "dd MMM, yyyy");
     timeController.text =
         selectedExpense.expensesDate.toDateString(dateFormat: "hh:mm a");
     categoryController.text = selectedExpense.category.target!.categoryName;

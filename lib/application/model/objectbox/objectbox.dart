@@ -221,6 +221,7 @@ class ObjectBox {
         tmpTargetAmount: 1000,
         tmpDescription: "New phone",
         tmpIconHex: Icons.phone.codePoint,
+        dueDate: DateTime(2024, 7, 24, 10, 33, 30, 0, 0),
         tmpStatus: 0,
       ),
       ExpenseGoal(
@@ -228,6 +229,7 @@ class ObjectBox {
         tmpTargetAmount: 3500,
         tmpDescription: "New laptop",
         tmpIconHex: Icons.laptop.codePoint,
+        dueDate: DateTime(2024, 8, 13, 10, 33, 30, 0, 0),
         tmpStatus: 0,
       ),
       ExpenseGoal(
@@ -235,35 +237,52 @@ class ObjectBox {
         tmpTargetAmount: 30000,
         tmpDescription: "New car",
         tmpIconHex: Icons.directions_car.codePoint,
+        dueDate: DateTime(2024, 9, 20, 10, 33, 30, 0, 0),
         tmpStatus: 0,
+      ),
+      ExpenseGoal(
+        tmpCurrentAmount: 10000,
+        tmpTargetAmount: 10000,
+        tmpDescription: "New house",
+        tmpIconHex: Icons.home.codePoint,
+        dueDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
+        tmpUpdatedDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
+        tmpStatus: 1,
       ),
     ];
     store.box<ExpenseGoal>().putMany(expenseGoals);
 
     // Limit
     ExpenseLimit expenseLimit1 = ExpenseLimit(
-      tmpAmount: 1000,
+      tmpAmount: 1500,
       tmpStatus: 0,
     );
     expenseLimit1.category.target = categories[0];
 
     ExpenseLimit expenseLimit2 = ExpenseLimit(
-      tmpAmount: 2000,
+      tmpAmount: 500,
       tmpStatus: 0,
     );
     expenseLimit2.category.target = categories[1];
 
     ExpenseLimit expenseLimit3 = ExpenseLimit(
-      tmpAmount: 3000,
+      tmpAmount: 300,
       tmpStatus: 0,
     );
     expenseLimit3.category.target = categories[2];
 
     ExpenseLimit expenseLimit4 = ExpenseLimit(
-      tmpAmount: 4000,
+      tmpAmount: 200,
       tmpStatus: 0,
     );
     expenseLimit4.category.target = categories[3];
+
+    store.box<ExpenseLimit>().putMany([
+      expenseLimit1,
+      expenseLimit2,
+      expenseLimit3,
+      expenseLimit4,
+    ]);
 
     // Role
     List<Role> roles = [

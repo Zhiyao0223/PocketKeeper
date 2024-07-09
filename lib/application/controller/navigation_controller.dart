@@ -2,6 +2,8 @@ import 'package:pocketkeeper/application/expense_cache.dart';
 import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/service/account_service.dart';
 import 'package:pocketkeeper/application/service/category_service.dart';
+import 'package:pocketkeeper/application/service/expense_goal_service.dart';
+import 'package:pocketkeeper/application/service/expense_limit_service.dart';
 import 'package:pocketkeeper/application/service/expense_service.dart';
 import 'package:pocketkeeper/application/service/setting_service.dart';
 
@@ -27,6 +29,9 @@ class NavigationController extends FxController {
     ExpenseCache.expenses = ExpenseService().getAllActiveExpenses();
     ExpenseCache.incomes = ExpenseService().getAllActiveIncomes();
     ExpenseCache.accounts = AccountService().getAllActiveAccounts();
+    ExpenseCache.expenseLimits =
+        ExpenseLimitService().getAllActiveExpenseLimits();
+    ExpenseCache.expenseGoals = ExpenseGoalService().getAllActiveGoals();
 
     MemberCache.appSetting = SettingService().getAppSetting();
 

@@ -478,9 +478,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       children: [
         // If no record found
         if (controller.expensesList[accountId]!.isEmpty)
-          FxText.bodySmall(
-            'No record found',
-            color: customTheme.black,
+          Center(
+            child: FxText.bodySmall(
+              'No record found',
+              color: customTheme.black,
+              xMuted: true,
+            ),
           ),
         for (Expenses tmpExpenses in controller.expensesList[accountId]!)
           GestureDetector(
