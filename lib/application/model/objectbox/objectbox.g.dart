@@ -19,6 +19,7 @@ import '../category.dart';
 import '../expense.dart';
 import '../expense_goal.dart';
 import '../expense_limit.dart';
+import '../goal_saving_record.dart';
 import '../money_account.dart';
 import '../notification.dart';
 import '../role.dart';
@@ -28,38 +29,38 @@ export 'package:objectbox/objectbox.dart'; // so that callers only have to impor
 
 final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(1, 7559624737088045915),
+      id: const obx_int.IdUid(1, 8831631981163564566),
       name: 'Accounts',
-      lastPropertyId: const obx_int.IdUid(6, 6471561653118739490),
+      lastPropertyId: const obx_int.IdUid(6, 387416165700938719),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 2173282099773693476),
+            id: const obx_int.IdUid(1, 5180882146375394559),
             name: 'id',
             type: 6,
             flags: 1),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 7104838257253578999),
+            id: const obx_int.IdUid(2, 397003619378784218),
             name: 'accountName',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 210403444427437502),
+            id: const obx_int.IdUid(3, 7045148632975615978),
             name: 'accountIconHex',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 5561081572627582121),
+            id: const obx_int.IdUid(4, 416109772411992719),
             name: 'status',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 2105768043384972578),
+            id: const obx_int.IdUid(5, 5039363868475206861),
             name: 'createdDate',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 6471561653118739490),
+            id: const obx_int.IdUid(6, 387416165700938719),
             name: 'updatedDate',
             type: 10,
             flags: 0)
@@ -67,53 +68,53 @@ final _entities = <obx_int.ModelEntity>[
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(2, 5903144478451607531),
+      id: const obx_int.IdUid(2, 6201768374101372413),
       name: 'AppSetting',
-      lastPropertyId: const obx_int.IdUid(9, 5240964257140415677),
+      lastPropertyId: const obx_int.IdUid(9, 4902607547934781294),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 6904631841104590837),
+            id: const obx_int.IdUid(1, 5979634639836917208),
             name: 'settingId',
             type: 6,
             flags: 129),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 6201122142750467837),
+            id: const obx_int.IdUid(2, 6911318319349245599),
             name: 'appName',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 4901216836294162510),
+            id: const obx_int.IdUid(3, 4065995559216117837),
             name: 'appVersion',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 946788599022182922),
+            id: const obx_int.IdUid(4, 8232594716266957023),
             name: 'appTheme',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 1643077705396805776),
+            id: const obx_int.IdUid(5, 5227247403229093035),
             name: 'appLanguage',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 3412493075390671240),
+            id: const obx_int.IdUid(6, 2626426787324476590),
             name: 'currencyIndicator',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 3193029556868893000),
+            id: const obx_int.IdUid(7, 6763704648403179344),
             name: 'isGoogleSignIn',
             type: 1,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(8, 5204671294553517664),
+            id: const obx_int.IdUid(8, 5492694289983251058),
             name: 'monthlyLimit',
             type: 8,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(9, 5240964257140415677),
+            id: const obx_int.IdUid(9, 4902607547934781294),
             name: 'endOfMonth',
             type: 6,
             flags: 0)
@@ -121,48 +122,48 @@ final _entities = <obx_int.ModelEntity>[
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(3, 8987229111459942549),
+      id: const obx_int.IdUid(3, 3961364298586900607),
       name: 'Category',
-      lastPropertyId: const obx_int.IdUid(8, 9173568463589519297),
+      lastPropertyId: const obx_int.IdUid(8, 420585335601318195),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 5873091241447330509),
+            id: const obx_int.IdUid(1, 2218805074034430348),
             name: 'id',
             type: 6,
             flags: 1),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 6967451979981812494),
+            id: const obx_int.IdUid(2, 5713140838333165229),
             name: 'categoryName',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 3624596884693429698),
+            id: const obx_int.IdUid(3, 1038135084941256854),
             name: 'categoryType',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 1344140229107913386),
+            id: const obx_int.IdUid(4, 835635260221480048),
             name: 'status',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 662209253137914385),
+            id: const obx_int.IdUid(5, 2618703127454663115),
             name: 'iconHex',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 6181233961071946470),
+            id: const obx_int.IdUid(6, 2336940634400116697),
             name: 'createdDate',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 4140253558358694088),
+            id: const obx_int.IdUid(7, 7941756379631659755),
             name: 'updatedDate',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(8, 9173568463589519297),
+            id: const obx_int.IdUid(8, 420585335601318195),
             name: 'iconColor',
             type: 6,
             flags: 0)
@@ -170,63 +171,63 @@ final _entities = <obx_int.ModelEntity>[
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(4, 6851673331687180451),
+      id: const obx_int.IdUid(4, 4534934102677411721),
       name: 'ExpenseGoal',
-      lastPropertyId: const obx_int.IdUid(11, 3444642858095207024),
+      lastPropertyId: const obx_int.IdUid(11, 381579880899911153),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 7355881226547453215),
+            id: const obx_int.IdUid(1, 8338000965089772117),
             name: 'goalId',
             type: 6,
             flags: 129),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 3978285660142612353),
+            id: const obx_int.IdUid(2, 8921528883465457003),
             name: 'description',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 4770115224317568643),
+            id: const obx_int.IdUid(3, 3323232228139074753),
             name: 'targetAmount',
             type: 8,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 1263915770526153098),
+            id: const obx_int.IdUid(4, 3199989839724077259),
             name: 'currentAmount',
             type: 8,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 4051428785525935931),
+            id: const obx_int.IdUid(5, 3476428828068737434),
             name: 'suggestedAmount',
             type: 8,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 5824308590556921636),
+            id: const obx_int.IdUid(6, 7560810394299395615),
             name: 'syncStatus',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 3363579424746026783),
+            id: const obx_int.IdUid(7, 6630825440088857507),
             name: 'status',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(8, 4928637780240859197),
+            id: const obx_int.IdUid(8, 8013781399418449793),
             name: 'iconHex',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(9, 8441837665891873859),
+            id: const obx_int.IdUid(9, 4019762431714004138),
             name: 'dueDate',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(10, 2370254145863932254),
+            id: const obx_int.IdUid(10, 5618196357035166189),
             name: 'createdDate',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(11, 3444642858095207024),
+            id: const obx_int.IdUid(11, 381579880899911153),
             name: 'updatedDate',
             type: 10,
             flags: 0)
@@ -234,172 +235,223 @@ final _entities = <obx_int.ModelEntity>[
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(5, 8038092315651761054),
+      id: const obx_int.IdUid(5, 3915113440588879879),
       name: 'ExpenseLimit',
-      lastPropertyId: const obx_int.IdUid(7, 909856739303766306),
+      lastPropertyId: const obx_int.IdUid(7, 1760855111505531199),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 3978024852346192480),
+            id: const obx_int.IdUid(1, 8487955229677299339),
             name: 'id',
             type: 6,
             flags: 1),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 2053156170332301651),
+            id: const obx_int.IdUid(2, 1605329259369639171),
             name: 'amount',
             type: 8,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 9126381764991656851),
+            id: const obx_int.IdUid(3, 7937797141721335933),
             name: 'syncStatus',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 572319292491574824),
+            id: const obx_int.IdUid(4, 4839540149764770088),
             name: 'status',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 5763863828654162660),
+            id: const obx_int.IdUid(5, 6149662425678660402),
             name: 'createdDate',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 3054975210602414281),
+            id: const obx_int.IdUid(6, 5769774472417219429),
             name: 'updatedDate',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 909856739303766306),
+            id: const obx_int.IdUid(7, 1760855111505531199),
             name: 'categoryId',
             type: 11,
             flags: 520,
-            indexId: const obx_int.IdUid(1, 976443891666259275),
+            indexId: const obx_int.IdUid(1, 8484504409011527702),
             relationTarget: 'Category')
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(6, 3404504714820747124),
+      id: const obx_int.IdUid(6, 2586405243027039439),
       name: 'Expenses',
-      lastPropertyId: const obx_int.IdUid(12, 8810320303918338174),
+      lastPropertyId: const obx_int.IdUid(12, 2066450318329884078),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 5714076966674864142),
+            id: const obx_int.IdUid(1, 1219160756862167023),
             name: 'id',
             type: 6,
             flags: 1),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 6246982221970767663),
+            id: const obx_int.IdUid(2, 1229137720707926926),
             name: 'description',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 1437001245299287562),
+            id: const obx_int.IdUid(3, 4843363732142582742),
             name: 'amount',
             type: 8,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 6469973343902253801),
+            id: const obx_int.IdUid(4, 6816788121227032144),
             name: 'expensesType',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 8411577880220884511),
+            id: const obx_int.IdUid(5, 6257780831733842307),
             name: 'syncStatus',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 8552444993910341807),
+            id: const obx_int.IdUid(6, 2104214837932862588),
             name: 'status',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 4711300191788486516),
+            id: const obx_int.IdUid(7, 3693005070745352971),
             name: 'image',
             type: 23,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(8, 318870416376278768),
+            id: const obx_int.IdUid(8, 8178627947658696945),
             name: 'expensesDate',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(9, 3693745626750729975),
+            id: const obx_int.IdUid(9, 3201147166477665067),
             name: 'createdDate',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(10, 9220888956114130327),
+            id: const obx_int.IdUid(10, 8065953034057317868),
             name: 'updatedDate',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(11, 1607637755983138017),
+            id: const obx_int.IdUid(11, 5760984858242030710),
             name: 'categoryId',
             type: 11,
             flags: 520,
-            indexId: const obx_int.IdUid(2, 5528235318005949754),
+            indexId: const obx_int.IdUid(2, 2917102714203233712),
             relationTarget: 'Category'),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(12, 8810320303918338174),
+            id: const obx_int.IdUid(12, 2066450318329884078),
             name: 'accountId',
             type: 11,
             flags: 520,
-            indexId: const obx_int.IdUid(3, 7879260531626372856),
+            indexId: const obx_int.IdUid(3, 4467550523843549598),
             relationTarget: 'Accounts')
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(7, 4658217415786746026),
-      name: 'Notifications',
-      lastPropertyId: const obx_int.IdUid(9, 6450713060079266698),
+      id: const obx_int.IdUid(7, 4261467687947724344),
+      name: 'GoalSavingRecord',
+      lastPropertyId: const obx_int.IdUid(8, 7907730562010767553),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 6181069319069404916),
+            id: const obx_int.IdUid(1, 3661676337403182526),
             name: 'id',
             type: 6,
-            flags: 129),
+            flags: 1),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 661471410928749912),
-            name: 'title',
-            type: 9,
+            id: const obx_int.IdUid(2, 286823983775164709),
+            name: 'amount',
+            type: 8,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 5175785317308305581),
-            name: 'description',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 4275630584105379392),
-            name: 'notificationType',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 1854486311161861052),
-            name: 'readStatus',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 2354232772097680770),
+            id: const obx_int.IdUid(3, 6422204735411503291),
             name: 'syncStatus',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 7154320710721369218),
+            id: const obx_int.IdUid(4, 5394605513634455936),
             name: 'status',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(8, 3912977242589218853),
+            id: const obx_int.IdUid(5, 4116026955628714257),
+            name: 'savingDate',
+            type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 2043670807173840483),
             name: 'createdDate',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(9, 6450713060079266698),
+            id: const obx_int.IdUid(7, 2352375085640225694),
+            name: 'updatedDate',
+            type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 7907730562010767553),
+            name: 'goalId',
+            type: 11,
+            flags: 520,
+            indexId: const obx_int.IdUid(4, 1730564694065716900),
+            relationTarget: 'ExpenseGoal')
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(8, 7814358593916956067),
+      name: 'Notifications',
+      lastPropertyId: const obx_int.IdUid(9, 3490259122417608946),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 102040439090178306),
+            name: 'id',
+            type: 6,
+            flags: 129),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 4993199727894025869),
+            name: 'title',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 6140657526780349943),
+            name: 'description',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 1184257347881519880),
+            name: 'notificationType',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 7499854972294451633),
+            name: 'readStatus',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 5718875669535315610),
+            name: 'syncStatus',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 3520389999176356839),
+            name: 'status',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 3780168778186242332),
+            name: 'createdDate',
+            type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(9, 3490259122417608946),
             name: 'updatedDate',
             type: 10,
             flags: 0)
@@ -407,18 +459,18 @@ final _entities = <obx_int.ModelEntity>[
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(8, 2596661564170253608),
+      id: const obx_int.IdUid(9, 7442420670389246314),
       name: 'Role',
-      lastPropertyId: const obx_int.IdUid(2, 2965656827812971467),
+      lastPropertyId: const obx_int.IdUid(2, 732545084370248892),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 7341601553821008980),
+            id: const obx_int.IdUid(1, 6072273285299619729),
             name: 'id',
             type: 6,
             flags: 1),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 2965656827812971467),
+            id: const obx_int.IdUid(2, 732545084370248892),
             name: 'name',
             type: 9,
             flags: 0)
@@ -426,62 +478,62 @@ final _entities = <obx_int.ModelEntity>[
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(9, 2420366240871916159),
+      id: const obx_int.IdUid(10, 3740479605036880904),
       name: 'Users',
-      lastPropertyId: const obx_int.IdUid(10, 3287782434675157226),
+      lastPropertyId: const obx_int.IdUid(10, 1782599207046031135),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 3520521201650985991),
+            id: const obx_int.IdUid(1, 3707100353684752341),
             name: 'id',
             type: 6,
             flags: 1),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 135952422084440182),
+            id: const obx_int.IdUid(2, 1138109514961642769),
             name: 'name',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 5286141930077213033),
+            id: const obx_int.IdUid(3, 3723726827519881689),
             name: 'email',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 8027556835025284010),
+            id: const obx_int.IdUid(4, 6614765837359399758),
             name: 'password',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 6280964303849573534),
+            id: const obx_int.IdUid(5, 1814130637057256921),
             name: 'status',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 3081022145198856971),
+            id: const obx_int.IdUid(6, 5555044462861548429),
             name: 'discordId',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 4417203022639825238),
+            id: const obx_int.IdUid(7, 7419769678124107579),
             name: 'profilePictureUrl',
             type: 23,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(8, 7930850444187926500),
+            id: const obx_int.IdUid(8, 2649542640602541047),
             name: 'createdDate',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(9, 4483905879821412457),
+            id: const obx_int.IdUid(9, 7459262265387015857),
             name: 'updatedDate',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(10, 3287782434675157226),
+            id: const obx_int.IdUid(10, 1782599207046031135),
             name: 'roleId',
             type: 11,
             flags: 520,
-            indexId: const obx_int.IdUid(4, 1097139346457078418),
+            indexId: const obx_int.IdUid(5, 6438922736877695870),
             relationTarget: 'Role')
       ],
       relations: <obx_int.ModelRelation>[],
@@ -523,8 +575,8 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(9, 2420366240871916159),
-      lastIndexId: const obx_int.IdUid(4, 1097139346457078418),
+      lastEntityId: const obx_int.IdUid(10, 3740479605036880904),
+      lastIndexId: const obx_int.IdUid(5, 6438922736877695870),
       lastRelationId: const obx_int.IdUid(0, 0),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [],
@@ -833,8 +885,52 @@ obx_int.ModelDefinition getObjectBoxModel() {
           object.account.attach(store);
           return object;
         }),
-    Notifications: obx_int.EntityDefinition<Notifications>(
+    GoalSavingRecord: obx_int.EntityDefinition<GoalSavingRecord>(
         model: _entities[6],
+        toOneRelations: (GoalSavingRecord object) => [object.goal],
+        toManyRelations: (GoalSavingRecord object) => {},
+        getId: (GoalSavingRecord object) => object.id,
+        setId: (GoalSavingRecord object, int id) {
+          object.id = id;
+        },
+        objectToFB: (GoalSavingRecord object, fb.Builder fbb) {
+          fbb.startTable(9);
+          fbb.addInt64(0, object.id);
+          fbb.addFloat64(1, object.amount);
+          fbb.addInt64(2, object.syncStatus);
+          fbb.addInt64(3, object.status);
+          fbb.addInt64(4, object.savingDate.millisecondsSinceEpoch);
+          fbb.addInt64(5, object.createdDate.millisecondsSinceEpoch);
+          fbb.addInt64(6, object.updatedDate.millisecondsSinceEpoch);
+          fbb.addInt64(7, object.goal.targetId);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+
+          final object = GoalSavingRecord()
+            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0)
+            ..amount =
+                const fb.Float64Reader().vTableGet(buffer, rootOffset, 6, 0)
+            ..syncStatus =
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0)
+            ..status =
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0)
+            ..savingDate = DateTime.fromMillisecondsSinceEpoch(
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0))
+            ..createdDate = DateTime.fromMillisecondsSinceEpoch(
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0))
+            ..updatedDate = DateTime.fromMillisecondsSinceEpoch(
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0));
+          object.goal.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 18, 0);
+          object.goal.attach(store);
+          return object;
+        }),
+    Notifications: obx_int.EntityDefinition<Notifications>(
+        model: _entities[7],
         toOneRelations: (Notifications object) => [],
         toManyRelations: (Notifications object) => {},
         getId: (Notifications object) => object.id,
@@ -883,7 +979,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           return object;
         }),
     Role: obx_int.EntityDefinition<Role>(
-        model: _entities[7],
+        model: _entities[8],
         toOneRelations: (Role object) => [],
         toManyRelations: (Role object) => {},
         getId: (Role object) => object.id,
@@ -910,7 +1006,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           return object;
         }),
     Users: obx_int.EntityDefinition<Users>(
-        model: _entities[8],
+        model: _entities[9],
         toOneRelations: (Users object) => [object.role],
         toManyRelations: (Users object) => {},
         getId: (Users object) => object.id,
@@ -1201,92 +1297,127 @@ class Expenses_ {
       obx.QueryRelationToOne<Expenses, Accounts>(_entities[5].properties[11]);
 }
 
+/// [GoalSavingRecord] entity fields to define ObjectBox queries.
+class GoalSavingRecord_ {
+  /// See [GoalSavingRecord.id].
+  static final id =
+      obx.QueryIntegerProperty<GoalSavingRecord>(_entities[6].properties[0]);
+
+  /// See [GoalSavingRecord.amount].
+  static final amount =
+      obx.QueryDoubleProperty<GoalSavingRecord>(_entities[6].properties[1]);
+
+  /// See [GoalSavingRecord.syncStatus].
+  static final syncStatus =
+      obx.QueryIntegerProperty<GoalSavingRecord>(_entities[6].properties[2]);
+
+  /// See [GoalSavingRecord.status].
+  static final status =
+      obx.QueryIntegerProperty<GoalSavingRecord>(_entities[6].properties[3]);
+
+  /// See [GoalSavingRecord.savingDate].
+  static final savingDate =
+      obx.QueryDateProperty<GoalSavingRecord>(_entities[6].properties[4]);
+
+  /// See [GoalSavingRecord.createdDate].
+  static final createdDate =
+      obx.QueryDateProperty<GoalSavingRecord>(_entities[6].properties[5]);
+
+  /// See [GoalSavingRecord.updatedDate].
+  static final updatedDate =
+      obx.QueryDateProperty<GoalSavingRecord>(_entities[6].properties[6]);
+
+  /// See [GoalSavingRecord.goal].
+  static final goal = obx.QueryRelationToOne<GoalSavingRecord, ExpenseGoal>(
+      _entities[6].properties[7]);
+}
+
 /// [Notifications] entity fields to define ObjectBox queries.
 class Notifications_ {
   /// See [Notifications.id].
   static final id =
-      obx.QueryIntegerProperty<Notifications>(_entities[6].properties[0]);
+      obx.QueryIntegerProperty<Notifications>(_entities[7].properties[0]);
 
   /// See [Notifications.title].
   static final title =
-      obx.QueryStringProperty<Notifications>(_entities[6].properties[1]);
+      obx.QueryStringProperty<Notifications>(_entities[7].properties[1]);
 
   /// See [Notifications.description].
   static final description =
-      obx.QueryStringProperty<Notifications>(_entities[6].properties[2]);
+      obx.QueryStringProperty<Notifications>(_entities[7].properties[2]);
 
   /// See [Notifications.notificationType].
   static final notificationType =
-      obx.QueryIntegerProperty<Notifications>(_entities[6].properties[3]);
+      obx.QueryIntegerProperty<Notifications>(_entities[7].properties[3]);
 
   /// See [Notifications.readStatus].
   static final readStatus =
-      obx.QueryIntegerProperty<Notifications>(_entities[6].properties[4]);
+      obx.QueryIntegerProperty<Notifications>(_entities[7].properties[4]);
 
   /// See [Notifications.syncStatus].
   static final syncStatus =
-      obx.QueryIntegerProperty<Notifications>(_entities[6].properties[5]);
+      obx.QueryIntegerProperty<Notifications>(_entities[7].properties[5]);
 
   /// See [Notifications.status].
   static final status =
-      obx.QueryIntegerProperty<Notifications>(_entities[6].properties[6]);
+      obx.QueryIntegerProperty<Notifications>(_entities[7].properties[6]);
 
   /// See [Notifications.createdDate].
   static final createdDate =
-      obx.QueryDateProperty<Notifications>(_entities[6].properties[7]);
+      obx.QueryDateProperty<Notifications>(_entities[7].properties[7]);
 
   /// See [Notifications.updatedDate].
   static final updatedDate =
-      obx.QueryDateProperty<Notifications>(_entities[6].properties[8]);
+      obx.QueryDateProperty<Notifications>(_entities[7].properties[8]);
 }
 
 /// [Role] entity fields to define ObjectBox queries.
 class Role_ {
   /// See [Role.id].
-  static final id = obx.QueryIntegerProperty<Role>(_entities[7].properties[0]);
+  static final id = obx.QueryIntegerProperty<Role>(_entities[8].properties[0]);
 
   /// See [Role.name].
-  static final name = obx.QueryStringProperty<Role>(_entities[7].properties[1]);
+  static final name = obx.QueryStringProperty<Role>(_entities[8].properties[1]);
 }
 
 /// [Users] entity fields to define ObjectBox queries.
 class Users_ {
   /// See [Users.id].
-  static final id = obx.QueryIntegerProperty<Users>(_entities[8].properties[0]);
+  static final id = obx.QueryIntegerProperty<Users>(_entities[9].properties[0]);
 
   /// See [Users.name].
   static final name =
-      obx.QueryStringProperty<Users>(_entities[8].properties[1]);
+      obx.QueryStringProperty<Users>(_entities[9].properties[1]);
 
   /// See [Users.email].
   static final email =
-      obx.QueryStringProperty<Users>(_entities[8].properties[2]);
+      obx.QueryStringProperty<Users>(_entities[9].properties[2]);
 
   /// See [Users.password].
   static final password =
-      obx.QueryStringProperty<Users>(_entities[8].properties[3]);
+      obx.QueryStringProperty<Users>(_entities[9].properties[3]);
 
   /// See [Users.status].
   static final status =
-      obx.QueryIntegerProperty<Users>(_entities[8].properties[4]);
+      obx.QueryIntegerProperty<Users>(_entities[9].properties[4]);
 
   /// See [Users.discordId].
   static final discordId =
-      obx.QueryStringProperty<Users>(_entities[8].properties[5]);
+      obx.QueryStringProperty<Users>(_entities[9].properties[5]);
 
   /// See [Users.profilePictureUrl].
   static final profilePictureUrl =
-      obx.QueryByteVectorProperty<Users>(_entities[8].properties[6]);
+      obx.QueryByteVectorProperty<Users>(_entities[9].properties[6]);
 
   /// See [Users.createdDate].
   static final createdDate =
-      obx.QueryDateProperty<Users>(_entities[8].properties[7]);
+      obx.QueryDateProperty<Users>(_entities[9].properties[7]);
 
   /// See [Users.updatedDate].
   static final updatedDate =
-      obx.QueryDateProperty<Users>(_entities[8].properties[8]);
+      obx.QueryDateProperty<Users>(_entities[9].properties[8]);
 
   /// See [Users.role].
   static final role =
-      obx.QueryRelationToOne<Users, Role>(_entities[8].properties[9]);
+      obx.QueryRelationToOne<Users, Role>(_entities[9].properties[9]);
 }

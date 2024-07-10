@@ -2,6 +2,7 @@ import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/application/model/expense_goal.dart';
 import 'package:pocketkeeper/application/model/expense_limit.dart';
+import 'package:pocketkeeper/application/model/goal_saving_record.dart';
 import 'package:pocketkeeper/application/model/money_account.dart';
 
 // This cache is help to reduce latency in fetching data from database
@@ -21,4 +22,5 @@ class ExpenseCache {
 
   // Goal
   static List<ExpenseGoal> expenseGoals = [];
+  static List<GoalSavingRecord> goalSavingRecords = [];
 }

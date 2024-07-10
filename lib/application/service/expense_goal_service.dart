@@ -23,28 +23,6 @@ class ExpenseGoalService extends ObjectboxService<ExpenseGoal> {
             previousValue + element.currentAmount);
   }
 
-  Map<int, double> getLastContributionMonthAndTotal() {
-    final List<ExpenseGoal> goals = getAllActiveGoals();
-    final Map<int, double> monthSaving = <int, double>{};
-
-    for (final ExpenseGoal goal in goals) {
-      final int month = goal.updatedDate.month;
-      final double amount = goal.currentAmount;
-      if (monthSaving.containsKey(month)) {
-        monthSaving[month] = monthSaving[month]! + amount;
-      } else {
-        monthSaving[month] = amount;
-      }
-    }
-
-    final int lastMonth =
-        monthSaving.keys.reduce((int a, int b) => a > b ? a : b);
-    final double total =
-        monthSaving.values.reduce((double a, double b) => a + b);
-
-    return <int, double>{lastMonth: total};
-  }
-
   bool isGoalNameExist(String name) {
     final List<ExpenseGoal> goals = getAll();
     return goals.any((ExpenseGoal goal) => goal.description == name);

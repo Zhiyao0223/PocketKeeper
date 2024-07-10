@@ -8,6 +8,7 @@ import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/application/model/expense_goal.dart';
 import 'package:pocketkeeper/application/model/expense_limit.dart';
+import 'package:pocketkeeper/application/model/goal_saving_record.dart';
 import 'package:pocketkeeper/application/model/money_account.dart';
 import 'package:pocketkeeper/application/model/role.dart';
 import 'objectbox.g.dart';
@@ -251,6 +252,51 @@ class ObjectBox {
       ),
     ];
     store.box<ExpenseGoal>().putMany(expenseGoals);
+    expenseGoals = store.box<ExpenseGoal>().getAll();
+
+    // Saving Record
+    GoalSavingRecord goalSavingRecord1 = GoalSavingRecord(
+      tmpAmount: 300,
+      tmpSavingDate: DateTime(2024, 6, 21, 10, 33, 30, 0, 0),
+      tmpStatus: 0,
+    );
+    goalSavingRecord1.goal.target = expenseGoals[0];
+
+    GoalSavingRecord goalSavingRecord2 = GoalSavingRecord(
+      tmpAmount: 1000,
+      tmpSavingDate: DateTime(2024, 6, 22, 10, 33, 30, 0, 0),
+      tmpStatus: 0,
+    );
+    goalSavingRecord2.goal.target = expenseGoals[1];
+
+    GoalSavingRecord goalSavingRecord3 = GoalSavingRecord(
+      tmpAmount: 1300,
+      tmpSavingDate: DateTime(2024, 5, 23, 10, 33, 30, 0, 0),
+      tmpStatus: 0,
+    );
+    goalSavingRecord3.goal.target = expenseGoals[2];
+
+    GoalSavingRecord goalSavingRecord4 = GoalSavingRecord(
+      tmpAmount: 200,
+      tmpSavingDate: DateTime(2024, 7, 8, 10, 33, 30, 0, 0),
+      tmpStatus: 0,
+    );
+    goalSavingRecord4.goal.target = expenseGoals[0];
+
+    GoalSavingRecord goalSavingRecord5 = GoalSavingRecord(
+      tmpAmount: 700,
+      tmpSavingDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
+      tmpStatus: 0,
+    );
+    goalSavingRecord5.goal.target = expenseGoals[2];
+
+    store.box<GoalSavingRecord>().putMany([
+      goalSavingRecord1,
+      goalSavingRecord2,
+      goalSavingRecord3,
+      goalSavingRecord4,
+      goalSavingRecord5,
+    ]);
 
     // Limit
     ExpenseLimit expenseLimit1 = ExpenseLimit(

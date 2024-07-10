@@ -1,7 +1,9 @@
 import 'package:pocketkeeper/application/expense_cache.dart';
 import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/expense_goal.dart';
+import 'package:pocketkeeper/application/model/goal_saving_record.dart';
 import 'package:pocketkeeper/application/service/expense_goal_service.dart';
+import 'package:pocketkeeper/application/service/goal_saving_record_service.dart';
 
 import '../../../template/state_management/controller.dart';
 
@@ -10,10 +12,10 @@ class GoalController extends FxController {
 
   String currencySymbol = "\$";
 
-  int lastContributionMonth = 1;
   double totalSaved = 0, savingThisMonth = 0, percentageThisMonth = 0;
 
   List<ExpenseGoal> activeGoals = [], completedGoals = [];
+  List<GoalSavingRecord> lastGoalSaving = [];
 
   @override
   void initState() {
@@ -35,16 +37,21 @@ class GoalController extends FxController {
     completedGoals.sort((a, b) => b.updatedDate.compareTo(a.updatedDate));
 
     // Get the last contribution month (which month, save how many)
-    Map<int, double> monthSaving =
-        ExpenseGoalService().getLastContributionMonthAndTotal();
-    lastContributionMonth = monthSaving.keys.first;
-    savingThisMonth = monthSaving.values.first;
+    lastGoalSaving = GoalSavingRecordService().getEachGoalLastContribution();
+
+    // Get the saving last month
+    savingThisMonth = GoalSavingRecordService()
+        .getLastContributionMonthAndTotal(month: DateTime.now().month)
+        .values
+        .first;
 
     // Get the total saved amount
     totalSaved = ExpenseGoalService().getTotalSaved();
 
     // Calculate the percentage of saving this month
-    percentageThisMonth = (savingThisMonth / totalSaved) * 100;
+    String percentageString =
+        (savingThisMonth / totalSaved * 100).toStringAsFixed(2);
+    percentageThisMonth = double.tryParse(percentageString) ?? 0;
 
     isDataFetched = true;
     update();

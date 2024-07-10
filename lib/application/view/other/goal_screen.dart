@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/other/goal_controller.dart';
 import 'package:pocketkeeper/application/model/expense_goal.dart';
+import 'package:pocketkeeper/application/model/goal_saving_record.dart';
 import 'package:pocketkeeper/application/view/other/add_goal_screen.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
 import 'package:pocketkeeper/theme/custom_theme.dart';
@@ -201,7 +202,10 @@ class _GoalScreenState extends State<GoalScreen>
                         for (ExpenseGoal goal in controller.activeGoals)
                           _buildGoalCard(
                             goal: goal,
-                            lastContributionAmount: 125,
+                            lastContributionRecord:
+                                controller.lastGoalSaving.firstWhere(
+                              (element) => element.goal.targetId == goal.goalId,
+                            ),
                           ),
                       ],
 
@@ -221,7 +225,6 @@ class _GoalScreenState extends State<GoalScreen>
                           _buildGoalCard(
                             goal: goal,
                             reachedGoal: true,
-                            lastContributionAmount: 125,
                           ),
                       ]
                     ],
@@ -277,7 +280,7 @@ class _GoalScreenState extends State<GoalScreen>
 
   Widget _buildGoalCard({
     required ExpenseGoal goal,
-    double? lastContributionAmount,
+    GoalSavingRecord? lastContributionRecord,
     bool reachedGoal = false,
   }) {
     final remainingBalance = goal.targetAmount - goal.currentAmount;
@@ -288,7 +291,7 @@ class _GoalScreenState extends State<GoalScreen>
         _buildGoalDialog(
           goal: goal,
           remainingBalance: remainingBalance,
-          lastContributionAmount: lastContributionAmount!,
+          lastContributionRecord: lastContributionRecord,
           reachedGoal: reachedGoal,
         );
       },
@@ -378,12 +381,13 @@ class _GoalScreenState extends State<GoalScreen>
               ),
               const SizedBox(height: 8),
               // Last contribution amount and suggested amount
-              if (!reachedGoal)
+              // Only show if not reached goal or has value
+              if (!reachedGoal && lastContributionRecord != null)
                 // eg. $125 this month ($150 suggested)
                 Row(
                   children: [
                     FxText.bodySmall(
-                      'Save ${controller.currencySymbol}${lastContributionAmount!.toStringAsFixed(0)} on ${controller.lastContributionMonth.getMonthString()} ',
+                      'Save ${controller.currencySymbol}${lastContributionRecord.amount.toStringAsFixed(0)} on ${lastContributionRecord.savingDate.month.getMonthString()} ',
                       xMuted: true,
                     ),
                     // If suggested amount is available
@@ -407,7 +411,7 @@ class _GoalScreenState extends State<GoalScreen>
   Future<void> _buildGoalDialog({
     required ExpenseGoal goal,
     required double remainingBalance,
-    required double lastContributionAmount,
+    GoalSavingRecord? lastContributionRecord,
     required bool reachedGoal,
   }) async {
     showDialog(

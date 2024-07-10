@@ -6,6 +6,7 @@ AppBar buildCommonAppBar({
   required String headerTitle,
   required BuildContext context,
   bool disableBackButton = false,
+  PreferredSizeWidget? bottomWidget,
   IconData? trailingIcon,
   Function()? onTrailingIconPressed,
 }) {
@@ -41,5 +42,6 @@ AppBar buildCommonAppBar({
               onPressed: onTrailingIconPressed,
             ),
     ],
+    bottom: bottomWidget,
   );
 }
