@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/other_controller.dart';
 import 'package:pocketkeeper/application/view/other/account_screen.dart';
-import 'package:pocketkeeper/application/view/other/bill_screen.dart';
 import 'package:pocketkeeper/application/view/other/goal_screen.dart';
 import 'package:pocketkeeper/application/view/other/limit_screen.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
@@ -24,7 +23,7 @@ class _OtherScreenState extends State<OtherScreen>
   late CustomTheme customTheme;
   late OtherController controller;
 
-  late TabController tabController;
+  bool billScreenAllow = false;
 
   @override
   void initState() {
@@ -32,7 +31,6 @@ class _OtherScreenState extends State<OtherScreen>
     customTheme = CustomTheme();
 
     controller = FxControllerStore.put(OtherController());
-    tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -90,10 +88,10 @@ class _OtherScreenState extends State<OtherScreen>
               shrinkWrap: true,
               primary: false,
               padding: const EdgeInsets.all(16),
-              itemCount: 4,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1.25,
+              itemCount: controller.categoriesHexColorData.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: (billScreenAllow) ? 2 : 1,
+                childAspectRatio: (billScreenAllow) ? 1.25 : 4,
               ),
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
@@ -106,47 +104,15 @@ class _OtherScreenState extends State<OtherScreen>
                         case 1:
                           return const LimitScreen();
                         case 2:
-                          return const BillScreen();
-                        case 3:
+                          // return const BillScreen();
+                          // case 3:
                           return const AccountScreen();
                         default:
                           return Container();
                       }
                     }));
                   },
-                  child: Container(
-                    margin: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Color(
-                        controller.categoriesHexColorData.values
-                            .elementAt(index)['color']!,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          IconData(
-                            controller.categoriesHexColorData.values
-                                .elementAt(index)['categoryCode']!,
-                            fontFamily: 'MaterialIcons',
-                          ),
-                          color: customTheme.white,
-                          size: 40,
-                        ),
-                        const SizedBox(height: 8),
-                        Center(
-                          child: FxText.bodyMedium(
-                            controller.categoriesHexColorData.keys
-                                .elementAt(index),
-                            color: customTheme.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  child: _buildGridViewContainer(index),
                 );
               },
             ),
@@ -154,5 +120,75 @@ class _OtherScreenState extends State<OtherScreen>
         ],
       ),
     );
+  }
+
+  Widget _buildGridViewContainer(int index) {
+    return (billScreenAllow)
+        // With bill screen
+        ? Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Color(
+                controller.categoriesHexColorData.values
+                    .elementAt(index)['color']!,
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  IconData(
+                    controller.categoriesHexColorData.values
+                        .elementAt(index)['categoryCode']!,
+                    fontFamily: 'MaterialIcons',
+                  ),
+                  color: customTheme.white,
+                  size: 40,
+                ),
+                const SizedBox(height: 8),
+                Center(
+                  child: FxText.bodyMedium(
+                    controller.categoriesHexColorData.keys.elementAt(index),
+                    color: customTheme.white,
+                  ),
+                ),
+              ],
+            ),
+          )
+        // Without bill screen
+        : Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Color(
+                controller.categoriesHexColorData.values
+                    .elementAt(index)['color']!,
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  IconData(
+                    controller.categoriesHexColorData.values
+                        .elementAt(index)['categoryCode']!,
+                    fontFamily: 'MaterialIcons',
+                  ),
+                  color: customTheme.white,
+                  size: 40,
+                ),
+                const SizedBox(width: 10),
+                Center(
+                  child: FxText.bodyMedium(
+                    controller.categoriesHexColorData.keys.elementAt(index),
+                    color: customTheme.white,
+                  ),
+                ),
+              ],
+            ),
+          );
   }
 }

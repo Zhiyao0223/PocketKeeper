@@ -5,7 +5,6 @@ import 'package:pocketkeeper/utils/custom_animation.dart';
 import 'package:pocketkeeper/utils/validators/custom_validator.dart';
 import 'package:pocketkeeper/utils/validators/string_validator.dart';
 import 'package:pocketkeeper/widget/show_toast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../template/state_management/controller.dart';
 
@@ -128,9 +127,9 @@ class RegisterController extends FxController {
       showToast(customMessage: "Registration successful!");
 
       // Store user id for future access
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString(
-          "user_id", responseJson["body"]["user_id"].toString());
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // await prefs.setString(
+      //     "user_id", responseJson["body"]["user_id"].toString());
 
       return true;
     }

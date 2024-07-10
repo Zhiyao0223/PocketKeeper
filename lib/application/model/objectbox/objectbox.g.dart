@@ -1018,9 +1018,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final emailOffset = fbb.writeString(object.email);
           final passwordOffset = fbb.writeString(object.password);
           final discordIdOffset = fbb.writeString(object.discordId);
-          final profilePictureUrlOffset = object.profilePictureUrl == null
+          final profilePictureUrlOffset = object.profilePicture == null
               ? null
-              : fbb.writeListInt8(object.profilePictureUrl!);
+              : fbb.writeListInt8(object.profilePicture!);
           fbb.startTable(11);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
@@ -1051,7 +1051,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
                 const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0)
             ..discordId = const fb.StringReader(asciiOptimization: true)
                 .vTableGet(buffer, rootOffset, 14, '')
-            ..profilePictureUrl = const fb.Uint8ListReader(lazy: false)
+            ..profilePicture = const fb.Uint8ListReader(lazy: false)
                 .vTableGetNullable(buffer, rootOffset, 16) as Uint8List?
             ..createdDate = DateTime.fromMillisecondsSinceEpoch(
                 const fb.Int64Reader().vTableGet(buffer, rootOffset, 18, 0))
@@ -1405,7 +1405,7 @@ class Users_ {
   static final discordId =
       obx.QueryStringProperty<Users>(_entities[9].properties[5]);
 
-  /// See [Users.profilePictureUrl].
+  /// See [Users.profilePicture].
   static final profilePictureUrl =
       obx.QueryByteVectorProperty<Users>(_entities[9].properties[6]);
 

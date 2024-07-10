@@ -1,14 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:pocketkeeper/application/app_constant.dart';
 import 'package:pocketkeeper/application/controller/setting_controller.dart';
 import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/view/analytic_screen.dart';
 import 'package:pocketkeeper/application/view/login_screen.dart';
-import 'package:pocketkeeper/template/utils/spacing.dart';
+import 'package:pocketkeeper/application/view/setting/profile_setting_screen.dart';
 import 'package:pocketkeeper/template/widgets/button/button.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
 import 'package:pocketkeeper/theme/custom_theme.dart';
+import 'package:pocketkeeper/widget/appbar.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
 import 'package:pocketkeeper/widget/show_toast.dart';
 import '../../template/state_management/state_management.dart';
@@ -57,117 +56,100 @@ class _SettingScreenState extends State<SettingScreen> {
     }
 
     return Scaffold(
-      body: Container(
-        color: customTheme.colorPrimary,
-        child: Container(
-          color: customTheme.white.withOpacity(0.92),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 32,
-              vertical: MediaQuery.of(context).padding.top,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // App bar
+            buildCommonAppBar(
+              headerTitle: 'Settings',
+              context: context,
+              disableBackButton: true,
             ),
-            child: ListView(
-              children: [
-                // Appbar
-                _buildAppBarHeader(),
-                FxSpacing.height(20),
+            const SizedBox(height: 10),
 
-                // General Setting
-                _buildGeneralSettings(),
-                FxSpacing.height(15),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  // Profile section
+                  _buildProfileSection(),
+                  const Divider(),
 
-                // Tools
-                _buildToolSettings(),
-                FxSpacing.height(15),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        // General Settings
+                        _buildGeneralSettings(),
+                        const Divider(),
 
-                // Additional Setting
-                _buildAdditionalSettings(),
-                FxSpacing.height(15),
+                        // Tools
+                        _buildToolSettings(),
+                        const Divider(),
 
-                // About Us Setting
-                _buildAboutUsSettings(),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Appbar Header
-  Widget _buildAppBarHeader() {
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).size.height * 0.02,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildProfileHeader(),
-
-          // Logout button
-          GestureDetector(
-            onTap: () {
-              // Handle logout
-              controller.onLogoutClick().then((value) {
-                showToast(customMessage: "Logout Success");
-
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginScreen(),
+                        // About Us
+                        _buildAboutUsSettings(),
+                      ],
+                    ),
                   ),
-                  (route) => false,
-                );
-              });
-            },
-            child: Row(
-              children: [
-                Icon(Icons.logout, color: customTheme.red, size: 24),
-              ],
+                  // Logout button
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: customTheme.colorPrimary,
+                        minimumSize: const Size(200, 40),
+                      ),
+                      onPressed: () {
+                        // Handle logout
+                        controller.onLogoutClick().then((value) {
+                          showToast(customMessage: "Logout Success");
+
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginScreen(),
+                            ),
+                            (route) => false,
+                          );
+                        });
+                      },
+                      child: FxText.bodyMedium(
+                        'Logout',
+                        style: TextStyle(color: customTheme.white),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  // Profile Header
-  Widget _buildProfileHeader() {
-    return Row(
-      children: [
-        // This technique is used to prevent no internet image error
-        Stack(
-          children: [
-            // Placeholder image
-            const CircleAvatar(
-              radius: 30,
-              backgroundImage: AssetImage('assets/images/user_placeholder.jpg'),
-            ),
-            if (MemberCache.user.profilePictureUrl != null &&
-                controller.hasInternetConnection)
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: CachedNetworkImageProvider(
-                  '$backendProfileImageUrl${MemberCache.user.profilePictureUrl}',
-                ),
-              ),
-          ],
-        ),
-        FxSpacing.width(16),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            FxText.bodyMedium(
-              MemberCache.user.name,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ],
+  // Profile header
+  Widget _buildProfileSection() {
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundImage: MemoryImage(MemberCache.user!.profilePicture!),
+      ),
+      title: FxText.labelLarge(MemberCache.user!.name),
+      subtitle: FxText.bodySmall(MemberCache.user!.email),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () async {
+        // Navigate to profile edit page
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProfileSettingScreen(),
+          ),
+        ).then((_) {
+          controller.fetchData();
+        });
+      },
     );
   }
 
@@ -191,11 +173,7 @@ class _SettingScreenState extends State<SettingScreen> {
         title,
         xMuted: true,
       ),
-      trailing: Icon(
-        Icons.arrow_forward_ios,
-        color: customTheme.grey.withOpacity(0.6),
-        size: 16,
-      ),
+      trailing: const Icon(Icons.chevron_right),
       onTap: onTapFunction,
       contentPadding: EdgeInsets.zero,
     );
@@ -209,13 +187,17 @@ class _SettingScreenState extends State<SettingScreen> {
       children: [
         _buildSectionHeader('General Settings'),
         _buildSettingsItem(
-          icon: Icons.person,
-          title: 'Account Settings',
-          onTapFunction: () => showToast(customMessage: 'Account Settings'),
-        ),
-        _buildSettingsItem(
           icon: Icons.security,
           title: 'Security Settings',
+          onTapFunction: () {
+            // Navigate to security settings page
+            // TODO
+          },
+        ),
+
+        _buildSettingsItem(
+          icon: Icons.attach_money,
+          title: 'Budgeting Preferences',
           onTapFunction: () => Navigator.push(
             context,
             MaterialPageRoute(
@@ -226,12 +208,10 @@ class _SettingScreenState extends State<SettingScreen> {
         _buildSettingsItem(
           icon: Icons.notifications,
           title: 'Notifications Settings',
-          onTapFunction: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AnalyticScreen(),
-            ),
-          ),
+          onTapFunction: () {
+            // Navigate to notification settings page
+            // TODO
+          },
         ),
         // _buildSettingsItem(Icons.color_lens, 'Change App Theme') // Future Enhancement
         // _buildSettingsItem(Icons.language, 'Change Language'), // Future Enhancement
@@ -248,7 +228,7 @@ class _SettingScreenState extends State<SettingScreen> {
       children: [
         _buildSectionHeader('Tools'),
         _buildSettingsItem(
-          icon: Icons.person,
+          icon: Icons.analytics,
           title: 'Currency Converter',
           onTapFunction: () => Navigator.push(
             context,
@@ -257,21 +237,9 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
           ),
         ),
-      ],
-    );
-  }
-
-  // Additional Settings Section
-  Widget _buildAdditionalSettings() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSectionHeader('Transactional Settings'),
         _buildSettingsItem(
-          icon: Icons.flag,
-          title: 'Set Financial Goals',
+          icon: Icons.backup,
+          title: 'Backup & Restore Data',
           onTapFunction: () => Navigator.push(
             context,
             MaterialPageRoute(
@@ -279,37 +247,6 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
           ),
         ),
-        _buildSettingsItem(
-          icon: Icons.attach_money,
-          title: 'Set Budgeting Preferences',
-          onTapFunction: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AnalyticScreen(),
-            ),
-          ),
-        ),
-        _buildSettingsItem(
-          icon: Icons.credit_card,
-          title: 'Manage Your Cards',
-          onTapFunction: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AnalyticScreen(),
-            ),
-          ),
-        ),
-        _buildSettingsItem(
-          icon: Icons.timeline,
-          title: 'Track financial progress',
-          onTapFunction: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AnalyticScreen(),
-            ),
-          ),
-        ),
-        const SizedBox(height: 20),
       ],
     );
   }

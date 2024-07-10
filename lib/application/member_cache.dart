@@ -3,9 +3,10 @@ import 'package:pocketkeeper/application/model/app_setting.dart';
 import 'package:pocketkeeper/application/model/objectbox/objectbox.dart';
 import 'package:pocketkeeper/application/model/role.dart';
 import 'package:pocketkeeper/application/model/user.dart';
+import 'package:pocketkeeper/application/service/user_service.dart';
 
 class MemberCache {
-  static Users user = Users();
+  static Users? user;
 
   static Role role = Role();
 
@@ -20,9 +21,14 @@ class MemberCache {
   // Camera
   static List<CameraDescription> cameras = [];
 
+  // This function is to initialize login
+  static void initLogin() {
+    user = UserService().getLoginedUser();
+  }
+
   // This function is to reset cache
   reset() {
-    user = Users();
+    user = null;
     appSetting = AppSetting();
   }
 }

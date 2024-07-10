@@ -1,7 +1,7 @@
 import 'package:pocketkeeper/application/member_cache.dart';
+import 'package:pocketkeeper/application/service/user_service.dart';
 import 'package:pocketkeeper/utils/connectivity_service.dart';
 import 'package:pocketkeeper/widget/show_toast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../template/state_management/controller.dart';
@@ -42,9 +42,12 @@ class SettingController extends FxController {
   // Handle logout
   Future<bool> onLogoutClick() async {
     // Clear share pref
-    await SharedPreferences.getInstance().then((prefs) {
-      prefs.remove("user_id");
-    });
+    // await SharedPreferences.getInstance().then((prefs) {
+    //   prefs.remove("user_id");
+    // });
+
+    // Clear objectbox
+    UserService().deleteAll();
 
     // Reset cache
     MemberCache().reset();

@@ -14,10 +14,10 @@ class OtherController extends FxController {
       "color": Colors.orange.value,
       "categoryCode": Icons.warning.codePoint,
     },
-    "Bills": {
-      "color": Colors.lightBlue.value,
-      "categoryCode": Icons.money.codePoint,
-    },
+    // "Bills": {
+    //   "color": Colors.lightBlue.value,
+    //   "categoryCode": Icons.money.codePoint,
+    // },
     "Accounts": {
       "color": Colors.purple.value,
       "categoryCode": Icons.account_balance.codePoint,

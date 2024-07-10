@@ -18,10 +18,8 @@ class ExpenseLimitService extends ObjectboxService<ExpenseLimit> {
     final Map<int, Map<double, double>> categoryLimitsAndBalance = {};
 
     // Ge total spent for all categories
-    // TODO
     Map<Category, double> categoryExpenses =
-        expenseService.getTotalExpensesByCategory(6);
-    // expenseService.getTotalExpensesByCategory(DateTime.now().month);
+        expenseService.getTotalExpensesByCategory(DateTime.now().month);
 
     for (final ExpenseLimit limit in limits) {
       final categoryIndex = categoryExpenses.keys.toList().indexWhere(

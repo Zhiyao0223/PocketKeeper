@@ -3,15 +3,18 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:pocketkeeper/application/app_constant.dart';
 import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/user.dart';
 import 'package:pocketkeeper/application/service/api_service.dart';
 import 'package:pocketkeeper/application/service/authentication.dart';
+import 'package:pocketkeeper/application/service/user_service.dart';
 import 'package:pocketkeeper/utils/custom_animation.dart';
+import 'package:pocketkeeper/utils/custom_function.dart';
 import 'package:pocketkeeper/utils/validators/custom_validator.dart';
 import 'package:pocketkeeper/utils/validators/string_validator.dart';
 import 'package:pocketkeeper/widget/show_toast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../template/state_management/controller.dart';
 
@@ -90,6 +93,13 @@ class LoginController extends FxController {
           tmpCreatedDate: apiResponse["body"]["created_date"],
           tmpUpdatedDate: apiResponse["body"]["updated_date"],
         );
+
+        // Download image from server and store in cache
+        String imageUrl = backendImageUrl + apiResponse["body"]["image"];
+        XFile tmpImg = await downloadImageAsXFile(imageUrl) ??
+            await loadAssetAsXFile("assets/images/user_placeholder.jpg");
+        tmpuser.setImage(tmpImg);
+
         await onSuccessLogin(tmpuser);
 
         return true;
@@ -207,6 +217,17 @@ class LoginController extends FxController {
           tmpUpdatedDate: responseJson["body"]["updated_date"],
         );
 
+        // Download image from server and store in cache
+        XFile tmpImg =
+            await loadAssetAsXFile("assets/images/user_placeholder.jpg");
+
+        if (responseJson["body"]["image"] != null) {
+          String imageUrl =
+              backendProfileImageUrl + responseJson["body"]["image"];
+          tmpImg = await downloadImageAsXFile(imageUrl) ?? tmpImg;
+        }
+        tmpuser.setImage(tmpImg);
+
         await onSuccessLogin(tmpuser);
 
         return true;
@@ -221,6 +242,7 @@ class LoginController extends FxController {
       log(e.toString());
       showToast(customMessage: "Technical Error occurred.");
     } catch (e) {
+      log(e.toString());
       showToast(customMessage: "Unknown Error occurred.");
     }
 
@@ -234,8 +256,12 @@ class LoginController extends FxController {
     // Store user id for future access
     MemberCache.user = user;
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString("user_id", user.id.toString());
+    // Reset id to 0 before put into objectbox
+    user.id = 0;
+    UserService().put(user);
+
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // await prefs.setString("user_id", user.id.toString());
   }
 
   //

@@ -17,10 +17,9 @@ class Users {
   late int status;
   late String discordId;
 
-  // late String profilePictureUrl;
   // Image
   @Property(type: PropertyType.byteVector)
-  Uint8List? profilePictureUrl;
+  Uint8List? profilePicture;
 
   @Property(type: PropertyType.date)
   late DateTime createdDate;
@@ -35,6 +34,7 @@ class Users {
     String? tmpName,
     String? tmpEmail,
     String? tmpPassword,
+    String? tmpDiscordId,
     int? tmpStatus,
     String? tmpCreatedDate,
     String? tmpUpdatedDate,
@@ -43,12 +43,13 @@ class Users {
     name = tmpName ?? "";
     email = tmpEmail ?? "";
     password = tmpPassword ?? "";
+    discordId = tmpDiscordId ?? "";
     status = tmpStatus ?? 0;
     createdDate = tmpCreatedDate?.toDateTime() ?? DateTime.now();
     updatedDate = tmpUpdatedDate?.toDateTime() ?? DateTime.now();
   }
 
   void setImage(XFile image) async {
-    profilePictureUrl = await image.getBytesFromImage();
+    profilePicture = await image.getBytesFromImage();
   }
 }

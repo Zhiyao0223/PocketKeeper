@@ -141,7 +141,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FxText.titleMedium(
-              'Hi, ${MemberCache.user.name}',
+              'Hi, ${MemberCache.user!.name}',
               color: customTheme.white,
               fontWeight: 700,
             ),

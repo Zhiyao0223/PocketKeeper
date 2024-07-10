@@ -33,8 +33,7 @@ class AccountController extends FxController {
     currencyIndicator = MemberCache.appSetting.currencyIndicator;
     accounts = ExpenseCache.accounts;
 
-    // TODO: Change back to current month by removing params
-    accountBalances = expenseService.getAccountBalancesInMonth(month: 6);
+    accountBalances = expenseService.getAccountBalancesInMonth();
 
     // Get all expenses for each account
     for (int i = 0; i < accounts.length; i++) {

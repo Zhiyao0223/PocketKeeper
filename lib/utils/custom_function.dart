@@ -1,9 +1,11 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:pocketkeeper/application/member_cache.dart';
+import 'package:http/http.dart' as http;
 
 /*
   Check for image file size
@@ -72,6 +74,30 @@ Future<XFile> loadAssetAsXFile(String assetPath) async {
 
   // Convert File to XFile
   return XFile(file.path);
+}
+
+Future<XFile?> downloadImageAsXFile(String imageUrl) async {
+  try {
+    final response = await http.get(Uri.parse(imageUrl));
+
+    if (response.statusCode == 200) {
+      final bytes = response.bodyBytes;
+      final fileName = imageUrl.split('/').last;
+
+      final tempDir = Directory.systemTemp;
+      final tempFile = File('${tempDir.path}/$fileName');
+
+      await tempFile.writeAsBytes(bytes);
+
+      return XFile(tempFile.path);
+    } else {
+      log('Failed to download image');
+      return null;
+    }
+  } catch (e) {
+    log('Error: $e');
+    return null;
+  }
 }
 
 // This function is to count remaining days until the end of the month (Set by user)

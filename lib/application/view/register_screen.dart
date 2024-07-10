@@ -95,7 +95,13 @@ class _RegisterScreenState extends State<RegisterScreen>
               SizedBox(
                 width: double.infinity,
                 child: FxButton.rounded(
-                  onPressed: controller.onRegisterClick,
+                  onPressed: () async {
+                    controller.onRegisterClick().then((value) {
+                      if (value) {
+                        Navigator.of(context).pop();
+                      }
+                    });
+                  },
                   backgroundColor: customTheme.colorPrimary,
                   child: FxText.bodyMedium(
                     'REGISTER',
