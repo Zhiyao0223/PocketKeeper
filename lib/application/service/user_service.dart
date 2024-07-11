@@ -11,4 +11,15 @@ class UserService extends ObjectboxService<Users> {
 
     return (users.isNotEmpty) ? users.first : null;
   }
+
+  // Update logined user
+  void updateLoginUser(Users user) {
+    final List<Users> users = getAll();
+
+    if (users.isNotEmpty) {
+      user.id = users.first.id;
+    }
+
+    put(user);
+  }
 }

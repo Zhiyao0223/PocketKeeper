@@ -4,6 +4,7 @@ import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/application/model/money_account.dart';
 import 'package:pocketkeeper/application/service/account_service.dart';
 import 'package:pocketkeeper/application/service/expense_service.dart';
+import 'package:pocketkeeper/utils/converters/number.dart';
 import 'package:pocketkeeper/widget/show_toast.dart';
 
 import '../../../template/state_management/controller.dart';
@@ -16,6 +17,7 @@ class AccountController extends FxController {
   Map<int, List<Expenses>> accountExpenses = {};
   late List<double> accountBalances;
   late String currencyIndicator;
+  late String currentMonth;
 
   // Constructor
   AccountController();
@@ -40,6 +42,8 @@ class AccountController extends FxController {
       accountExpenses[i] =
           expenseService.getExpensesByAccountId(accounts[i].id);
     }
+
+    currentMonth = DateTime.now().month.toMonthString();
 
     isDataFetched = true;
     update();

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:pocketkeeper/application/expense_cache.dart';
 import 'package:pocketkeeper/application/model/expense_goal.dart';
 import 'package:pocketkeeper/application/service/expense_goal_service.dart';
 import 'package:pocketkeeper/utils/converters/date.dart';
 import 'package:pocketkeeper/utils/converters/number.dart';
+import 'package:pocketkeeper/utils/converters/string.dart';
 import 'package:pocketkeeper/utils/validators/custom_validator.dart';
 import 'package:pocketkeeper/utils/validators/string_validator.dart';
 
@@ -94,7 +94,7 @@ class AddGoalController extends FxController {
     // Convert Datetime
     DateTime now = DateTime.now();
     DateTime today = DateTime(now.year, now.month, now.day);
-    DateTime? tmpDatetime = DateFormat('dd MMM, yyyy').tryParse(value!);
+    DateTime? tmpDatetime = value!.tryParseDateTime("dd MMM, yyyy");
 
     if (tmpDatetime == null) {
       return "Invalid date";

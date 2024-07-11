@@ -1,13 +1,12 @@
 import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/service/user_service.dart';
-import 'package:pocketkeeper/utils/connectivity_service.dart';
 import 'package:pocketkeeper/widget/show_toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../template/state_management/controller.dart';
 
 class SettingController extends FxController {
-  bool isDataFetched = false, hasInternetConnection = false;
+  bool isDataFetched = false;
 
   @override
   void initState() {
@@ -17,11 +16,7 @@ class SettingController extends FxController {
   }
 
   void fetchData() async {
-    // Check internet connection
-    hasInternetConnection = await ConnectivityService().isConnected();
-
     isDataFetched = true;
-
     update();
   }
 

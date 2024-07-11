@@ -1,31 +1,41 @@
+import 'dart:io';
+
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/view/analytic_screen.dart';
 import 'package:pocketkeeper/application/view/dashboard_screen.dart';
 import 'package:pocketkeeper/application/view/form_add_expenses_screen.dart';
 import 'package:pocketkeeper/application/view/other_screen.dart';
 import 'package:pocketkeeper/application/view/setting_screen.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
+import 'package:pocketkeeper/widget/show_toast.dart';
 import '../controller/navigation_controller.dart';
 import '../../theme/custom_theme.dart';
 import '../../template/state_management/state_management.dart';
 
 class NavigationScreen extends StatefulWidget {
   final int? navigationIndex;
+  final bool fromLogin;
   const NavigationScreen({
     super.key,
     this.navigationIndex,
+    this.fromLogin = false,
   });
 
   @override
   State<NavigationScreen> createState() {
-    return _HomeScreenState();
+    return _NavigationScreenState();
   }
 }
 
-class _HomeScreenState extends State<NavigationScreen> {
+class _NavigationScreenState extends State<NavigationScreen> {
   late CustomTheme customTheme;
   late NavigationController controller;
+  final LocalAuthentication _localAuth = LocalAuthentication();
+
+  late bool _isAuthenticated;
 
   // Navigation bar icon (Dashboard, Analytics, Others, Settings)
   List<IconData> iconList = [
@@ -42,6 +52,15 @@ class _HomeScreenState extends State<NavigationScreen> {
 
     controller = FxControllerStore.put(NavigationController());
     controller.bottomNavIndex = widget.navigationIndex ?? 0;
+
+    // Only need to authenticate if user is not from login or biometric setting is off
+    _isAuthenticated =
+        widget.fromLogin || !MemberCache.appSetting.isBiometricOn;
+
+    // Authentication will be triggered after the first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _authenticate();
+    });
   }
 
   @override
@@ -125,5 +144,27 @@ class _HomeScreenState extends State<NavigationScreen> {
       ),
       //params
     );
+  }
+
+  Future<void> _authenticate() async {
+    // From login or already authenticated
+    if (_isAuthenticated) {
+      return;
+    }
+
+    final didAuthenticate = await _localAuth.authenticate(
+      localizedReason: 'Please authenticate to access the app',
+      options: const AuthenticationOptions(biometricOnly: false),
+    );
+
+    if (didAuthenticate && mounted) {
+      setState(() {
+        _isAuthenticated = true;
+      });
+    } else {
+      // Optionally handle authentication failure (e.g., show a dialog or exit the app)
+      showToast(customMessage: 'Authentication failed');
+      exit(0);
+    }
   }
 }

@@ -7,6 +7,7 @@ import 'package:pocketkeeper/template/widgets/text/text.dart';
 import 'package:pocketkeeper/theme/custom_theme.dart';
 import 'package:pocketkeeper/widget/appbar.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
+import 'package:pocketkeeper/widget/will_pop_dialog.dart';
 import '../../template/state_management/state_management.dart';
 
 class OtherScreen extends StatefulWidget {
@@ -50,74 +51,78 @@ class _OtherScreenState extends State<OtherScreen>
       return buildCircularLoadingIndicator();
     }
 
-    return Scaffold(
-      appBar: buildCommonAppBar(
-        headerTitle: 'Configurations',
-        context: context,
-        disableBackButton: true,
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.asset(
-            'assets/images/configuration_bg.jpg',
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                FxText.labelLarge(
-                  'Your Financial Journey Begins Here!',
-                  color: customTheme.colorPrimary,
-                ),
-                FxText.bodySmall(
-                  'Start managing your finance with these options.',
-                  color: customTheme.black,
-                  xMuted: true,
-                ),
-              ],
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) => buildWillPopDialog(context),
+      child: Scaffold(
+        appBar: buildCommonAppBar(
+          headerTitle: 'Configurations',
+          context: context,
+          disableBackButton: true,
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.asset(
+              'assets/images/configuration_bg.jpg',
+              width: double.infinity,
+              fit: BoxFit.cover,
             ),
-          ),
-          Expanded(
-            child: GridView.builder(
-              shrinkWrap: true,
-              primary: false,
-              padding: const EdgeInsets.all(16),
-              itemCount: controller.categoriesHexColorData.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: (billScreenAllow) ? 2 : 1,
-                childAspectRatio: (billScreenAllow) ? 1.25 : 4,
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FxText.labelLarge(
+                    'Your Financial Journey Begins Here!',
+                    color: customTheme.colorPrimary,
+                  ),
+                  FxText.bodySmall(
+                    'Start managing your finance with these options.',
+                    color: customTheme.black,
+                    xMuted: true,
+                  ),
+                ],
               ),
-              itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      switch (index) {
-                        case 0:
-                          return const GoalScreen();
-                        case 1:
-                          return const LimitScreen();
-                        case 2:
-                          // return const BillScreen();
-                          // case 3:
-                          return const AccountScreen();
-                        default:
-                          return Container();
-                      }
-                    }));
-                  },
-                  child: _buildGridViewContainer(index),
-                );
-              },
             ),
-          ),
-        ],
+            Expanded(
+              child: GridView.builder(
+                shrinkWrap: true,
+                primary: false,
+                padding: const EdgeInsets.all(16),
+                itemCount: controller.categoriesHexColorData.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: (billScreenAllow) ? 2 : 1,
+                  childAspectRatio: (billScreenAllow) ? 1.25 : 4,
+                ),
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        switch (index) {
+                          case 0:
+                            return const GoalScreen();
+                          case 1:
+                            return const LimitScreen();
+                          case 2:
+                            // return const BillScreen();
+                            // case 3:
+                            return const AccountScreen();
+                          default:
+                            return Container();
+                        }
+                      }));
+                    },
+                    child: _buildGridViewContainer(index),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

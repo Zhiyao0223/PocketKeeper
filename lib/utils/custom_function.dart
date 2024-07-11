@@ -56,6 +56,14 @@ Future<XFile> loadUint8ListAsXFile(Uint8List bytes) async {
   return XFile(file.path);
 }
 
+// Convert XFile to Uint8List
+Future<Uint8List> loadXFileAsUint8List(XFile xFile) async {
+  // Read the file as bytes
+  List<int> bytes = await File.fromUri(Uri.file(xFile.path)).readAsBytes();
+
+  return Uint8List.fromList(bytes);
+}
+
 Future<XFile> loadAssetAsXFile(String assetPath) async {
   // Load the asset as ByteData
   ByteData byteData = await rootBundle.load(assetPath);

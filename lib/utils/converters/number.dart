@@ -28,7 +28,7 @@ extension NumberExtension on num {
   }
 
   // This function convert numeric month to string
-  String getMonthString() {
+  String toMonthString() {
     switch (this.toInt()) {
       case 1:
         return 'January';

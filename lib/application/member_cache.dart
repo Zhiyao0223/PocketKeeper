@@ -3,6 +3,7 @@ import 'package:pocketkeeper/application/model/app_setting.dart';
 import 'package:pocketkeeper/application/model/objectbox/objectbox.dart';
 import 'package:pocketkeeper/application/model/role.dart';
 import 'package:pocketkeeper/application/model/user.dart';
+import 'package:pocketkeeper/application/service/app_setting_service.dart';
 import 'package:pocketkeeper/application/service/user_service.dart';
 
 class MemberCache {
@@ -24,6 +25,7 @@ class MemberCache {
   // This function is to initialize login
   static void initLogin() {
     user = UserService().getLoginedUser();
+    AppSettingService().initAppSetting();
   }
 
   // This function is to reset cache

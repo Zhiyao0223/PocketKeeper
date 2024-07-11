@@ -387,7 +387,7 @@ class _GoalScreenState extends State<GoalScreen>
                 Row(
                   children: [
                     FxText.bodySmall(
-                      'Save ${controller.currencySymbol}${lastContributionRecord.amount.toStringAsFixed(0)} on ${lastContributionRecord.savingDate.month.getMonthString()} ',
+                      'Save ${controller.currencySymbol}${lastContributionRecord.amount.toStringAsFixed(0)} on ${lastContributionRecord.savingDate.month.toMonthString()} ',
                       xMuted: true,
                     ),
                     // If suggested amount is available

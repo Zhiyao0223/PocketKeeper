@@ -176,8 +176,8 @@ class _AccountScreenState extends State<AccountScreen>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const FxText.bodyMedium(
-                        'Balance',
+                      FxText.bodyMedium(
+                        'Balance - ${controller.currentMonth}',
                         xMuted: true,
                       ),
                       PopupMenuButton<int>(

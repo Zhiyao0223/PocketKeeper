@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
 import 'package:pocketkeeper/theme/custom_theme.dart';
 
+CustomTheme customTheme = CustomTheme();
+
 AppBar buildCommonAppBar({
   required String headerTitle,
   required BuildContext context,
@@ -10,8 +12,6 @@ AppBar buildCommonAppBar({
   IconData? trailingIcon,
   Function()? onTrailingIconPressed,
 }) {
-  CustomTheme customTheme = CustomTheme();
-
   return AppBar(
     toolbarHeight: kToolbarHeight + 1, // Make bottom border invisible
     title: FxText.labelLarge(
@@ -43,5 +43,14 @@ AppBar buildCommonAppBar({
             ),
     ],
     bottom: bottomWidget,
+  );
+}
+
+PreferredSize buildSafeAreaAppBar({Color? appBarColor}) {
+  return PreferredSize(
+    preferredSize: const Size.fromHeight(0),
+    child: AppBar(
+      backgroundColor: appBarColor ?? customTheme.colorPrimary,
+    ),
   );
 }

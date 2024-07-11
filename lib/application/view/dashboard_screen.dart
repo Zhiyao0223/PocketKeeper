@@ -57,6 +57,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       canPop: false,
       onPopInvoked: (_) => buildWillPopDialog(context),
       child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(0),
+          child: AppBar(backgroundColor: customTheme.colorPrimary),
+        ),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Column(

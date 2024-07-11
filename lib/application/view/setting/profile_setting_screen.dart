@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/setting/profile_setting_controller.dart';
+import 'package:pocketkeeper/application/view/setting/profile_setting_form_screen.dart';
 import 'package:pocketkeeper/template/state_management/builder.dart';
 import 'package:pocketkeeper/template/state_management/controller_store.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
@@ -11,10 +12,10 @@ class ProfileSettingScreen extends StatefulWidget {
   const ProfileSettingScreen({super.key});
 
   @override
-  _ProfileSettingsScreenState createState() => _ProfileSettingsScreenState();
+  ProfileSettingsScreenState createState() => ProfileSettingsScreenState();
 }
 
-class _ProfileSettingsScreenState extends State<ProfileSettingScreen> {
+class ProfileSettingsScreenState extends State<ProfileSettingScreen> {
   late CustomTheme customTheme;
   late ProfileSettingController controller;
 
@@ -49,17 +50,21 @@ class _ProfileSettingsScreenState extends State<ProfileSettingScreen> {
 
     return Scaffold(
       appBar: buildCommonAppBar(
-        headerTitle: "Profile Settings",
+        headerTitle: "Profile",
         context: context,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
               onTap: () {
                 // Show dialog to select image
+                controller.updateProfilePicture().then((value) {
+                  // Only setstate if image is selected
+                  if (value) controller.fetchData();
+                });
               },
               child: Stack(
                 alignment: Alignment.bottomRight,
@@ -86,56 +91,118 @@ class _ProfileSettingsScreenState extends State<ProfileSettingScreen> {
             ),
             const SizedBox(height: 24),
 
-            // Email and Discord
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // Username, Email and Discord
+            Column(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    FxText.labelLarge('Email', style: TextStyle(fontSize: 16)),
-                    Text('test@gmail.com', style: TextStyle(fontSize: 14)),
+                    const FxText.labelLarge('Username'),
+                    FxText.bodySmall(
+                      controller.currentUser.name,
+                      xMuted: true,
+                    ),
                   ],
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Email', style: TextStyle(fontSize: 16)),
-                    Text('test@gmail.com', style: TextStyle(fontSize: 14)),
+                    const FxText.labelLarge('Email'),
+                    FxText.bodySmall(
+                      controller.currentUser.email,
+                      xMuted: true,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const FxText.labelLarge('Discord'),
+                    FxText.bodySmall(
+                      controller.currentUser.discordId == ""
+                          ? "Not connected"
+                          : controller.currentUser.discordId,
+                      xMuted: true,
+                    ),
                   ],
                 )
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 32),
             const Divider(),
             const SizedBox(height: 16),
-            _buildTextField('Username', 'JohnDoe'),
-            const SizedBox(height: 16),
-            _buildTextField('New Password', '', obscureText: true),
-            const SizedBox(height: 16),
-            _buildTextField('Confirm New Password', '', obscureText: true),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () {
-                // TODO: Implement save functionality
+            _buildListTile(
+              label: 'Change Username',
+              leadingIcon: Icons.person,
+              onTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const ProfileSettingFormScreen(type: 0);
+                    },
+                  ),
+                ).then((value) {
+                  controller.fetchData();
+                });
               },
-              child: const Text('Save Changes'),
             ),
+            const SizedBox(height: 16),
+            _buildListTile(
+              label: 'Change Password',
+              leadingIcon: Icons.lock,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const ProfileSettingFormScreen(type: 1);
+                    },
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+            if (controller.currentUser.discordId == "")
+              _buildListTile(
+                label: 'Link / Unlink Discord',
+                leadingIcon: Icons.discord,
+                onTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const ProfileSettingFormScreen(type: 2);
+                      },
+                    ),
+                  ).then((value) {
+                    controller.fetchData();
+                  });
+                },
+              ),
+            const SizedBox(height: 24),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTextField(String label, String initialValue,
-      {bool obscureText = false}) {
-    return TextField(
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
+  Widget _buildListTile({
+    required String label,
+    required IconData leadingIcon,
+    required Function() onTap,
+  }) {
+    return ListTile(
+      title: FxText.bodySmall(label),
+      leading: Icon(
+        leadingIcon,
+        color: customTheme.colorPrimary,
       ),
-      obscureText: obscureText,
-      controller: TextEditingController(text: initialValue),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: onTap,
+      contentPadding: EdgeInsets.zero,
     );
   }
 }

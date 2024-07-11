@@ -1,6 +1,7 @@
 /*
 Include all the HTTP methods here
 */
+import 'package:camera/camera.dart';
 import 'package:http/http.dart' as http;
 import 'package:pocketkeeper/application/app_constant.dart';
 import 'dart:convert';
@@ -62,6 +63,42 @@ class ApiService {
       } else {
         throw Exception('Invalid method');
       }
+    } catch (e) {
+      ExceptionHandler.handleException(e);
+    }
+
+    return responseJson;
+  }
+
+  static Future<dynamic> multipartRequest({
+    required String filename,
+    required Map<String, dynamic> body,
+    required XFile image,
+  }) async {
+    var responseJson = {};
+
+    // Initialize url
+    var url = Uri.parse('$apiUrl$filename');
+
+    try {
+      var request = http.MultipartRequest('POST', url);
+
+      // Add image
+      request.files.add(
+        await http.MultipartFile.fromPath('image', image.path),
+      );
+
+      // Add body
+      body.forEach((key, value) {
+        request.fields[key] = value;
+      });
+
+      // Send request
+      var streamData = await request.send();
+
+      // Get response
+      var response = await http.Response.fromStream(streamData);
+      responseJson = _returnResponse(response);
     } catch (e) {
       ExceptionHandler.handleException(e);
     }

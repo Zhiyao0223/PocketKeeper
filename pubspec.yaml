@@ -58,12 +58,17 @@ dependencies:
   # Open external link
   url_launcher: ^6.3.0
 
+  # Biometric
+  local_auth: ^2.2.0
+  flutter_screen_lock: ^9.1.0
+
   # Misc
   http: ^1.2.1
-  intl: ^0.19.0
+  intl: ^0.18.1
   google_generative_ai: ^0.4.3
   app_settings: ^5.1.1
   permission_handler: ^11.3.1
+  currency_converter: ^2.0.0
 
 dev_dependencies:
   # Local database

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/setting_controller.dart';
 import 'package:pocketkeeper/application/member_cache.dart';
-import 'package:pocketkeeper/application/view/analytic_screen.dart';
 import 'package:pocketkeeper/application/view/login_screen.dart';
+import 'package:pocketkeeper/application/view/setting/backup_restore_screen.dart';
+import 'package:pocketkeeper/application/view/setting/budgeting_preferences_screen.dart';
+import 'package:pocketkeeper/application/view/setting/currency_conversion_screen.dart';
 import 'package:pocketkeeper/application/view/setting/profile_setting_screen.dart';
 import 'package:pocketkeeper/template/widgets/button/button.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
@@ -10,6 +12,7 @@ import 'package:pocketkeeper/theme/custom_theme.dart';
 import 'package:pocketkeeper/widget/appbar.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
 import 'package:pocketkeeper/widget/show_toast.dart';
+import 'package:pocketkeeper/widget/will_pop_dialog.dart';
 import '../../template/state_management/state_management.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -55,76 +58,83 @@ class _SettingScreenState extends State<SettingScreen> {
       return buildCircularLoadingIndicator();
     }
 
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // App bar
-            buildCommonAppBar(
-              headerTitle: 'Settings',
-              context: context,
-              disableBackButton: true,
-            ),
-            const SizedBox(height: 10),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) => buildWillPopDialog(context),
+      child: Scaffold(
+        appBar: buildSafeAreaAppBar(appBarColor: customTheme.lightPurple),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // App bar
+                buildCommonAppBar(
+                  headerTitle: 'Settings',
+                  context: context,
+                  disableBackButton: true,
+                ),
+                const SizedBox(height: 10),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  // Profile section
-                  _buildProfileSection(),
-                  const Divider(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    children: [
+                      // Profile section
+                      _buildProfileSection(),
+                      const Divider(),
 
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        // General Settings
-                        _buildGeneralSettings(),
-                        const Divider(),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            // General Settings
+                            _buildGeneralSettings(),
+                            const Divider(),
 
-                        // Tools
-                        _buildToolSettings(),
-                        const Divider(),
+                            // Tools
+                            _buildToolSettings(),
+                            const Divider(),
 
-                        // About Us
-                        _buildAboutUsSettings(),
-                      ],
-                    ),
-                  ),
-                  // Logout button
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: customTheme.colorPrimary,
-                        minimumSize: const Size(200, 40),
+                            // About Us
+                            _buildAboutUsSettings(),
+                          ],
+                        ),
                       ),
-                      onPressed: () {
-                        // Handle logout
-                        controller.onLogoutClick().then((value) {
-                          showToast(customMessage: "Logout Success");
+                      // Logout button
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: customTheme.colorPrimary,
+                            minimumSize: const Size(200, 40),
+                          ),
+                          onPressed: () {
+                            // Handle logout
+                            controller.onLogoutClick().then((value) {
+                              showToast(customMessage: "Logout Success");
 
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const LoginScreen(),
-                            ),
-                            (route) => false,
-                          );
-                        });
-                      },
-                      child: FxText.bodyMedium(
-                        'Logout',
-                        style: TextStyle(color: customTheme.white),
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const LoginScreen(),
+                                ),
+                                (route) => false,
+                              );
+                            });
+                          },
+                          child: FxText.bodyMedium(
+                            'Logout',
+                            style: TextStyle(color: customTheme.white),
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 30),
+                    ],
                   ),
-                  const SizedBox(height: 30),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -144,7 +154,7 @@ class _SettingScreenState extends State<SettingScreen> {
         await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProfileSettingScreen(),
+            builder: (context) => const ProfileSettingScreen(),
           ),
         ).then((_) {
           controller.fetchData();
@@ -179,6 +189,54 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
+  Widget _buildSecuritySetting() {
+    return ListTile(
+      leading: Icon(Icons.notifications, color: customTheme.colorPrimary),
+      title: const FxText.labelMedium(
+        "Biometric Authentication",
+        xMuted: true,
+      ),
+      trailing: Transform.scale(
+        scale: 0.75,
+        child: Switch(
+          activeTrackColor: customTheme.colorPrimary.withOpacity(0.5),
+          value: MemberCache.appSetting.isBiometricOn,
+          onChanged: (value) {
+            setState(() {
+              MemberCache.appSetting.isBiometricOn = value;
+            });
+          },
+          activeColor: customTheme.colorPrimary,
+        ),
+      ),
+      contentPadding: EdgeInsets.zero,
+    );
+  }
+
+  Widget _buildNotificationSetting() {
+    return ListTile(
+      leading: Icon(Icons.notifications, color: customTheme.colorPrimary),
+      title: const FxText.labelMedium(
+        "Notification",
+        xMuted: true,
+      ),
+      trailing: Transform.scale(
+        scale: 0.75,
+        child: Switch(
+          activeTrackColor: customTheme.colorPrimary.withOpacity(0.5),
+          value: MemberCache.appSetting.isNotificationOn,
+          onChanged: (value) {
+            setState(() {
+              MemberCache.appSetting.isNotificationOn = value;
+            });
+          },
+          activeColor: customTheme.colorPrimary,
+        ),
+      ),
+      contentPadding: EdgeInsets.zero,
+    );
+  }
+
   Widget _buildGeneralSettings() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -187,32 +245,20 @@ class _SettingScreenState extends State<SettingScreen> {
       children: [
         _buildSectionHeader('General Settings'),
         _buildSettingsItem(
-          icon: Icons.security,
-          title: 'Security Settings',
-          onTapFunction: () {
-            // Navigate to security settings page
-            // TODO
-          },
-        ),
-
-        _buildSettingsItem(
           icon: Icons.attach_money,
           title: 'Budgeting Preferences',
           onTapFunction: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const AnalyticScreen(),
+              builder: (context) => const BudgetingPreferencesScreen(),
             ),
           ),
         ),
-        _buildSettingsItem(
-          icon: Icons.notifications,
-          title: 'Notifications Settings',
-          onTapFunction: () {
-            // Navigate to notification settings page
-            // TODO
-          },
-        ),
+
+        // Switch
+        _buildSecuritySetting(),
+        _buildNotificationSetting(),
+
         // _buildSettingsItem(Icons.color_lens, 'Change App Theme') // Future Enhancement
         // _buildSettingsItem(Icons.language, 'Change Language'), // Future Enhancement
       ],
@@ -233,7 +279,7 @@ class _SettingScreenState extends State<SettingScreen> {
           onTapFunction: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const AnalyticScreen(),
+              builder: (context) => const CurrencyConversionScreen(),
             ),
           ),
         ),
@@ -243,7 +289,7 @@ class _SettingScreenState extends State<SettingScreen> {
           onTapFunction: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const AnalyticScreen(),
+              builder: (context) => const BackupRestoreScreen(),
             ),
           ),
         ),
