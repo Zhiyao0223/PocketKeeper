@@ -21,6 +21,10 @@ class AppSetting {
   late bool isGoogleSignIn;
   late bool isBiometricOn;
 
+  // Backup
+  late DateTime? lastBackupDate;
+  late DateTime? lastRestoreDate;
+
   // Budget Setting
   late double monthlyLimit;
   late int endOfMonth; // 1-30, 30 mean last day
@@ -39,7 +43,29 @@ class AppSetting {
     isBiometricOn = false;
     currencyIndicator = tmpCurrencyIndicator ?? "\$";
     currencyCode = tmpCurrencyCode ?? "USD";
+    lastBackupDate = null;
+    lastRestoreDate = null;
     monthlyLimit = 5000;
     endOfMonth = 30;
+  }
+
+  // To JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'settingId': settingId,
+      'appName': appName,
+      'appVersion': appVersion,
+      'appTheme': appTheme,
+      'appLanguage': appLanguage,
+      'currencyIndicator': currencyIndicator,
+      'currencyCode': currencyCode,
+      'isNotificationOn': isNotificationOn,
+      'isGoogleSignIn': isGoogleSignIn,
+      'isBiometricOn': isBiometricOn,
+      'lastBackupDate': lastBackupDate?.toIso8601String(),
+      'lastRestoreDate': lastRestoreDate?.toIso8601String(),
+      'monthlyLimit': monthlyLimit,
+      'endOfMonth': endOfMonth,
+    };
   }
 }

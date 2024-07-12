@@ -461,4 +461,8 @@ class ObjectBox {
     Directory('${docDir.path}/pocketkeeper').delete().then(
         (FileSystemEntity value) => log("DB Deleted: ${value.existsSync()}"));
   }
+
+  bool backupDatabase(List<Map<String, dynamic>> tmpData) {
+    return false;
+  }
 }

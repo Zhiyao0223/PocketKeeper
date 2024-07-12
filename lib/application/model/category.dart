@@ -38,4 +38,18 @@ class Category {
     updatedDate = tmpUpdatedDate ?? DateTime.now();
     iconColor = tmpIconColor?.value ?? Colors.blue.value;
   }
+
+  // To JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'categoryName': categoryName,
+      'categoryType': categoryType,
+      'status': status,
+      'iconHex': iconHex,
+      'createdDate': createdDate.toIso8601String(),
+      'updatedDate': updatedDate.toIso8601String(),
+      'iconColor': iconColor,
+    };
+  }
 }

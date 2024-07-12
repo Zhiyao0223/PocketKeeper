@@ -48,4 +48,21 @@ class ExpenseGoal {
     createdDate = tmpCreatedDate ?? DateTime.now();
     updatedDate = tmpUpdatedDate ?? DateTime.now();
   }
+
+  // To JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'goalId': goalId,
+      'description': description,
+      'targetAmount': targetAmount,
+      'currentAmount': currentAmount,
+      'suggestedAmount': suggestedAmount,
+      'syncStatus': syncStatus,
+      'status': status,
+      'iconHex': iconHex,
+      'dueDate': dueDate?.toIso8601String(),
+      'createdDate': createdDate.toIso8601String(),
+      'updatedDate': updatedDate.toIso8601String(),
+    };
+  }
 }

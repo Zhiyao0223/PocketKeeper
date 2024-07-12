@@ -65,4 +65,20 @@ class Expenses {
   void setImage(XFile tmpFile) async {
     image = await tmpFile.getBytesFromImage();
   }
+
+  // To JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'description': description,
+      'amount': amount,
+      'expensesType': expensesType,
+      'syncStatus': syncStatus,
+      'status': status,
+      'image': image,
+      'expensesDate': expensesDate.toIso8601String(),
+      'createdDate': createdDate.toIso8601String(),
+      'updatedDate': updatedDate.toIso8601String(),
+    };
+  }
 }

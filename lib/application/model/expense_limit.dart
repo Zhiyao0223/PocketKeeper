@@ -31,4 +31,20 @@ class ExpenseLimit {
     createdDate = tmpCreatedDate ?? DateTime.now();
     updatedDate = tmpUpdatedDate ?? DateTime.now();
   }
+
+  void setCategory(Category tmpCategory) {
+    category.target = tmpCategory;
+  }
+
+  // To JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'amount': amount,
+      'syncStatus': syncStatus,
+      'status': status,
+      'createdDate': createdDate.toIso8601String(),
+      'updatedDate': updatedDate.toIso8601String(),
+    };
+  }
 }

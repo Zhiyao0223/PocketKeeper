@@ -12,4 +12,17 @@ class AppSettingService extends ObjectboxService<AppSetting> {
       add(AppSetting());
     }
   }
+
+  // Get app setting
+  AppSetting getAppSetting() {
+    final List<AppSetting> appSettings = getAll();
+
+    if (appSettings.isEmpty) {
+      final AppSetting appSetting = AppSetting();
+      add(appSetting);
+      return appSetting;
+    } else {
+      return appSettings.first;
+    }
+  }
 }

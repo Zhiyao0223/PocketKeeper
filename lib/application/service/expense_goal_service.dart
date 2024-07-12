@@ -27,4 +27,19 @@ class ExpenseGoalService extends ObjectboxService<ExpenseGoal> {
     final List<ExpenseGoal> goals = getAll();
     return goals.any((ExpenseGoal goal) => goal.description == name);
   }
+
+  // Return the first goal that is near completion
+  ExpenseGoal getHighPriorityGoal() {
+    // Sort by completion percentage (total - current) * 100%
+    final List<ExpenseGoal> goals = getAllActiveGoals();
+    goals.sort((ExpenseGoal a, ExpenseGoal b) {
+      final double aPercentage =
+          (a.targetAmount - a.currentAmount) / a.targetAmount;
+      final double bPercentage =
+          (b.targetAmount - b.currentAmount) / b.targetAmount;
+      return aPercentage.compareTo(bPercentage);
+    });
+
+    return goals.isNotEmpty ? goals.first : ExpenseGoal();
+  }
 }

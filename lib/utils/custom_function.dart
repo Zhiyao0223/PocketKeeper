@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:external_path/external_path.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
@@ -123,4 +125,69 @@ int getRemainingDayUntilNextMonth() {
   } else {
     return endOfMonth - now.day;
   }
+}
+
+// Get directory path
+Future<String> getLocalPath() async {
+  final directory = await getApplicationDocumentsDirectory();
+
+  return directory.path;
+}
+
+// To get public storage directory path like Downloads, Picture, Movie etc.
+Future<String> getPublicDirectoryPath() async {
+  String path = await ExternalPath.getExternalStoragePublicDirectory(
+      ExternalPath.DIRECTORY_DOWNLOADS);
+  return path;
+}
+
+// Convert list to CSV
+String convertListToCSV(Map<String, List<Map<String, dynamic>>> data) {
+  String csv = '';
+
+  // Remove unnecessary columns
+  data.forEach((key, value) {
+    for (var element in value) {
+      element.removeWhere((key, value) => key == 'id');
+      element.removeWhere((key, value) => key == 'syncStatus');
+      element.removeWhere((key, value) => key == 'status');
+      element.removeWhere((key, value) => key == 'image');
+      element.removeWhere((key, value) => key == 'createdDate');
+      element.removeWhere((key, value) => key == 'updatedDate');
+
+      // Change value in specifc key to 'true' or 'false'
+      if (element.containsKey('expensesType')) {
+        element['expensesType'] == "0" ? 'expenses' : 'income';
+      }
+    }
+  });
+
+  // Loop through each list
+  data.forEach((key, value) {
+    // Add header
+    csv += '$key\n';
+
+    // Add column names
+    csv += '${value[0].keys.join(',')}\n';
+
+    // Add data
+    for (var element in value) {
+      csv += '${element.values.join(',')}\n';
+    }
+
+    // Add new line
+    csv += '\n';
+  });
+
+  return csv;
+}
+
+// Convert list to JSON
+String convertListToJSON(Map<String, List<Map<String, dynamic>>> data) {
+  return jsonEncode(data);
+}
+
+// Convert JSON to list
+Map<String, dynamic> convertJSONToList(String json) {
+  return jsonDecode(json);
 }

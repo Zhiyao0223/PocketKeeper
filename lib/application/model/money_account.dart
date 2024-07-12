@@ -27,4 +27,16 @@ class Accounts {
     createdDate = DateTime.now();
     updatedDate = DateTime.now();
   }
+
+  // To JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'accountName': accountName,
+      'accountIconHex': accountIconHex,
+      'status': status,
+      'createdDate': createdDate.toIso8601String(),
+      'updatedDate': updatedDate.toIso8601String(),
+    };
+  }
 }

@@ -41,4 +41,17 @@ class GoalSavingRecord {
   void setGoal(ExpenseGoal tmpGoal) {
     goal.target = tmpGoal;
   }
+
+  // To JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'amount': amount,
+      'syncStatus': syncStatus,
+      'status': status,
+      'savingDate': savingDate.toIso8601String(),
+      'createdDate': createdDate.toIso8601String(),
+      'updatedDate': updatedDate.toIso8601String(),
+    };
+  }
 }

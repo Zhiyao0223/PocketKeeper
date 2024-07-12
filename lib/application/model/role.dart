@@ -13,4 +13,12 @@ class Role {
     id = tmpId ?? 2;
     name = tmpName ?? "normal_user";
   }
+
+  // To JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+    };
+  }
 }

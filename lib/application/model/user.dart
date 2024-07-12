@@ -52,4 +52,19 @@ class Users {
   void setImage(XFile image) async {
     profilePicture = await image.getBytesFromImage();
   }
+
+  // To JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'password': password,
+      'discordId': discordId,
+      'status': status,
+      'profilePicture': profilePicture,
+      'createdDate': createdDate.toIso8601String(),
+      'updatedDate': updatedDate.toIso8601String(),
+    };
+  }
 }

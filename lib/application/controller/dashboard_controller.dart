@@ -6,8 +6,8 @@ import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/application/model/expense_goal.dart';
 import 'package:pocketkeeper/application/model/money_account.dart';
+import 'package:pocketkeeper/application/service/expense_goal_service.dart';
 import 'package:pocketkeeper/application/service/expense_service.dart';
-import 'package:pocketkeeper/application/service/goal_service.dart';
 import 'package:pocketkeeper/application/service/notification_service.dart';
 
 import '../../template/state_management/controller.dart';
@@ -89,7 +89,7 @@ class DashboardController extends FxController {
         currentMonth, totalExpenses);
 
     // Get saving goal
-    ExpenseGoal savingGoal = GoalService().getHighPriorityGoal();
+    ExpenseGoal savingGoal = ExpenseGoalService().getHighPriorityGoal();
     savingGoalProgress = savingGoal.currentAmount / savingGoal.targetAmount;
     savingGoalIcon = IconData(savingGoal.iconHex, fontFamily: 'MaterialIcons');
 
