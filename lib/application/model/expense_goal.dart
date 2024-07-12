@@ -65,4 +65,19 @@ class ExpenseGoal {
       'updatedDate': updatedDate.toIso8601String(),
     };
   }
+
+  // From JSON
+  ExpenseGoal.fromJson(Map<String, dynamic> json) {
+    goalId = json['goalId'];
+    description = json['description'];
+    targetAmount = json['targetAmount'];
+    currentAmount = json['currentAmount'];
+    suggestedAmount = json['suggestedAmount'];
+    syncStatus = json['syncStatus'];
+    status = json['status'];
+    iconHex = json['iconHex'];
+    dueDate = json['dueDate'] != null ? DateTime.parse(json['dueDate']) : null;
+    createdDate = DateTime.parse(json['createdDate']);
+    updatedDate = DateTime.parse(json['updatedDate']);
+  }
 }

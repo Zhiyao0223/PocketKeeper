@@ -22,4 +22,16 @@ class AccountService extends ObjectboxService<Accounts> {
     return expenses
         .any((Expenses expense) => expense.account.target!.id == accountId);
   }
+
+  void restoreBackup(Map<String, dynamic> data) {
+    if (data['accounts'] == null) {
+      return;
+    }
+
+    final List<Accounts> expenses = data['accounts']
+        .map<Accounts>((dynamic entity) => Accounts.fromJson(entity))
+        .toList();
+
+    putMany(expenses);
+  }
 }

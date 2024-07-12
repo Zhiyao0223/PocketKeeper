@@ -54,4 +54,15 @@ class GoalSavingRecord {
       'updatedDate': updatedDate.toIso8601String(),
     };
   }
+
+  // From JSON
+  GoalSavingRecord.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    amount = json['amount'];
+    syncStatus = json['syncStatus'];
+    status = json['status'];
+    savingDate = DateTime.parse(json['savingDate']);
+    createdDate = DateTime.parse(json['createdDate']);
+    updatedDate = DateTime.parse(json['updatedDate']);
+  }
 }

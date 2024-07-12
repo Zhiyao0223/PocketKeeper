@@ -42,4 +42,16 @@ class ExpenseGoalService extends ObjectboxService<ExpenseGoal> {
 
     return goals.isNotEmpty ? goals.first : ExpenseGoal();
   }
+
+  void restoreBackup(Map<String, dynamic> data) {
+    if (data['expense_goal'] == null) {
+      return;
+    }
+
+    final List<ExpenseGoal> expenses = data['expense_goal']
+        .map<ExpenseGoal>((dynamic entity) => ExpenseGoal.fromJson(entity))
+        .toList();
+
+    putMany(expenses);
+  }
 }

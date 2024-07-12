@@ -39,4 +39,14 @@ class Accounts {
       'updatedDate': updatedDate.toIso8601String(),
     };
   }
+
+  // From JSON
+  Accounts.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    accountName = json['accountName'];
+    accountIconHex = json['accountIconHex'];
+    status = json['status'];
+    createdDate = DateTime.parse(json['createdDate']);
+    updatedDate = DateTime.parse(json['updatedDate']);
+  }
 }

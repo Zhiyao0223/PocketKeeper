@@ -25,4 +25,16 @@ class NotificationService extends ObjectboxService<Notifications> {
             notification.readStatus != ReadStatus.read.index)
         .length;
   }
+
+  void restoreBackup(Map<String, dynamic> data) {
+    if (data['notifications'] == null) {
+      return;
+    }
+
+    final List<Notifications> expenses = data['notifications']
+        .map<Notifications>((dynamic entity) => Notifications.fromJson(entity))
+        .toList();
+
+    putMany(expenses);
+  }
 }

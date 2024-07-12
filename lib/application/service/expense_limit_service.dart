@@ -37,4 +37,16 @@ class ExpenseLimitService extends ObjectboxService<ExpenseLimit> {
 
     return categoryLimitsAndBalance;
   }
+
+  void restoreBackup(Map<String, dynamic> data) {
+    if (data['expense_limit'] == null) {
+      return;
+    }
+
+    final List<ExpenseLimit> expenses = data['expense_limit']
+        .map<ExpenseLimit>((dynamic entity) => ExpenseLimit.fromJson(entity))
+        .toList();
+
+    putMany(expenses);
+  }
 }

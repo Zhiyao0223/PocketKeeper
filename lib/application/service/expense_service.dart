@@ -173,4 +173,16 @@ class ExpenseService extends ObjectboxService<Expenses> {
 
     return accountBalances;
   }
+
+  void restoreBackup(Map<String, dynamic> data) {
+    if (data['expense'] == null) {
+      return;
+    }
+
+    final List<Expenses> expenses = data['expense']
+        .map<Expenses>((dynamic entity) => Expenses.fromJson(entity))
+        .toList();
+
+    putMany(expenses);
+  }
 }

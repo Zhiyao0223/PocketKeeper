@@ -46,15 +46,4 @@ class ObjectboxService<T> {
   List<Map<String, dynamic>> getBackup() {
     return serializeData(getAll());
   }
-
-  // Deserialize
-  T deserializeData(Map<String, dynamic> data) {
-    return data as T;
-  }
-
-  void restoreBackup(List<Map<String, dynamic>> data) {
-    final List<T> entities =
-        data.map<T>((entity) => deserializeData(entity)).toList();
-    putMany(entities);
-  }
 }

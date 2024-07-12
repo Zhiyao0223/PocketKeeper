@@ -68,4 +68,26 @@ class AppSetting {
       'endOfMonth': endOfMonth,
     };
   }
+
+  // From JSON
+  AppSetting.fromJson(Map<String, dynamic> json) {
+    settingId = json['settingId'];
+    appName = json['appName'];
+    appVersion = json['appVersion'];
+    appTheme = json['appTheme'];
+    appLanguage = json['appLanguage'];
+    currencyIndicator = json['currencyIndicator'];
+    currencyCode = json['currencyCode'];
+    isNotificationOn = json['isNotificationOn'];
+    isGoogleSignIn = json['isGoogleSignIn'];
+    isBiometricOn = json['isBiometricOn'];
+    lastBackupDate = json['lastBackupDate'] != null
+        ? DateTime.parse(json['lastBackupDate'])
+        : null;
+    lastRestoreDate = json['lastRestoreDate'] != null
+        ? DateTime.parse(json['lastRestoreDate'])
+        : null;
+    monthlyLimit = json['monthlyLimit'];
+    endOfMonth = json['endOfMonth'];
+  }
 }

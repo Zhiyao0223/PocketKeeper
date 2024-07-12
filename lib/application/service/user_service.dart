@@ -22,4 +22,16 @@ class UserService extends ObjectboxService<Users> {
 
     put(user);
   }
+
+  void restoreBackup(Map<String, dynamic> data) {
+    if (data['user'] == null) {
+      return;
+    }
+
+    final List<Users> expenses = data['user']
+        .map<Users>((dynamic entity) => Users.fromJson(entity))
+        .toList();
+
+    putMany(expenses);
+  }
 }

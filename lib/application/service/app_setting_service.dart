@@ -25,4 +25,16 @@ class AppSettingService extends ObjectboxService<AppSetting> {
       return appSettings.first;
     }
   }
+
+  void restoreBackup(Map<String, dynamic> data) {
+    if (data['app_setting'] == null) {
+      return;
+    }
+
+    final List<AppSetting> expenses = data['app_setting']
+        .map<AppSetting>((dynamic entity) => AppSetting.fromJson(entity))
+        .toList();
+
+    putMany(expenses);
+  }
 }

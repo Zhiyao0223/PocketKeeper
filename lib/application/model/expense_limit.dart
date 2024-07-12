@@ -47,4 +47,14 @@ class ExpenseLimit {
       'updatedDate': updatedDate.toIso8601String(),
     };
   }
+
+  // From JSON
+  ExpenseLimit.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    amount = json['amount'];
+    syncStatus = json['syncStatus'];
+    status = json['status'];
+    createdDate = DateTime.parse(json['createdDate']);
+    updatedDate = DateTime.parse(json['updatedDate']);
+  }
 }

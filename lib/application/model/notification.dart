@@ -58,4 +58,17 @@ class Notifications {
       'updatedDate': updatedDate.toIso8601String(),
     };
   }
+
+  // From JSON
+  Notifications.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    description = json['description'];
+    notificationType = json['notificationType'];
+    readStatus = json['readStatus'];
+    syncStatus = json['syncStatus'];
+    status = json['status'];
+    createdDate = DateTime.parse(json['createdDate']);
+    updatedDate = DateTime.parse(json['updatedDate']);
+  }
 }

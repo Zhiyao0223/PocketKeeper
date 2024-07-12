@@ -81,4 +81,18 @@ class Expenses {
       'updatedDate': updatedDate.toIso8601String(),
     };
   }
+
+  // From JSON
+  Expenses.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    description = json['description'];
+    amount = json['amount'];
+    expensesType = json['expensesType'];
+    syncStatus = json['syncStatus'];
+    status = json['status'];
+    image = json['image'];
+    expensesDate = DateTime.parse(json['expensesDate']);
+    createdDate = DateTime.parse(json['createdDate']);
+    updatedDate = DateTime.parse(json['updatedDate']);
+  }
 }

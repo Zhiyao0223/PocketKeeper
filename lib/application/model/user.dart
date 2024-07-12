@@ -67,4 +67,17 @@ class Users {
       'updatedDate': updatedDate.toIso8601String(),
     };
   }
+
+  // From JSON
+  Users.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    email = json['email'];
+    password = json['password'];
+    discordId = json['discordId'];
+    status = json['status'];
+    profilePicture = json['profilePicture'];
+    createdDate = DateTime.parse(json['createdDate']);
+    updatedDate = DateTime.parse(json['updatedDate']);
+  }
 }

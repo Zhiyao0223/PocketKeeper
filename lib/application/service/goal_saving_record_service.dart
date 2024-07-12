@@ -67,4 +67,17 @@ class GoalSavingRecordService extends ObjectboxService<GoalSavingRecord> {
 
     return lastContributionList;
   }
+
+  void restoreBackup(Map<String, dynamic> data) {
+    if (data['goal_saving_record'] == null) {
+      return;
+    }
+
+    final List<GoalSavingRecord> records = data['goal_saving_record']
+        .map<GoalSavingRecord>(
+            (dynamic entity) => GoalSavingRecord.fromJson(entity))
+        .toList();
+
+    putMany(records);
+  }
 }
