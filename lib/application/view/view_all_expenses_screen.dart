@@ -8,11 +8,13 @@ import 'package:pocketkeeper/template/widgets/widgets.dart';
 import 'package:pocketkeeper/utils/converters/date.dart';
 import 'package:pocketkeeper/utils/converters/number.dart';
 import 'package:pocketkeeper/utils/validators/string_validator.dart';
+import 'package:pocketkeeper/widget/appbar.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
 import '../../theme/custom_theme.dart';
 import '../../template/state_management/state_management.dart';
 
 class ViewAllExpensesScreen extends StatefulWidget {
+  // For now no implement filter acount first
   final int filterAccountId;
   const ViewAllExpensesScreen({super.key, required this.filterAccountId});
 
@@ -67,6 +69,7 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
         initialIndex: 0,
         animationDuration: const Duration(milliseconds: 300),
         child: Scaffold(
+          appBar: buildSafeAreaAppBar(appBarColor: customTheme.lightPurple),
           body: SafeArea(
             child: NestedScrollView(
               headerSliverBuilder:

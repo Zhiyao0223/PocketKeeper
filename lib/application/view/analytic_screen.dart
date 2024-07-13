@@ -1,12 +1,15 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/analytic_controller.dart';
-import 'package:pocketkeeper/application/model/expense.dart';
+import 'package:pocketkeeper/application/model/category.dart';
+import 'package:pocketkeeper/application/view/view_all_expenses_screen.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
 import 'package:pocketkeeper/theme/custom_theme.dart';
-import 'package:pocketkeeper/utils/converters/date.dart';
+import 'package:pocketkeeper/utils/converters/number.dart';
 import 'package:pocketkeeper/widget/appbar.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
+import 'package:pocketkeeper/widget/indicator.dart';
 import '../../template/state_management/state_management.dart';
 
 class AnalyticScreen extends StatefulWidget {
@@ -22,11 +25,17 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
   late CustomTheme customTheme;
   late AnalyticController controller;
 
-  List<Color> gradientColors = [
-    const Color(0xFF36D1DC),
-    const Color(0xFFD8B5FF),
+  // Pie Chart
+  final List<Color> pieChartColors = [
+    Colors.blue[300]!,
+    Colors.orange[300]!,
+    Colors.purple[300]!,
+    Colors.teal[300]!,
+    Colors.red[300]!,
   ];
 
+  // Line Graph
+  late List<Color> gradientColors;
   bool showAvg = false;
 
   @override
@@ -35,6 +44,11 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
     customTheme = CustomTheme();
 
     controller = FxControllerStore.put(AnalyticController());
+
+    gradientColors = [
+      customTheme.lightPurple.withOpacity(0.4),
+      customTheme.white,
+    ];
   }
 
   @override
@@ -55,248 +69,93 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
     }
 
     return Scaffold(
-      appBar: buildCommonAppBar(headerTitle: "Analytics", context: context),
+      appBar: buildCommonAppBar(
+        headerTitle: "Analytics",
+        context: context,
+        disableBackButton: true,
+      ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
+            // Purple Background and Pie Chart Section
+            Stack(
               children: [
-                const FxText.labelLarge('Expenses', fontSize: 18),
-                // Three button to filter either day, week or month
-                Row(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        controller.filterLineGraph(0);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: (controller.selectedLineGraphFilter == 0)
-                              ? customTheme.lightPurple
-                              : customTheme.lightPurple.withOpacity(0.1),
-                        ),
-                        child: FxText.bodySmall(
-                          'Day',
-                          xMuted: true,
-                          color: (controller.selectedLineGraphFilter == 0)
-                              ? customTheme.white
-                              : customTheme.black,
-                        ),
+                // Purple background
+                SizedBox(
+                  height: 150,
+                  width: double.infinity,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: customTheme.lightPurple,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(32),
+                        bottomRight: Radius.circular(32),
                       ),
                     ),
-                    InkWell(
-                      onTap: () {
-                        controller.filterLineGraph(1);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: (controller.selectedLineGraphFilter == 1)
-                              ? customTheme.lightPurple
-                              : customTheme.lightPurple.withOpacity(0.1),
+                  ),
+                ),
+
+                // Summary
+                Padding(
+                  padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                    decoration: BoxDecoration(
+                      color: customTheme.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: customTheme.lightGrey,
+                          blurRadius: 5,
+                          offset: const Offset(0, 5),
                         ),
-                        child: FxText.bodySmall(
-                          'Week',
-                          xMuted: true,
-                          color: (controller.selectedLineGraphFilter == 1)
-                              ? customTheme.white
-                              : customTheme.black,
-                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Summary header and month filter
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const FxText.labelLarge(
+                                "Summary",
+                                fontSize: 18,
+                                fontWeight: 700,
+                              ),
+                              // Month filter
+                              __buildSummaryMonthFilterButton(),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+
+                          // Pie Chart
+                          _buildPieChart(),
+                          const SizedBox(height: 8),
+                        ],
                       ),
                     ),
-                    InkWell(
-                      onTap: () {
-                        controller.filterLineGraph(2);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: (controller.selectedLineGraphFilter == 2)
-                              ? customTheme.lightPurple
-                              : customTheme.lightPurple.withOpacity(0.1),
-                        ),
-                        child: FxText.bodySmall(
-                          'Month',
-                          xMuted: true,
-                          color: (controller.selectedLineGraphFilter == 2)
-                              ? customTheme.white
-                              : customTheme.black,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.3,
-              child: LineChart(
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.easeInOut,
-                LineChartData(
-                  minY: 0,
-                  maxY: 25,
-                  baselineY: 0,
-                  gridData: FlGridData(
-                    show: true,
-                    drawVerticalLine: false,
-                    getDrawingHorizontalLine: (value) {
-                      return FlLine(
-                        color: Colors.grey.withOpacity(0.2),
-                        strokeWidth: 1,
-                      );
-                    },
-                  ),
-                  titlesData: FlTitlesData(
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        reservedSize: 35,
-                        interval: controller.yAxisInterval,
-                        showTitles: true,
-                        getTitlesWidget: (value, meta) {
-                          // Display the value of the graph
-                          return FxText.bodySmall(
-                            '\$${value.toStringAsFixed(0)}',
-                            fontSize: 11,
-                            xMuted: true,
-                          );
-                        },
-                      ),
-                    ),
-                    rightTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    topTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        interval: 1,
-                        reservedSize: 32,
-                        getTitlesWidget: (value, meta) {
-                          // Display the month name
-                          switch (value.toInt()) {
-                            case 1:
-                              return const FxText.bodySmall(
-                                'Jan',
-                                xMuted: true,
-                              );
-                            case 2:
-                              return const FxText.bodySmall(
-                                'Feb',
-                                xMuted: true,
-                              );
-                            case 3:
-                              return const FxText.bodySmall(
-                                'Mar',
-                                xMuted: true,
-                              );
-                            case 4:
-                              return const FxText.bodySmall(
-                                'Apr',
-                                xMuted: true,
-                              );
-                            case 5:
-                              return const FxText.bodySmall(
-                                'May',
-                                xMuted: true,
-                              );
-                            case 6:
-                              return const FxText.bodySmall(
-                                'Jun',
-                                xMuted: true,
-                              );
-                            case 7:
-                              return const FxText.bodySmall(
-                                'Jul',
-                                xMuted: true,
-                              );
-                            case 8:
-                              return const FxText.bodySmall(
-                                'Aug',
-                                xMuted: true,
-                              );
-                            case 9:
-                              return const FxText.bodySmall(
-                                'Sep',
-                                xMuted: true,
-                              );
-                            case 10:
-                              return const FxText.bodySmall(
-                                'Oct',
-                                xMuted: true,
-                              );
-                            case 11:
-                              return const FxText.bodySmall(
-                                'Nov',
-                                xMuted: true,
-                              );
-                            case 12:
-                              return const FxText.bodySmall(
-                                'Dec',
-                                xMuted: true,
-                              );
-                            default:
-                              return const FxText.bodySmall('', xMuted: true);
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                  lineTouchData: LineTouchData(
-                    touchTooltipData: LineTouchTooltipData(
-                      getTooltipItems: (List<LineBarSpot> touchedSpots) {
-                        // On touch line
-                        return touchedSpots.map((LineBarSpot touchedSpot) {
-                          final FlSpot spot = touchedSpot;
-                          return LineTooltipItem(
-                            '\$${spot.y.toStringAsFixed(2)}',
-                            const TextStyle(color: Colors.white),
-                          );
-                        }).toList();
-                      },
-                    ),
-                    handleBuiltInTouches: true,
-                  ),
-                  // borderData: FlBorderData(show: false),
-                  borderData: FlBorderData(
-                    show: true,
-                    border: Border.all(color: Colors.black, width: 1),
-                  ),
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: controller.lineGraphSpot,
-                      isCurved: true,
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: gradientColors,
-                        stops: const [0.0, 1.0],
-                      ),
-                      barWidth: 3,
-                      isStrokeCapRound: true,
-                      show: true,
-                      dotData: const FlDotData(show: false),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(16),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Your Budget',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+
+            // Categories and view all transactions
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                children: [
+                  // Category expenses and view all transactions
+                  _buildCategorySection(),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+
+                  // Line Graph
+                  _buildLineGraph(),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.2),
+                ],
               ),
             ),
           ],
@@ -305,28 +164,527 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
     );
   }
 
-  Widget _buildBudgetItem(Expenses expenses) {
+  // Same row wih summary title, to filter month for pie chart
+  Widget __buildSummaryMonthFilterButton() {
+    return DropdownButton2<String>(
+      value: controller.pieChartSelectedMonth,
+      isExpanded: false,
+      iconStyleData: const IconStyleData(
+        openMenuIcon: Icon(
+          Icons.arrow_drop_down,
+          size: 18,
+        ),
+      ),
+      dropdownStyleData: DropdownStyleData(
+        elevation: 8,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.zero,
+      ),
+      menuItemStyleData: MenuItemStyleData(
+        selectedMenuItemBuilder: (context, child) {
+          return Row(
+            children: [
+              Container(child: child),
+              const Icon(
+                Icons.check,
+                size: 16,
+                color: Colors.black,
+              ),
+            ],
+          );
+        },
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+        ),
+      ),
+      style: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: customTheme.black,
+      ),
+      alignment: Alignment.centerRight,
+      // Dropdown Button
+      underline: Container(
+        height: 33,
+        alignment: Alignment.centerRight,
+        decoration: BoxDecoration(
+          color: customTheme.lightGrey.withOpacity(0.4),
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+      onChanged: (String? newValue) {
+        if (newValue != null) {
+          controller.setMonthFilterLineGraph(newValue);
+        }
+      },
+      items: controller.monthFilterList
+          .map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: FxText.bodySmall(
+            value,
+            xMuted: true,
+            color: customTheme.black,
+            fontWeight: 600,
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildPieChart() {
+    bool isAllZero = true;
+    int colorIndex = 0;
+    List<PieChartSectionData> pieChartSectionData = [];
+    controller.pieChartData.forEach((key, value) {
+      pieChartSectionData.add(
+        PieChartSectionData(
+          color: pieChartColors[colorIndex],
+          value: value,
+          radius: 40,
+          title: key.categoryName,
+          showTitle: false,
+        ),
+      );
+
+      colorIndex++;
+      if (value != 0 && isAllZero) {
+        isAllZero = false;
+      }
+    });
+
+    return (isAllZero)
+        ? const Center(
+            child: FxText.bodyMedium(
+              "No record found",
+              xMuted: true,
+            ),
+          )
+        : Column(
+            children: [
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      FxText.bodySmall(
+                        "Amount",
+                        fontWeight: 700,
+                        xMuted: true,
+                        color: customTheme.grey,
+                      ),
+                      const SizedBox(height: 8),
+                      FxText.labelLarge(
+                        "${controller.currencyIndicator}${controller.totalAmount.toCommaSeparated()}",
+                        fontSize: 16,
+                        xMuted: true,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    child: PieChart(
+                      swapAnimationDuration: const Duration(milliseconds: 750),
+                      swapAnimationCurve: Curves.easeInOutQuint,
+                      PieChartData(
+                        centerSpaceColor: Colors.transparent,
+                        sectionsSpace: 5,
+                        sections: pieChartSectionData,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              // Indicator
+              Wrap(
+                spacing: 16.0,
+                runSpacing: 8.0,
+                children: List.generate(pieChartSectionData.length, (index) {
+                  return Indicator(
+                    color: pieChartColors[index],
+                    text: pieChartSectionData[index].title,
+                    isSquare: false,
+                    size: 16,
+                    textColor: customTheme.black,
+                  );
+                }),
+              ),
+            ],
+          );
+  }
+
+  Widget _buildCategorySection() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: customTheme.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: customTheme.lightGrey,
+            blurRadius: 5.0,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          for (Category expenses in controller.pieChartData.keys)
+            _buildBudgetItem(expenses),
+          if (controller.pieChartData.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            InkWell(
+              onTap: () {
+                // Navigate to view all transaction
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const ViewAllExpensesScreen(filterAccountId: 0),
+                  ),
+                );
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FxText.labelMedium(
+                    "View all transactions",
+                    color: customTheme.lightPurple,
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: customTheme.lightPurple,
+                    size: 16,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLineGraph() {
+    return Container(
+      decoration: BoxDecoration(
+        color: customTheme.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: customTheme.lightGrey,
+            blurRadius: 5.0,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          // Line graph header
+          Column(
+            children: [
+              FxText.labelLarge(
+                controller.lineGraphTitle,
+                xMuted: true,
+                fontWeight: 600,
+              ),
+              FxText.labelMedium(
+                controller.lineGraphTotal,
+                color: customTheme.red,
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Line graph
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: LineChart(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOutQuint,
+              LineChartData(
+                minY: controller.minY,
+                maxY: controller.maxY,
+                minX: controller.minX,
+                maxX: controller.maxX,
+                baselineY: 0,
+                // Grid in graph
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: false,
+                  getDrawingHorizontalLine: (value) {
+                    return FlLine(
+                      color: Colors.grey.withOpacity(0.2),
+                      strokeWidth: 1,
+                    );
+                  },
+                ),
+                titlesData: FlTitlesData(
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      reservedSize: 40,
+                      interval: controller.yAxisInterval,
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        // Display the value of the graph
+                        return FxText.bodySmall(
+                          '\$${value.toStringAsFixed(0)}',
+                          fontSize: 11,
+                          xMuted: true,
+                        );
+                      },
+                    ),
+                  ),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      interval: controller.xAxisInterval,
+                      reservedSize: 32,
+                      getTitlesWidget: (value, meta) {
+                        // Display the month name
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: FxText.bodySmall(
+                            value.toMonthString(true),
+                            xMuted: true,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                // On touch line
+                lineTouchData: LineTouchData(
+                  touchTooltipData: LineTouchTooltipData(
+                    getTooltipItems: (List<LineBarSpot> touchedSpots) {
+                      // On touch line
+                      return touchedSpots.map((LineBarSpot touchedSpot) {
+                        final FlSpot spot = touchedSpot;
+                        return LineTooltipItem(
+                          '\$${spot.y.toStringAsFixed(2)}',
+                          const TextStyle(color: Colors.white),
+                        );
+                      }).toList();
+                    },
+                  ),
+                  handleBuiltInTouches: true,
+                ),
+                borderData: FlBorderData(show: false),
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: controller.lineGraphSpot,
+                    isCurved: true,
+                    color: customTheme.lightPurple,
+                    barWidth: 3,
+                    isStrokeCapRound: true,
+                    show: true,
+                    dotData: const FlDotData(show: false),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      gradient: LinearGradient(
+                        colors: gradientColors,
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: const [0.1, 1],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Filter line graph
+          _buildFilterLineGraph(),
+          const SizedBox(height: 16),
+
+          // Cash flow
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const FxText.labelLarge(
+                "Cash flow",
+                fontSize: 16,
+                fontWeight: 600,
+              ),
+              FxText.labelMedium(
+                controller.lineGraphTitle,
+                xMuted: true,
+                color: customTheme.grey,
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Income
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        maxRadius: 12,
+                        backgroundColor: customTheme.green,
+                        child: Icon(
+                          Icons.arrow_upward,
+                          color: customTheme.white,
+                          size: 12,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      FxText.labelSmall(
+                        "Income",
+                        color: customTheme.black,
+                        xMuted: true,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 8),
+                  FxText.labelMedium(
+                    "${controller.currencyIndicator}${controller.totalIncome.toCommaSeparated()}",
+                    color: customTheme.green,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        maxRadius: 12,
+                        backgroundColor: customTheme.red,
+                        child: Icon(
+                          Icons.arrow_downward,
+                          color: customTheme.white,
+                          size: 12,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      FxText.labelSmall(
+                        "Expenses",
+                        color: customTheme.black,
+                        xMuted: true,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 8),
+                  FxText.labelMedium(
+                    "${controller.currencyIndicator}${controller.totalExpense.toCommaSeparated()}",
+                    color: customTheme.red,
+                  ),
+                ],
+              ),
+              const Divider(),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  FxText.labelMedium(
+                    "Total: ",
+                    color: customTheme.black,
+                  ),
+                  const SizedBox(width: 8),
+                  FxText.labelMedium(
+                    "${controller.currencyIndicator}${controller.netProfit.toCommaSeparated()}",
+                    color: (controller.totalExpense > controller.totalIncome)
+                        ? customTheme.red
+                        : customTheme.green,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterLineGraph() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for (int i = 0; i < controller.lineGraphFilterList.length; i++)
+          InkWell(
+            onTap: () {
+              controller.filterLineGraph(i);
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: (controller.selectedLineGraphFilter == i)
+                    ? customTheme.lightPurple
+                    : Colors.transparent,
+              ),
+              child: FxText.bodySmall(
+                controller.lineGraphFilterList[i],
+                xMuted: true,
+                color: (controller.selectedLineGraphFilter == i)
+                    ? customTheme.white
+                    : customTheme.black,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildBudgetItem(Category tmpCategory) {
+    // Get total amount of the category
+    double value = controller.pieChartData[tmpCategory] ?? 0;
+    int totalTransaction =
+        controller.categoryTotalTransactions[tmpCategory] ?? 0;
+
     return ListTile(
+      contentPadding: const EdgeInsets.all(0),
       leading: Container(
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: Colors.blue.withOpacity(0.1),
+          color: customTheme.lightPurple,
           borderRadius: BorderRadius.circular(8),
         ),
+        child: Center(
+          child: Icon(
+            IconData(tmpCategory.iconHex, fontFamily: 'MaterialIcons'),
+            color: customTheme.white,
+          ),
+        ),
       ),
-      title: Text(expenses.description),
-      subtitle: Text(expenses.expensesDate.toDateString()),
+      title: FxText.labelMedium(tmpCategory.categoryName),
+      subtitle: FxText.bodySmall(
+        "$totalTransaction transactions",
+        color: customTheme.grey,
+        xMuted: true,
+      ),
       trailing: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            '\$${expenses.amount.toStringAsFixed(2)}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
+          FxText.labelMedium(
+            "${controller.currencyIndicator}${value.toCommaSeparated()}",
           ),
-          Text(expenses.category.target!.categoryName,
-              style: const TextStyle(fontSize: 12, color: Colors.grey)),
         ],
       ),
     );

@@ -28,32 +28,32 @@ extension NumberExtension on num {
   }
 
   // This function convert numeric month to string
-  String toMonthString() {
+  String toMonthString([bool isShort = false]) {
     switch (this.toInt()) {
       case 1:
-        return 'January';
+        return (isShort) ? 'Jan' : 'January';
       case 2:
-        return 'February';
+        return (isShort) ? 'Feb' : 'February';
       case 3:
-        return 'March';
+        return (isShort) ? 'Mar' : 'March';
       case 4:
-        return 'April';
+        return (isShort) ? 'Apr' : 'April';
       case 5:
-        return 'May';
+        return (isShort) ? 'May' : 'May';
       case 6:
-        return 'June';
+        return (isShort) ? 'Jun' : 'June';
       case 7:
-        return 'July';
+        return (isShort) ? 'Jul' : 'July';
       case 8:
-        return 'August';
+        return (isShort) ? 'Aug' : 'August';
       case 9:
-        return 'September';
+        return (isShort) ? 'Sep' : 'September';
       case 10:
-        return 'October';
+        return (isShort) ? 'Oct' : 'October';
       case 11:
-        return 'November';
+        return (isShort) ? 'Nov' : 'November';
       case 12:
-        return 'December';
+        return (isShort) ? 'Dec' : 'December';
       default:
         return '';
     }
