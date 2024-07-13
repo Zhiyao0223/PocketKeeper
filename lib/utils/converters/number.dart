@@ -27,6 +27,28 @@ extension NumberExtension on num {
     return round().toString();
   }
 
+  // This function convert int to week day
+  String toWeekDayString([bool isShort = false]) {
+    switch (this.toInt()) {
+      case 1:
+        return (isShort) ? 'Mon' : 'Monday';
+      case 2:
+        return (isShort) ? 'Tue' : 'Tuesday';
+      case 3:
+        return (isShort) ? 'Wed' : 'Wednesday';
+      case 4:
+        return (isShort) ? 'Thu' : 'Thursday';
+      case 5:
+        return (isShort) ? 'Fri' : 'Friday';
+      case 6:
+        return (isShort) ? 'Sat' : 'Saturday';
+      case 7:
+        return (isShort) ? 'Sun' : 'Sunday';
+      default:
+        return '';
+    }
+  }
+
   // This function convert numeric month to string
   String toMonthString([bool isShort = false]) {
     switch (this.toInt()) {

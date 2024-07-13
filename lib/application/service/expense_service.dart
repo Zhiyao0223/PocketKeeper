@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
@@ -84,6 +85,42 @@ class ExpenseService extends ObjectboxService<Expenses> {
     return categoryMap;
   }
 
+  // Get top 4 + others expenses category in the month (for pie chart)
+  Map<Category, double> getTopSpendCategories(int month) {
+    Map<Category, double> categoryMap = getTotalExpensesByCategory(month);
+
+    if (categoryMap.isEmpty) {
+      return categoryMap;
+    }
+
+    final List<MapEntry<Category, double>> sortedEntries = categoryMap.entries
+        .toList()
+      ..sort((MapEntry<Category, double> a, MapEntry<Category, double> b) =>
+          b.value.compareTo(a.value));
+
+    final Map<Category, double> topCategoryMap = <Category, double>{};
+    for (final MapEntry<Category, double> entry in sortedEntries.take(4)) {
+      topCategoryMap[entry.key] = entry.value;
+    }
+
+    // Remaining categories, add them into 'Others'
+    double othersTotal = 0.0;
+    for (final MapEntry<Category, double> entry in sortedEntries.skip(4)) {
+      othersTotal += entry.value;
+    }
+
+    // Find "other" category from sorted entries
+    Category others = Category(
+      tmpCategoryName: "Others",
+      tmpIconHex: Icons.settings.codePoint,
+      tmpStatus: 0,
+      tmpIconColor: Colors.grey,
+    );
+    topCategoryMap[others] = othersTotal;
+
+    return topCategoryMap;
+  }
+
   // Get total percentage of expenses in the month
   Map<String, double> getCategoryExpensesPercentageInMonth(
       int month, double totalExpenses) {
@@ -107,6 +144,23 @@ class ExpenseService extends ObjectboxService<Expenses> {
     return categoryPercentageMap;
   }
 
+  double getTotalIncomeInWeek(DateTime startDate, DateTime endDate) {
+    final List<Expenses> expenses = getAllActiveIncomes();
+    double totalIncome = 0.0;
+
+    for (final Expenses expense in expenses) {
+      // Only consider expenses in the same week
+      if (expense.expensesDate.isBefore(startDate) ||
+          expense.expensesDate.isAfter(endDate)) {
+        continue;
+      }
+
+      totalIncome += expense.amount;
+    }
+
+    return totalIncome;
+  }
+
   // Get total income in the month
   double getTotalIncomeInMonth(int month) {
     final List<Expenses> expenses = getAllActiveIncomes();
@@ -124,14 +178,65 @@ class ExpenseService extends ObjectboxService<Expenses> {
     return totalIncome;
   }
 
+  double getTotalIncomeInYear(int year) {
+    final List<Expenses> expenses = getAllActiveIncomes();
+    double totalIncome = 0.0;
+
+    for (final Expenses expense in expenses) {
+      // Only consider expenses in the same year
+      if (expense.expensesDate.year != year) {
+        continue;
+      }
+
+      totalIncome += expense.amount;
+    }
+
+    return totalIncome;
+  }
+
+  // Get total expenses in the week
+  double getTotalExpensesInWeek(DateTime startDate, DateTime endDate) {
+    final List<Expenses> expenses = getAllActiveExpenses();
+    double totalExpenses = 0.0;
+
+    for (final Expenses expense in expenses) {
+      // Only consider expenses in the same week
+      if (expense.expensesDate.isBefore(startDate) ||
+          expense.expensesDate.isAfter(endDate)) {
+        continue;
+      }
+
+      totalExpenses += expense.amount;
+    }
+
+    return totalExpenses;
+  }
+
   // Get the total expenses in the month
-  double getTotalExpensesInMonth(int month) {
+  double getTotalExpensesInMonth(int month, int year) {
     final List<Expenses> expenses = getAllActiveExpenses();
     double totalExpenses = 0.0;
 
     for (final Expenses expense in expenses) {
       // Only consider expenses in the same month
-      if (expense.expensesDate.month != month) {
+      if (expense.expensesDate.month != month ||
+          expense.expensesDate.year != year) {
+        continue;
+      }
+
+      totalExpenses += expense.amount;
+    }
+
+    return totalExpenses;
+  }
+
+  double getTotalExpensesInYear(int year) {
+    final List<Expenses> expenses = getAllActiveExpenses();
+    double totalExpenses = 0.0;
+
+    for (final Expenses expense in expenses) {
+      // Only consider expenses in the same year
+      if (expense.expensesDate.year != year) {
         continue;
       }
 
@@ -172,6 +277,63 @@ class ExpenseService extends ObjectboxService<Expenses> {
     }
 
     return accountBalances;
+  }
+
+  // Get total records for each category
+  Map<String, int> getTotalRecordsByCategory([int? month]) {
+    month ??= DateTime.now().month;
+
+    final List<Expenses> expenses = getAllActiveRecords();
+    final Map<String, int> categoryMap = <String, int>{};
+
+    for (final Expenses expense in expenses) {
+      final Category category = expense.category.target!;
+
+      // Only consider expenses in the same month OR if is income type
+      if (expense.expensesDate.month != month || expense.expensesType == 1) {
+        continue;
+      } else if (categoryMap.containsKey(category.categoryName)) {
+        categoryMap[category.categoryName] =
+            categoryMap[category.categoryName]! + 1;
+      } else {
+        categoryMap[category.categoryName] = 1;
+      }
+    }
+
+    return categoryMap;
+  }
+
+  // Get total expenses for each day in specific range
+  Map<int, double> getTotalExpensesByDay(DateTime startDate, DateTime endDate) {
+    final List<Expenses> expenses = getAllActiveExpenses();
+    final Map<int, double> dayMap = <int, double>{};
+
+    for (final Expenses expense in expenses) {
+      // Only consider expenses in the same range
+      if (expense.expensesDate.isBefore(startDate) ||
+          expense.expensesDate.isAfter(endDate)) {
+        continue;
+      }
+
+      final int day = expense.expensesDate.day;
+      if (dayMap.containsKey(day)) {
+        dayMap[day] = dayMap[day]! + expense.amount;
+      } else {
+        dayMap[day] = expense.amount;
+      }
+    }
+
+    return dayMap;
+  }
+
+  // Get total expenses for each month in year
+  Map<int, double> getTotalExpensesByMonth(int year) {
+    Map<int, double> dayMap = <int, double>{};
+    for (int i = 0; i < 12; i++) {
+      dayMap[i + 1] = getTotalExpensesInMonth(i + 1, year);
+    }
+
+    return dayMap;
   }
 
   void restoreBackup(Map<String, dynamic> data) {

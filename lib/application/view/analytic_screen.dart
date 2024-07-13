@@ -2,6 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/analytic_controller.dart';
+import 'package:pocketkeeper/application/expense_cache.dart';
 import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/view/view_all_expenses_screen.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
@@ -69,96 +70,105 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
     }
 
     return Scaffold(
-      appBar: buildCommonAppBar(
-        headerTitle: "Analytics",
-        context: context,
-        disableBackButton: true,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Purple Background and Pie Chart Section
-            Stack(
-              children: [
-                // Purple background
-                SizedBox(
-                  height: 150,
-                  width: double.infinity,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: customTheme.lightPurple,
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(32),
-                        bottomRight: Radius.circular(32),
+      appBar: buildSafeAreaAppBar(appBarColor: customTheme.lightPurple),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              buildCommonAppBar(
+                headerTitle: "Analytics",
+                context: context,
+                disableBackButton: true,
+              ),
+
+              // Purple Background and Pie Chart Section
+              Stack(
+                children: [
+                  // Purple background
+                  SizedBox(
+                    height: 150,
+                    width: double.infinity,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: customTheme.lightPurple,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(32),
+                          bottomRight: Radius.circular(32),
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                // Summary
-                Padding(
-                  padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 8),
-                    decoration: BoxDecoration(
-                      color: customTheme.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: customTheme.lightGrey,
-                          blurRadius: 5,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Summary header and month filter
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const FxText.labelLarge(
-                                "Summary",
-                                fontSize: 18,
-                                fontWeight: 700,
-                              ),
-                              // Month filter
-                              __buildSummaryMonthFilterButton(),
-                            ],
+                  // Summary
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: 20, left: 16, right: 16),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: customTheme.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: customTheme.lightGrey,
+                            blurRadius: 5,
+                            offset: const Offset(0, 5),
                           ),
-                          const SizedBox(height: 8),
-
-                          // Pie Chart
-                          _buildPieChart(),
-                          const SizedBox(height: 8),
                         ],
                       ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Summary header and month filter
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const FxText.labelLarge(
+                                  "Summary",
+                                  fontSize: 18,
+                                  fontWeight: 700,
+                                ),
+                                // Month filter
+                                __buildSummaryMonthFilterButton(),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+
+                            // Pie Chart
+                            _buildPieChart(),
+                            const SizedBox(height: 8),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-
-            // Categories and view all transactions
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                children: [
-                  // Category expenses and view all transactions
-                  _buildCategorySection(),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-
-                  // Line Graph
-                  _buildLineGraph(),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.2),
                 ],
               ),
-            ),
-          ],
+              SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+
+              // Categories and view all transactions
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  children: [
+                    // Category expenses and view all transactions
+                    _buildCategorySection(),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+
+                    // Line Graph
+                    _buildLineGraph(),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                  ],
+                ),
+              ),
+
+              // Calendar
+              // _buildCalendar(),
+              // SizedBox(height: MediaQuery.of(context).size.height * 0.2),
+            ],
+          ),
         ),
       ),
     );
@@ -223,7 +233,7 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
       ),
       onChanged: (String? newValue) {
         if (newValue != null) {
-          controller.setMonthFilterLineGraph(newValue);
+          controller.setMonthFilterPieChart(newValue);
         }
       },
       items: controller.monthFilterList
@@ -327,6 +337,10 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
   }
 
   Widget _buildCategorySection() {
+    if (controller.categoryTotalTransactions.isEmpty) {
+      return const SizedBox();
+    }
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -342,37 +356,35 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
       ),
       child: Column(
         children: [
-          for (Category expenses in controller.pieChartData.keys)
-            _buildBudgetItem(expenses),
-          if (controller.pieChartData.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            InkWell(
-              onTap: () {
-                // Navigate to view all transaction
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        const ViewAllExpensesScreen(filterAccountId: 0),
-                  ),
-                );
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FxText.labelMedium(
-                    "View all transactions",
-                    color: customTheme.lightPurple,
-                  ),
-                  const SizedBox(width: 8),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    color: customTheme.lightPurple,
-                    size: 16,
-                  ),
-                ],
-              ),
+          for (String categoryName in controller.categoryTotalTransactions.keys)
+            _buildBudgetItem(categoryName),
+          const SizedBox(height: 8),
+          InkWell(
+            onTap: () {
+              // Navigate to view all transaction
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      const ViewAllExpensesScreen(filterAccountId: 0),
+                ),
+              );
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FxText.labelMedium(
+                  "View all transactions",
+                  color: customTheme.lightPurple,
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: customTheme.lightPurple,
+                  size: 16,
+                ),
+              ],
             ),
-          ],
+          ),
         ],
       ),
     );
@@ -461,14 +473,35 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                       interval: controller.xAxisInterval,
                       reservedSize: 32,
                       getTitlesWidget: (value, meta) {
-                        // Display the month name
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 5),
-                          child: FxText.bodySmall(
-                            value.toMonthString(true),
-                            xMuted: true,
-                          ),
-                        );
+                        // Check filter
+                        if (controller.selectedLineGraphFilter == 0) {
+                          // Filter by week
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: FxText.bodySmall(
+                              value.toInt().toWeekDayString(true),
+                              xMuted: true,
+                            ),
+                          );
+                        } else if (controller.selectedLineGraphFilter == 1) {
+                          // Filter by month
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: FxText.bodySmall(
+                              "${controller.now.month.toMonthString(true)} ${value.toInt()}",
+                              xMuted: true,
+                            ),
+                          );
+                        } else {
+                          // Filter by year
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: FxText.bodySmall(
+                              value.toInt().toMonthString(true),
+                              xMuted: true,
+                            ),
+                          );
+                        }
                       },
                     ),
                   ),
@@ -650,11 +683,21 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
     );
   }
 
-  Widget _buildBudgetItem(Category tmpCategory) {
-    // Get total amount of the category
-    double value = controller.pieChartData[tmpCategory] ?? 0;
+  Widget _buildBudgetItem(String tmpCategoryName) {
+    // If is other remove (bcoz this is self add, all category record will display here. Other category always 0)
+    if (tmpCategoryName == "Others") {
+      return const SizedBox();
+    }
+
+    Category tmpCategory = ExpenseCache.expenseCategories
+        .firstWhere((element) => element.categoryName == tmpCategoryName);
+
+    // Get total amount of the category (Compare name)
+    double value =
+        controller.categoryTotalAmount[tmpCategory.categoryName] ?? 0;
+
     int totalTransaction =
-        controller.categoryTotalTransactions[tmpCategory] ?? 0;
+        controller.categoryTotalTransactions[tmpCategory.categoryName] ?? 0;
 
     return ListTile(
       contentPadding: const EdgeInsets.all(0),
@@ -689,4 +732,72 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
       ),
     );
   }
+
+  // Widget _buildCalendar() {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(horizontal: 24),
+  //     child: Container(
+  //       padding: const EdgeInsets.all(16),
+  //       decoration: BoxDecoration(
+  //         color: customTheme.white,
+  //         borderRadius: BorderRadius.circular(16),
+  //         boxShadow: [
+  //           BoxShadow(
+  //             color: customTheme.lightGrey,
+  //             blurRadius: 5,
+  //             offset: const Offset(0, 5),
+  //           ),
+  //         ],
+  //       ),
+  //       child: TableCalendar(
+  //         firstDay: DateTime.utc(2023, 1, 1),
+  //         lastDay: DateTime.utc(2030, 12, 31),
+  //         focusedDay: DateTime.now(),
+  //         calendarStyle: CalendarStyle(
+  //           defaultTextStyle: const TextStyle(
+  //             color: Colors.black87,
+  //             fontSize: 12,
+  //           ),
+  //           weekendTextStyle: const TextStyle(
+  //             color: Colors.black87,
+  //             fontSize: 12,
+  //           ),
+  //           holidayTextStyle: const TextStyle(
+  //             color: Colors.black87,
+  //             fontSize: 12,
+  //           ),
+  //           todayDecoration: BoxDecoration(
+  //             color: const Color(0xFFD32F2F),
+  //             shape: BoxShape.rectangle,
+  //             borderRadius: BorderRadius.circular(8),
+  //           ),
+  //           defaultDecoration: BoxDecoration(
+  //             color: const Color(0xFFFFE0B2),
+  //             shape: BoxShape.rectangle,
+  //             borderRadius: BorderRadius.circular(8),
+  //           ),
+  //           selectedDecoration: BoxDecoration(
+  //             color: const Color(0xFFFFCC80),
+  //             shape: BoxShape.rectangle,
+  //             borderRadius: BorderRadius.circular(8),
+  //           ),
+  //         ),
+  //         headerStyle: const HeaderStyle(
+  //           formatButtonVisible: false,
+  //           titleCentered: true,
+  //           titleTextStyle: TextStyle(color: Colors.black87, fontSize: 18),
+  //         ),
+  //         daysOfWeekStyle: const DaysOfWeekStyle(
+  //           weekdayStyle: TextStyle(color: Colors.black87),
+  //           weekendStyle: TextStyle(color: Colors.black87),
+  //         ),
+  //         eventLoader: (day) {
+  //           return [
+  //             "Event 1",
+  //           ];
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
 }
