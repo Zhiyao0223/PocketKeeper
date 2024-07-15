@@ -59,7 +59,7 @@ class DashboardController extends FxController {
       greeting = "Good Evening !";
     }
 
-    currentMonth = 6; // change to now.month
+    currentMonth = now.month;
     currentMonthYear = DateFormat('MMMM yyyy').format(now);
 
     // Get currency indicator
@@ -90,9 +90,15 @@ class DashboardController extends FxController {
         currentMonth, totalExpenses);
 
     // Get saving goal
-    ExpenseGoal savingGoal = ExpenseGoalService().getHighPriorityGoal();
-    savingGoalProgress = savingGoal.currentAmount / savingGoal.targetAmount;
-    savingGoalIcon = IconData(savingGoal.iconHex, fontFamily: 'MaterialIcons');
+    ExpenseGoal? savingGoal = ExpenseGoalService().getHighPriorityGoal();
+
+    savingGoalProgress = (savingGoal != null)
+        ? savingGoal.currentAmount / savingGoal.targetAmount
+        : -1;
+    savingGoalIcon = IconData(
+      (savingGoal != null) ? savingGoal.iconHex : Icons.search.codePoint,
+      fontFamily: 'MaterialIcons',
+    );
 
     // Get revenue last week
     revenueThisMonth = expenseService.getTotalIncomeInMonth(currentMonth);
@@ -101,8 +107,11 @@ class DashboardController extends FxController {
     Map<Category, double> topCategoryData =
         expenseService.getTopSpendCategory(currentMonth);
 
-    topCategoryThisMonth = topCategoryData.keys.first;
-    topCategoryAmountLastWeek = topCategoryData.values.first;
+    topCategoryThisMonth = (topCategoryData.keys.isNotEmpty)
+        ? topCategoryData.keys.first
+        : ExpenseCache.expenseCategories.first;
+    topCategoryAmountLastWeek =
+        (topCategoryData.keys.isNotEmpty) ? topCategoryData.values.first : 0;
 
     // Get wallet accounts
     walletAccounts = ExpenseCache.accounts;
@@ -110,7 +119,7 @@ class DashboardController extends FxController {
     // Get expenses list
     for (final Accounts account in walletAccounts) {
       expensesList[account.id] =
-          expenseService.getExpensesByAccountId(account.id);
+          expenseService.getExpensesByAccountId(account.accountName);
 
       // Sort expenses by date and sublist
       expensesList[account.id]!.sort((Expenses a, Expenses b) {

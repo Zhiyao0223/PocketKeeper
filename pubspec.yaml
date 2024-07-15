@@ -21,6 +21,7 @@ dependencies:
   card_swiper: ^3.0.1
   fl_chart: ^0.68.0
   dropdown_button2: ^2.3.9
+  shimmer: ^3.0.0
   # table_calendar: ^3.0.9
 
   # Environment Variables
@@ -29,6 +30,7 @@ dependencies:
   # Notification
   fluttertoast: ^8.2.5
   flutter_svg: ^2.0.9
+  flutter_local_notifications: ^17.2.1+2
 
   # Image
   image_picker: ^1.1.2

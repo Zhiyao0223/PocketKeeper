@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/other/limit_controller.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/expense_limit.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
 import 'package:pocketkeeper/theme/custom_theme.dart';
@@ -136,7 +137,8 @@ class _LimitScreenState extends State<LimitScreen>
         padding: const EdgeInsets.all(15),
         child: Column(
           children: [
-            if (controller.categoryLimitsAndTotalSpent.isEmpty)
+            if (controller.categoryLimitsAndTotalSpent.isEmpty ||
+                controller.expenseLimits.isEmpty)
               Center(
                 child: FxText.bodyMedium(
                   'No budget created yet',
@@ -411,101 +413,116 @@ class _LimitScreenState extends State<LimitScreen>
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          backgroundColor: customTheme.lightGrey,
-          title: FxText.labelLarge(
-            isEditing ? 'Edit Budget' : 'Create Budget',
-            textAlign: TextAlign.center,
-          ),
-          content: SingleChildScrollView(
-            child: Form(
-              key: controller.formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Category dropdown if created
-                  if (isEditing)
-                    TextFormField(
-                      controller: controller.categoryNameController,
-                      readOnly: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Category',
-                        hintText: 'Enter amount',
-                      ),
-                    )
-                  else
-                    DropdownButtonFormField(
-                      value: controller.selectedCategory.id,
-                      items: controller.expenseCategories
-                          .map(
-                            (category) => DropdownMenuItem(
-                              value: category.id,
-                              child: Text(category.categoryName),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (int? value) {
-                        controller.selectedCategory = controller
-                            .expenseCategories
-                            .firstWhere((element) => element.id == value);
-                      },
-                      decoration: const InputDecoration(
-                        labelText: 'Category',
-                        hintText: 'Select category',
-                      ),
-                      dropdownColor: customTheme.lightGrey,
-                      menuMaxHeight: 265,
-                    ),
-                  const SizedBox(height: 20),
-
-                  // Category limit amount
-                  TextFormField(
-                    controller: controller.amountController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Amount',
-                      hintText: 'Enter amount',
-                    ),
-                    validator: controller.validateAmount,
-                  ),
-                ],
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: const FxText.bodyMedium('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: customTheme.colorPrimary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+              backgroundColor: customTheme.lightGrey,
+              title: FxText.labelLarge(
+                isEditing ? 'Edit Budget' : 'Create Budget',
+                textAlign: TextAlign.center,
+              ),
+              content: SingleChildScrollView(
+                child: Form(
+                  key: controller.formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Category dropdown if created
+                      if (isEditing)
+                        TextFormField(
+                          controller: controller.categoryNameController,
+                          readOnly: true,
+                          decoration: const InputDecoration(
+                            labelText: 'Category',
+                            hintText: 'Enter amount',
+                          ),
+                        )
+                      else
+                        DropdownButtonFormField(
+                          value: controller.selectedCategory.id,
+                          items: controller.expenseCategories
+                              .map(
+                                (category) => DropdownMenuItem(
+                                  value: category.id,
+                                  child: Text(category.categoryName),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (int? value) {
+                            controller.selectedCategory = controller
+                                .expenseCategories
+                                .firstWhere((element) => element.id == value);
+
+                            setState(() {
+                              controller.updateSuggestion();
+                            });
+                          },
+                          decoration: const InputDecoration(
+                            labelText: 'Category',
+                            hintText: 'Select category',
+                          ),
+                          dropdownColor: customTheme.lightGrey,
+                          menuMaxHeight: 265,
+                        ),
+                      const SizedBox(height: 20),
+
+                      // Category limit amount
+                      TextFormField(
+                        controller: controller.amountController,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: 'Amount',
+                          hintText: 'Enter amount',
+                        ),
+                        validator: controller.validateAmount,
+                      ),
+                      // Suggestions
+                      const SizedBox(height: 10),
+                      FxText.bodySmall(
+                        'Suggestion: ${MemberCache.appSetting.currencyIndicator}${controller.suggestedAmount.removeExtraDecimal()}',
+                        color: customTheme.black,
+                        xMuted: true,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              child: FxText.bodyMedium(
-                isEditing ? 'Save' : 'Create',
-                color: customTheme.white,
-              ),
-              onPressed: () {
-                controller.createBudget(isEditing);
+              actions: [
+                TextButton(
+                  child: const FxText.bodyMedium('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: customTheme.colorPrimary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: FxText.bodyMedium(
+                    isEditing ? 'Save' : 'Create',
+                    color: customTheme.white,
+                  ),
+                  onPressed: () {
+                    controller.createBudget(isEditing);
 
-                if (isEditing) {
-                  Navigator.of(context)
-                    ..pop()
-                    ..pop();
-                } else {
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-          ],
+                    if (isEditing) {
+                      Navigator.of(context)
+                        ..pop()
+                        ..pop();
+                    } else {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                ),
+              ],
+            );
+          },
         );
       },
     );

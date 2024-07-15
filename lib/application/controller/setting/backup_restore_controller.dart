@@ -12,6 +12,7 @@ class BackupRestoreController extends FxController {
 
   late DateTime? lastBackupDate;
   late DateTime? lastRestoreDate;
+  late DateTime? lastResyncDate;
 
   BackupService backupService = BackupService();
 
@@ -42,6 +43,12 @@ class BackupRestoreController extends FxController {
   String? getLastRestoreDate() {
     return lastRestoreDate != null
         ? "Last restore: ${lastRestoreDate!.toDateString(dateFormat: "d MMM yyyy")}"
+        : null;
+  }
+
+  String? getLastResyncDate() {
+    return lastResyncDate != null
+        ? "Last resync: ${lastResyncDate!.toDateString(dateFormat: "d MMM yyyy")}"
         : null;
   }
 
@@ -91,6 +98,28 @@ class BackupRestoreController extends FxController {
     // Export data
     backupService.backupData(isExport: true);
     Navigator.pop(context);
+  }
+
+  void resyncData() {
+    // Resync data
+    bool resyncStatus = backupService.resyncData();
+
+    // Fail to resync (Most probably no internet)
+    if (!resyncStatus) {
+      return;
+    }
+
+    showToast(customMessage: "Resync successful");
+
+    // Set current date
+    lastResyncDate = DateTime.now();
+    MemberCache.appSetting.lastResyncDate = lastResyncDate;
+
+    // Update user
+    Users user = MemberCache.user!;
+    UserService().updateLoginUser(user);
+
+    update();
   }
 
   @override

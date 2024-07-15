@@ -1,10 +1,13 @@
 import 'package:camera/camera.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pocketkeeper/application/model/app_setting.dart';
 import 'package:pocketkeeper/application/model/objectbox/objectbox.dart';
 import 'package:pocketkeeper/application/model/role.dart';
 import 'package:pocketkeeper/application/model/user.dart';
 import 'package:pocketkeeper/application/service/app_setting_service.dart';
+import 'package:pocketkeeper/application/service/local_notification_service.dart';
 import 'package:pocketkeeper/application/service/user_service.dart';
+import 'package:pocketkeeper/utils/custom_function.dart';
 
 class MemberCache {
   static Users? user;
@@ -22,10 +25,23 @@ class MemberCache {
   // Camera
   static List<CameraDescription> cameras = [];
 
+  // Notification
+  static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
   // This function is to initialize login
-  static void initLogin() {
+  static Future<void> initLogin() async {
     user = UserService().getLoginedUser();
+
+    // Check profile picture
+    if (user != null && user!.profilePicture == null) {
+      user!.profilePicture = await loadAssetAsUint8List(
+        "assets/images/user_placeholder.jpg",
+      );
+    }
+
     AppSettingService().initAppSetting();
+    LocalNotificationService().init();
   }
 
   // This function is to reset cache

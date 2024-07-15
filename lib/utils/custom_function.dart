@@ -86,6 +86,15 @@ Future<XFile> loadAssetAsXFile(String assetPath) async {
   return XFile(file.path);
 }
 
+// Load Assets as Uint8List
+Future<Uint8List> loadAssetAsUint8List(String assetPath) async {
+  // Load the asset as ByteData
+  ByteData byteData = await rootBundle.load(assetPath);
+
+  // Convert ByteData to Uint8List
+  return byteData.buffer.asUint8List();
+}
+
 Future<XFile?> downloadImageAsXFile(String imageUrl) async {
   try {
     final response = await http.get(Uri.parse(imageUrl));

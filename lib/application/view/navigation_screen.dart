@@ -125,15 +125,18 @@ class _NavigationScreenState extends State<NavigationScreen> {
     return FloatingActionButton(
       elevation: 10,
       clipBehavior: Clip.antiAlias,
-      onPressed: () {
+      onPressed: () async {
         // Go to manual add screen
-        Navigator.of(context).push(
+        await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
               return const FormAddExpensesScreen();
             },
           ),
-        );
+        ).then((value) {
+          // Refresh data after add expenses
+          controller.fetchData();
+        });
       },
       shape: const CircleBorder(),
       backgroundColor: customTheme.colorPrimary.withOpacity(0.8),

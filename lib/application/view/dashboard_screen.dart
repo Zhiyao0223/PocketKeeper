@@ -47,6 +47,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  @override
+  void dispose() {
+    FxControllerStore.delete(controller);
+    super.dispose();
+  }
+
   Widget _buildBody() {
     // Check if all data loaded
     if (!controller.isDataFetched) {
@@ -159,13 +165,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
         IconButton(
           iconSize: 24,
           color: customTheme.white,
-          onPressed: () {
-            Navigator.push(
+          onPressed: () async {
+            await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => const NotificationScreen(),
               ),
-            );
+            ).then((value) {
+              controller.fetchData();
+            });
           },
           icon: Stack(
             children: <Widget>[
@@ -273,6 +281,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   // Progress Indicator
                   MultiSectionProgressBar(
                     sections: [
+                      // If empty
+                      if (controller.progressIndicatorData.isEmpty)
+                        ProgressSection(
+                          name: 'No record',
+                          value: 1,
+                        ),
+
                       for (MapEntry<String, double> entry
                           in controller.progressIndicatorData.entries)
                         ProgressSection(
@@ -310,7 +325,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 const SizedBox(height: 10),
                 FxText.bodySmall(
-                  'Saving On Goal',
+                  (controller.savingGoalProgress != -1)
+                      ? 'Saving On Goal'
+                      : 'No Saving Goal',
                   color: customTheme.white,
                   fontSize: 10,
                 ),

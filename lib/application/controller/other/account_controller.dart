@@ -40,7 +40,7 @@ class AccountController extends FxController {
     // Get all expenses for each account
     for (int i = 0; i < accounts.length; i++) {
       accountExpenses[i] =
-          expenseService.getExpensesByAccountId(accounts[i].id);
+          expenseService.getExpensesByAccountId(accounts[i].accountName);
     }
 
     currentMonth = DateTime.now().month.toMonthString();

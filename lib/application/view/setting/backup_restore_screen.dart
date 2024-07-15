@@ -78,6 +78,14 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
               title: "Export as CSV",
               onTapFunction: controller.exportData,
             ),
+
+            // Resync
+            _buildListTileItem(
+              icon: Icons.file_download,
+              title: "Resync Data",
+              subTitle: controller.getLastResyncDate(),
+              onTapFunction: controller.exportData,
+            ),
           ],
         ),
       ),
@@ -104,7 +112,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
               : null,
           trailing: trailingWidget ?? const Icon(Icons.arrow_forward_ios),
           onTap: () async {
-            showLoadingDialog(isBackup: title == "Backup");
+            if (title != "Resync Data") {
+              showLoadingDialog(isBackup: title == "Backup");
+            }
             onTapFunction();
           },
           contentPadding: EdgeInsets.zero,

@@ -19,7 +19,8 @@ class LimitController extends FxController {
       totalSpent = 0,
       totalBudget = 0,
       chartProgress = 0,
-      budgetAvailableForAllocation = 0;
+      budgetAvailableForAllocation = 0,
+      suggestedAmount = 0;
 
   List<Category> expenseCategories = [];
   List<ExpenseLimit> expenseLimits = [];
@@ -50,8 +51,10 @@ class LimitController extends FxController {
     categoryLimitsAndTotalSpent = {};
 
     expenseLimits = ExpenseCache.expenseLimits;
+
     expenseCategories = ExpenseCache.expenseCategories;
     selectedCategory = ExpenseCache.expenseCategories.first;
+    updateSuggestion();
 
     categoryLimitsAndTotalSpent =
         ExpenseLimitService().getCategoryLimitsAndBalance();
@@ -175,6 +178,34 @@ class LimitController extends FxController {
 
     showToast(customMessage: "Budget deleted successfully");
     fetchData();
+  }
+
+  void updateSuggestion() {
+    switch (selectedCategory.categoryName) {
+      case "Food":
+        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.3;
+        break;
+      case "Grocery":
+        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.15;
+        break;
+      case "Transport":
+        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.1;
+        break;
+      case "Entertainment":
+        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.2;
+        break;
+      case "Health":
+        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.1;
+        break;
+      case "Education":
+        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.05;
+        break;
+      case "Others":
+        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.1;
+        break;
+      default:
+        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.1;
+    }
   }
 
   @override

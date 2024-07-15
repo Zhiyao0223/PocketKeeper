@@ -2,6 +2,12 @@ import 'package:app_settings/app_settings.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AppPermission {
+  // Initialize (First time)
+  static Future<void> init() async {
+    await Permission.camera.request();
+    await Permission.notification.request();
+  }
+
   // Go to settings to enable permission
   static void goToSettings(AppSettingsType type) {
     AppSettings.openAppSettings(type: type);

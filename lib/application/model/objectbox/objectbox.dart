@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/application/model/expense_goal.dart';
@@ -27,36 +28,224 @@ class ObjectBox {
     final dbDir = Directory(p.join(docsDir.path, "pocketkeeper"));
 
     // Delete previous database
-    if (await dbDir.exists()) {
-      try {
-        await dbDir.delete(recursive: true);
-      } catch (e) {
-        log("Error deleting database directory: $e");
-      }
-    }
+    // if (await dbDir.exists()) {
+    //   try {
+    //     await dbDir.delete(recursive: true);
+    //   } catch (e) {
+    //     log("Error deleting database directory: $e");
+    //   }
+    // }
 
     // Create new database
     final store = await openStore(
       directory: dbDir.path,
     );
 
-    // Generate dummy data
     final objectBox = ObjectBox._create(store);
-    objectBox._generateDummyData();
+
+    // Generate compulsory data
+    objectBox._generateCompulsoryData();
+    // objectBox._generateDummyData();
 
     return objectBox;
   }
 
+  // Generate compulsory data
+  void _generateCompulsoryData() {
+    // Only add if empty
+    // Account
+    if (store.box<Accounts>().isEmpty()) {
+      List<Accounts> accounts = [
+        Accounts(
+          accountName: "Cash",
+          status: 0,
+          tmpAccountIconHex: Icons.account_balance_wallet.codePoint,
+        ),
+        Accounts(
+          accountName: "Bank",
+          status: 0,
+          tmpAccountIconHex: Icons.account_balance.codePoint,
+        ),
+        Accounts(
+          accountName: "Credit Card",
+          status: 0,
+          tmpAccountIconHex: Icons.credit_card.codePoint,
+        ),
+        Accounts(
+          accountName: "Debit Card",
+          status: 0,
+          tmpAccountIconHex: Icons.credit_card.codePoint,
+        ),
+      ];
+      store.box<Accounts>().putMany(accounts);
+    }
+
+    // Category
+    if (store.box<Category>().isEmpty()) {
+      List<Category> categories = [
+        Category(
+          tmpCategoryName: "Food",
+          tmpIconHex: Icons.fastfood.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.amber,
+        ),
+        Category(
+          tmpCategoryName: "Grocery",
+          tmpIconHex: Icons.shopping_basket.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.greenAccent[400],
+        ),
+        Category(
+          tmpCategoryName: "Transportation",
+          tmpIconHex: Icons.directions_bus.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.blueAccent,
+        ),
+        Category(
+          tmpCategoryName: "Clothing",
+          tmpIconHex: Icons.shopify_outlined.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.green,
+        ),
+        Category(
+          tmpCategoryName: "Entertainment",
+          tmpIconHex: Icons.movie.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.purple,
+        ),
+        Category(
+          tmpCategoryName: "Sports",
+          tmpIconHex: Icons.sports_soccer.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.redAccent,
+        ),
+        Category(
+          tmpCategoryName: "Home",
+          tmpIconHex: Icons.home.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.brown,
+        ),
+        Category(
+          tmpCategoryName: "E-commerce",
+          tmpIconHex: Icons.shopping_cart.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.tealAccent,
+        ),
+        Category(
+          tmpCategoryName: "Tools",
+          tmpIconHex: Icons.build.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.teal,
+        ),
+        Category(
+          tmpCategoryName: "Events",
+          tmpIconHex: Icons.event.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.pinkAccent,
+        ),
+        Category(
+          tmpCategoryName: "Dessert",
+          tmpIconHex: Icons.cake.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.redAccent[100],
+        ),
+        Category(
+          tmpCategoryName: "Books",
+          tmpIconHex: Icons.book.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.blueGrey,
+        ),
+        Category(
+          tmpCategoryName: "Shoes",
+          tmpIconHex: Icons.shopping_bag.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.orangeAccent,
+        ),
+        Category(
+          tmpCategoryName: "Games",
+          tmpIconHex: Icons.games_outlined.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.deepPurpleAccent,
+        ),
+        Category(
+          tmpCategoryName: "Medical",
+          tmpIconHex: Icons.local_hospital.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.lightBlue[300],
+        ),
+        Category(
+          tmpCategoryName: "Others",
+          tmpIconHex: Icons.settings.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.grey,
+        ),
+        Category(
+          tmpCategoryName: "Salary",
+          tmpIconHex: Icons.money.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.green,
+          tmpCategoryType: 1,
+        ),
+        Category(
+          tmpCategoryName: "Bonus",
+          tmpIconHex: Icons.card_giftcard.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.orange,
+          tmpCategoryType: 1,
+        ),
+        Category(
+          tmpCategoryName: "Gift",
+          tmpIconHex: Icons.moped_rounded.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.deepPurple[300],
+          tmpCategoryType: 1,
+        ),
+        Category(
+          tmpCategoryName: "Investment",
+          tmpIconHex: Icons.insights.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.blue[300],
+          tmpCategoryType: 1,
+        ),
+        Category(
+          tmpCategoryName: "Others",
+          tmpIconHex: Icons.settings.codePoint,
+          tmpStatus: 0,
+          tmpIconColor: Colors.grey,
+          tmpCategoryType: 1,
+        ),
+      ];
+      store.box<Category>().putMany(categories);
+    }
+
+    // Role
+    if (store.box<Role>().isEmpty()) {
+      List<Role> roles = [
+        Role(
+          tmpName: "admin",
+          tmpId: 0,
+        ),
+        Role(
+          tmpId: 1,
+          tmpName: "premium_user",
+        ),
+        Role(
+          tmpName: "normal_user",
+          tmpId: 0,
+        ),
+      ];
+      store.box<Role>().putMany(roles);
+    }
+  }
+
   /// Generate dummy data
   /// This method is useful for testing purposes.
-  void _generateDummyData() {
+  void generateDummyData() {
     // Remove existing data
     store.box<Accounts>().removeAll();
-    store.box<Category>().removeAll();
     store.box<Expenses>().removeAll();
     store.box<ExpenseGoal>().removeAll();
     store.box<ExpenseLimit>().removeAll();
-    store.box<Role>().removeAll();
 
     // Give dummy data
     // Account
@@ -86,134 +275,7 @@ class ObjectBox {
     accounts = store.box<Accounts>().getAll();
 
     // Category
-    List<Category> categories = [
-      Category(
-        tmpCategoryName: "Food",
-        tmpIconHex: Icons.fastfood.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.amber,
-      ),
-      Category(
-        tmpCategoryName: "Grocery",
-        tmpIconHex: Icons.shopping_basket.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.greenAccent[400],
-      ),
-      Category(
-        tmpCategoryName: "Transportation",
-        tmpIconHex: Icons.directions_bus.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.blueAccent,
-      ),
-      Category(
-        tmpCategoryName: "Clothing",
-        tmpIconHex: Icons.shopify_outlined.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.green,
-      ),
-      Category(
-        tmpCategoryName: "Entertainment",
-        tmpIconHex: Icons.movie.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.purple,
-      ),
-      Category(
-        tmpCategoryName: "Sports",
-        tmpIconHex: Icons.sports_soccer.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.redAccent,
-      ),
-      Category(
-        tmpCategoryName: "Home",
-        tmpIconHex: Icons.home.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.brown,
-      ),
-      Category(
-        tmpCategoryName: "E-commerce",
-        tmpIconHex: Icons.shopping_cart.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.tealAccent,
-      ),
-      Category(
-        tmpCategoryName: "Tools",
-        tmpIconHex: Icons.build.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.teal,
-      ),
-      Category(
-        tmpCategoryName: "Events",
-        tmpIconHex: Icons.event.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.pinkAccent,
-      ),
-      Category(
-        tmpCategoryName: "Dessert",
-        tmpIconHex: Icons.cake.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.redAccent[100],
-      ),
-      Category(
-        tmpCategoryName: "Books",
-        tmpIconHex: Icons.book.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.blueGrey,
-      ),
-      Category(
-        tmpCategoryName: "Shoes",
-        tmpIconHex: Icons.shopping_bag.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.orangeAccent,
-      ),
-      Category(
-        tmpCategoryName: "Games",
-        tmpIconHex: Icons.games_outlined.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.deepPurpleAccent,
-      ),
-      Category(
-        tmpCategoryName: "Medical",
-        tmpIconHex: Icons.local_hospital.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.lightBlue[300],
-      ),
-      Category(
-        tmpCategoryName: "Others",
-        tmpIconHex: Icons.settings.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.grey,
-      ),
-      Category(
-        tmpCategoryName: "Salary",
-        tmpIconHex: Icons.money.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.green,
-        tmpCategoryType: 1,
-      ),
-      Category(
-        tmpCategoryName: "Bonus",
-        tmpIconHex: Icons.card_giftcard.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.orange,
-        tmpCategoryType: 1,
-      ),
-      Category(
-        tmpCategoryName: "Gift",
-        tmpIconHex: Icons.moped_rounded.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.deepPurple[300],
-        tmpCategoryType: 1,
-      ),
-      Category(
-        tmpCategoryName: "Others",
-        tmpIconHex: Icons.settings.codePoint,
-        tmpStatus: 0,
-        tmpIconColor: Colors.grey,
-        tmpCategoryType: 1,
-      ),
-    ];
-    store.box<Category>().putMany(categories);
-    categories = store.box<Category>().getAll();
+    List<Category> categories = store.box<Category>().getAll();
 
     // Goals
     List<ExpenseGoal> expenseGoals = [
@@ -330,23 +392,6 @@ class ObjectBox {
       expenseLimit4,
     ]);
 
-    // Role
-    List<Role> roles = [
-      Role(
-        tmpName: "admin",
-        tmpId: 0,
-      ),
-      Role(
-        tmpId: 1,
-        tmpName: "premium_user",
-      ),
-      Role(
-        tmpName: "normal_user",
-        tmpId: 0,
-      ),
-    ];
-    store.box<Role>().putMany(roles);
-
     // Expenses
     Expenses expense1 = Expenses(
       tmpAmount: 10,
@@ -457,12 +502,30 @@ class ObjectBox {
   void clear() async {
     close();
 
-    Directory docDir = await getApplicationDocumentsDirectory();
-    Directory('${docDir.path}/pocketkeeper').delete().then(
-        (FileSystemEntity value) => log("DB Deleted: ${value.existsSync()}"));
+    final docsDir = await getApplicationDocumentsDirectory();
+
+    // Define the database directory
+    final dbDir = Directory(p.join(docsDir.path, "pocketkeeper"));
+
+    // Delete previous database
+    if (await dbDir.exists()) {
+      try {
+        await dbDir.delete(recursive: true);
+      } catch (e) {
+        log("Error deleting database directory: $e");
+      }
+    }
   }
 
-  bool backupDatabase(List<Map<String, dynamic>> tmpData) {
-    return false;
+  Future<bool> resetDatabase() async {
+    try {
+      clear();
+      MemberCache.objectBox = await create();
+
+      return true;
+    } catch (e) {
+      log("Error deleting database: $e");
+      return false;
+    }
   }
 }

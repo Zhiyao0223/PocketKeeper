@@ -36,7 +36,7 @@ class Notifications {
     description = tmpDescription ?? '';
     notificationType =
         tmpNotificationType?.index ?? NotificationType.none.index;
-    readStatus = tmpReadStatus?.index ?? ReadStatus.none.index;
+    readStatus = tmpReadStatus?.index ?? ReadStatus.unread.index;
 
     syncStatus = tmpSyncStatus?.index ?? SyncStatus.none.index;
     status = tmpStatus ?? 0;

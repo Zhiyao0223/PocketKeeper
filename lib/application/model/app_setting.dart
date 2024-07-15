@@ -22,8 +22,14 @@ class AppSetting {
   late bool isBiometricOn;
 
   // Backup
+  @Property(type: PropertyType.date)
   late DateTime? lastBackupDate;
+
+  @Property(type: PropertyType.date)
   late DateTime? lastRestoreDate;
+
+  @Property(type: PropertyType.date)
+  late DateTime? lastResyncDate;
 
   // Budget Setting
   late double monthlyLimit;
@@ -45,7 +51,8 @@ class AppSetting {
     currencyCode = tmpCurrencyCode ?? "USD";
     lastBackupDate = null;
     lastRestoreDate = null;
-    monthlyLimit = 5000;
+    lastResyncDate = null;
+    monthlyLimit = 3000;
     endOfMonth = 30;
   }
 

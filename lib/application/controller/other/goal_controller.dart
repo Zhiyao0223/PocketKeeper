@@ -51,7 +51,8 @@ class GoalController extends FxController {
     // Calculate the percentage of saving this month
     String percentageString =
         (savingThisMonth / totalSaved * 100).toStringAsFixed(2);
-    percentageThisMonth = double.tryParse(percentageString) ?? 0;
+    percentageThisMonth =
+        (totalSaved != 0) ? double.tryParse(percentageString) ?? 0.0 : 0.0;
 
     isDataFetched = true;
     update();

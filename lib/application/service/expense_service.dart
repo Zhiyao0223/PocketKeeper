@@ -31,17 +31,22 @@ class ExpenseService extends ObjectboxService<Expenses> {
         .toList();
   }
 
-  List<Expenses> getExpensesByAccountId(int accountId, {int? month}) {
+  List<Expenses> getExpensesByAccountId(String accountName, {int? month}) {
     if (month == null) {
       return getAllActiveRecords()
           .where((Expenses expense) =>
-              expense.account.target!.id == accountId && expense.status == 0)
+              expense.account.target!.accountName == accountName &&
+              expense.status == 0)
           .toList();
+      // return getAllActiveRecords()
+      //     .where((Expenses expense) =>
+      //         expense.account.target!.id == accountId && expense.status == 0)
+      //     .toList();
     }
 
     return getAllActiveRecords()
         .where((Expenses expense) =>
-            expense.account.target!.id == accountId &&
+            expense.account.target!.accountName == accountName &&
             expense.status == 0 &&
             expense.expensesDate.month == month)
         .toList();
@@ -326,11 +331,44 @@ class ExpenseService extends ObjectboxService<Expenses> {
     return dayMap;
   }
 
+  // Get total income for each day in specific range
+  Map<int, double> getTotalIncomeByDay(DateTime startDate, DateTime endDate) {
+    final List<Expenses> expenses = getAllActiveIncomes();
+    final Map<int, double> dayMap = <int, double>{};
+
+    for (final Expenses expense in expenses) {
+      // Only consider expenses in the same range
+      if (expense.expensesDate.isBefore(startDate) ||
+          expense.expensesDate.isAfter(endDate)) {
+        continue;
+      }
+
+      final int day = expense.expensesDate.day;
+      if (dayMap.containsKey(day)) {
+        dayMap[day] = dayMap[day]! + expense.amount;
+      } else {
+        dayMap[day] = expense.amount;
+      }
+    }
+
+    return dayMap;
+  }
+
   // Get total expenses for each month in year
   Map<int, double> getTotalExpensesByMonth(int year) {
     Map<int, double> dayMap = <int, double>{};
     for (int i = 0; i < 12; i++) {
       dayMap[i + 1] = getTotalExpensesInMonth(i + 1, year);
+    }
+
+    return dayMap;
+  }
+
+  // Get total income for each month in year
+  Map<int, double> getTotalIncomeByMonth(int year) {
+    Map<int, double> dayMap = <int, double>{};
+    for (int i = 0; i < 12; i++) {
+      dayMap[i + 1] = getTotalIncomeInMonth(i + 1);
     }
 
     return dayMap;

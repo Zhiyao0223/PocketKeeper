@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/notification_controller.dart';
 import 'package:pocketkeeper/application/model/enum/notification_type.dart';
+import 'package:pocketkeeper/application/model/enum/read_status.dart';
 import 'package:pocketkeeper/application/model/notification.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
 import 'package:pocketkeeper/theme/custom_theme.dart';
@@ -94,7 +95,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget _buildNotificationItem(
     Notifications notificationItem,
   ) {
-    bool isHighlighted = notificationItem.readStatus != 0;
+    bool isHighlighted = notificationItem.readStatus != ReadStatus.unread.index;
     String formatDateTime =
         controller.formatDateTime(notificationItem.createdDate);
 
@@ -126,13 +127,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
       iconColor = customTheme.colorPrimary;
     }
 
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         // Only executed if notification is not read to prevent continous setState
         if (isHighlighted == false) {
-          setState(() {
-            controller.updateReadStatus(notificationItem);
-          });
+          controller.updateReadStatus(notificationItem);
         }
       },
       child: Container(

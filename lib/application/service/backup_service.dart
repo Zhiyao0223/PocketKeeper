@@ -166,4 +166,10 @@ class BackupService {
 
     return true;
   }
+
+  // Resync data
+  // TODO
+  bool resyncData() {
+    return true;
+  }
 }

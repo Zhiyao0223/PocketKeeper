@@ -29,7 +29,7 @@ class ExpenseGoalService extends ObjectboxService<ExpenseGoal> {
   }
 
   // Return the first goal that is near completion
-  ExpenseGoal getHighPriorityGoal() {
+  ExpenseGoal? getHighPriorityGoal() {
     // Sort by completion percentage (total - current) * 100%
     final List<ExpenseGoal> goals = getAllActiveGoals();
     goals.sort((ExpenseGoal a, ExpenseGoal b) {
@@ -40,7 +40,7 @@ class ExpenseGoalService extends ObjectboxService<ExpenseGoal> {
       return aPercentage.compareTo(bPercentage);
     });
 
-    return goals.isNotEmpty ? goals.first : ExpenseGoal();
+    return (goals.isNotEmpty) ? goals.first : null;
   }
 
   void restoreBackup(Map<String, dynamic> data) {

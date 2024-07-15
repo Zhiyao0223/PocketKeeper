@@ -26,7 +26,7 @@ class AnalyticController extends FxController {
 
   // Line graph
   List<String> lineGraphFilterList = ["Week", "Month", "Year"];
-  List<FlSpot> lineGraphSpot = [];
+  List<FlSpot> expenseslineGraphSpot = [], incomeLineGraphSpot = [];
 
   int selectedLineGraphFilter = 0; //  0: Week, 1: Month, 2: Year
   late double yAxisInterval, xAxisInterval, minY, maxY, minX, maxX;
@@ -49,18 +49,21 @@ class AnalyticController extends FxController {
   }
 
   void fetchData() async {
+    ExpenseService expenseService = ExpenseService();
+
     // Clear all data
     pieChartData = {};
     categoryTotalTransactions = {};
     categoryTotalAmount = {};
-    lineGraphSpot = [];
+    expenseslineGraphSpot = [];
+    incomeLineGraphSpot = [];
 
     // General
     currencyIndicator = MemberCache.appSetting.currencyIndicator;
 
     // Pie Chart
     Map<Category, double> tmpCategoryExpenses =
-        ExpenseService().getTopSpendCategories(
+        expenseService.getTopSpendCategories(
       pieChartSelectedMonth.substring(0, 3).toMonthInt(),
     );
 
@@ -72,10 +75,9 @@ class AnalyticController extends FxController {
 
     // Category List
     int month = pieChartSelectedMonth.substring(0, 3).toMonthInt();
-    categoryTotalTransactions =
-        ExpenseService().getTotalRecordsByCategory(month);
+    categoryTotalTransactions = expenseService.getTotalRecordsByCategory(month);
 
-    categoryTotalAmount = ExpenseService()
+    categoryTotalAmount = expenseService
         .getTotalExpensesByCategory(month)
         .map((key, value) => MapEntry(key.categoryName, value));
 
@@ -89,14 +91,19 @@ class AnalyticController extends FxController {
       lineGraphTitle =
           "${startDate.day} ${startDate.month.toMonthString(true)} - ${endDate.day} ${endDate.month.toMonthString(true)}";
 
-      totalIncome = ExpenseService().getTotalIncomeInWeek(startDate, endDate);
-      totalExpense =
-          ExpenseService().getTotalExpensesInWeek(startDate, endDate);
+      totalIncome = expenseService.getTotalIncomeInWeek(startDate, endDate);
+      totalExpense = expenseService.getTotalExpensesInWeek(startDate, endDate);
 
-      ExpenseService()
+      expenseService
           .getTotalExpensesByDay(startDate, endDate)
           .forEach((key, value) {
-        lineGraphSpot.add(FlSpot(key.toDouble(), value));
+        expenseslineGraphSpot.add(FlSpot(key.toDouble(), value));
+      });
+
+      expenseService
+          .getTotalIncomeByDay(startDate, endDate)
+          .forEach((key, value) {
+        incomeLineGraphSpot.add(FlSpot(key.toDouble(), value));
       });
 
       xAxisInterval = 1;
@@ -110,14 +117,20 @@ class AnalyticController extends FxController {
       lineGraphTitle =
           "1 ${now.month.toMonthString(true)} - ${lastDayOfMonth.day} ${now.month.toMonthString(true)} ${now.year}";
 
-      totalIncome = ExpenseService().getTotalIncomeInMonth(now.month);
+      totalIncome = expenseService.getTotalIncomeInMonth(now.month);
       totalExpense =
-          ExpenseService().getTotalExpensesInMonth(now.month, now.year);
+          expenseService.getTotalExpensesInMonth(now.month, now.year);
 
-      ExpenseService()
+      expenseService
           .getTotalExpensesByDay(startDayOfMonth, lastDayOfMonth)
           .forEach((key, value) {
-        lineGraphSpot.add(FlSpot(key.toDouble(), value));
+        expenseslineGraphSpot.add(FlSpot(key.toDouble(), value));
+      });
+
+      expenseService
+          .getTotalIncomeByDay(startDayOfMonth, lastDayOfMonth)
+          .forEach((key, value) {
+        incomeLineGraphSpot.add(FlSpot(key.toDouble(), value));
       });
 
       xAxisInterval = lastDayOfMonth.day / 5;
@@ -127,11 +140,15 @@ class AnalyticController extends FxController {
       // Filter by year
       lineGraphTitle = "Jan ${now.year} - Dec ${now.year}";
 
-      totalIncome = ExpenseService().getTotalIncomeInYear(now.year);
-      totalExpense = ExpenseService().getTotalExpensesInYear(now.year);
+      totalIncome = expenseService.getTotalIncomeInYear(now.year);
+      totalExpense = expenseService.getTotalExpensesInYear(now.year);
 
-      ExpenseService().getTotalExpensesByMonth(now.year).forEach((key, value) {
-        lineGraphSpot.add(FlSpot(key.toDouble(), value));
+      expenseService.getTotalExpensesByMonth(now.year).forEach((key, value) {
+        expenseslineGraphSpot.add(FlSpot(key.toDouble(), value));
+      });
+
+      expenseService.getTotalIncomeByMonth(now.year).forEach((key, value) {
+        incomeLineGraphSpot.add(FlSpot(key.toDouble(), value));
       });
 
       xAxisInterval = 3;
@@ -139,21 +156,55 @@ class AnalyticController extends FxController {
       maxX = 12;
     }
 
-    yAxisInterval = (lineGraphSpot.isNotEmpty)
-        ? lineGraphSpot.reduce((a, b) => a.y > b.y ? a : b).y / 5
+    // If empty, add 0
+    if (expenseslineGraphSpot.isEmpty) {
+      for (int i = 1; i <= maxX; i++) {
+        expenseslineGraphSpot.add(FlSpot(i.toDouble(), 0));
+      }
+    }
+    if (incomeLineGraphSpot.isEmpty) {
+      for (int i = 1; i <= maxX; i++) {
+        incomeLineGraphSpot.add(FlSpot(i.toDouble(), 0));
+      }
+    }
+
+    // Calculate y-axis interval
+    int tmpExpensesYAxisInterval = (expenseslineGraphSpot.isNotEmpty)
+        ? expenseslineGraphSpot.reduce((a, b) => a.y > b.y ? a : b).y ~/ 5
         : 5;
-    minY = (lineGraphSpot.isNotEmpty)
-        ? lineGraphSpot.reduce((a, b) => a.y < b.y ? a : b).y
-        : 0;
-    maxY = (lineGraphSpot.isNotEmpty)
-        ? lineGraphSpot.reduce((a, b) => a.y > b.y ? a : b).y
+    int tmpIncomeYAxisInterval = (incomeLineGraphSpot.isNotEmpty)
+        ? incomeLineGraphSpot.reduce((a, b) => a.y > b.y ? a : b).y ~/ 5
+        : 5;
+    yAxisInterval = tmpExpensesYAxisInterval > tmpIncomeYAxisInterval
+        ? tmpExpensesYAxisInterval.toDouble()
+        : tmpIncomeYAxisInterval.toDouble();
+
+    yAxisInterval = yAxisInterval == 0 ? 5 : yAxisInterval;
+
+    // Calculate y-axis max
+    double tmpExpensesMaxY = (expenseslineGraphSpot.isNotEmpty)
+        ? expenseslineGraphSpot.reduce((a, b) => a.y > b.y ? a : b).y
         : 25;
+    double tmpIncomeMaxY = (incomeLineGraphSpot.isNotEmpty)
+        ? incomeLineGraphSpot.reduce((a, b) => a.y > b.y ? a : b).y
+        : 25;
+    maxY = tmpExpensesMaxY > tmpIncomeMaxY ? tmpExpensesMaxY : tmpIncomeMaxY;
+    maxY = maxY == 0 ? 25 : maxY;
+
+    // Calculate y-axis min
+    double tmpIncomeMinY = (incomeLineGraphSpot.isNotEmpty)
+        ? incomeLineGraphSpot.reduce((a, b) => a.y < b.y ? a : b).y
+        : 0;
+    double tmpExpenseMinY = (expenseslineGraphSpot.isNotEmpty)
+        ? expenseslineGraphSpot.reduce((a, b) => a.y < b.y ? a : b).y
+        : 0;
+    minY = tmpIncomeMinY < tmpExpenseMinY ? tmpIncomeMinY : tmpExpenseMinY;
 
     // Calculate total
     double headerTotal = 0;
-    if (lineGraphSpot.isNotEmpty) {
+    if (expenseslineGraphSpot.isNotEmpty) {
       for (int i = 1; i <= 7; i++) {
-        headerTotal += lineGraphSpot[i - 1].y;
+        headerTotal += expenseslineGraphSpot[i - 1].y;
       }
     }
     lineGraphTotal = "+$currencyIndicator$headerTotal";

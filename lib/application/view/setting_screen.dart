@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/setting_controller.dart';
 import 'package:pocketkeeper/application/member_cache.dart';
+import 'package:pocketkeeper/application/service/app_setting_service.dart';
+import 'package:pocketkeeper/application/view/developer_screen.dart';
 import 'package:pocketkeeper/application/view/login_screen.dart';
 import 'package:pocketkeeper/application/view/setting/backup_restore_screen.dart';
 import 'package:pocketkeeper/application/view/setting/budgeting_preferences_screen.dart';
@@ -204,6 +206,7 @@ class _SettingScreenState extends State<SettingScreen> {
           onChanged: (value) {
             setState(() {
               MemberCache.appSetting.isBiometricOn = value;
+              AppSettingService().put(MemberCache.appSetting);
             });
           },
           activeColor: customTheme.colorPrimary,
@@ -290,6 +293,16 @@ class _SettingScreenState extends State<SettingScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => const BackupRestoreScreen(),
+            ),
+          ),
+        ),
+        _buildSettingsItem(
+          icon: Icons.backup,
+          title: 'Developer Tools',
+          onTapFunction: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const DeveloperScreen(),
             ),
           ),
         ),

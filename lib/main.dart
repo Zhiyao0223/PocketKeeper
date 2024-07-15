@@ -8,6 +8,7 @@ import 'package:pocketkeeper/application/service/firebase_options.dart';
 import 'package:pocketkeeper/application/view/login_screen.dart';
 import 'package:pocketkeeper/application/view/navigation_screen.dart';
 import 'package:pocketkeeper/theme/app_theme.dart';
+import 'package:pocketkeeper/utils/app_permission.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +28,10 @@ Future main() async {
   MemberCache.objectBox = await ObjectBox.create();
 
   // Initialize login
-  MemberCache.initLogin();
+  await MemberCache.initLogin();
+
+  // Request permission
+  await AppPermission.init();
 
   runApp(const MyApp());
 }

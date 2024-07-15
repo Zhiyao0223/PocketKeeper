@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/analytic_controller.dart';
 import 'package:pocketkeeper/application/expense_cache.dart';
 import 'package:pocketkeeper/application/model/category.dart';
+import 'package:pocketkeeper/application/view/financial_blog_screen.dart';
 import 'package:pocketkeeper/application/view/view_all_expenses_screen.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
 import 'package:pocketkeeper/theme/custom_theme.dart';
@@ -524,23 +525,43 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                 ),
                 borderData: FlBorderData(show: false),
                 lineBarsData: [
+                  // Expenses
                   LineChartBarData(
-                    spots: controller.lineGraphSpot,
+                    spots: controller.expenseslineGraphSpot,
                     isCurved: true,
-                    color: customTheme.lightPurple,
+                    color: customTheme.red,
                     barWidth: 3,
                     isStrokeCapRound: true,
                     show: true,
                     dotData: const FlDotData(show: false),
-                    belowBarData: BarAreaData(
-                      show: true,
-                      gradient: LinearGradient(
-                        colors: gradientColors,
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        stops: const [0.1, 1],
-                      ),
-                    ),
+                    // belowBarData: BarAreaData(
+                    //   show: true,
+                    //   gradient: LinearGradient(
+                    //     colors: gradientColors,
+                    //     begin: Alignment.topCenter,
+                    //     end: Alignment.bottomCenter,
+                    //     stops: const [0.1, 1],
+                    //   ),
+                    // ),
+                  ),
+                  // Incomes
+                  LineChartBarData(
+                    spots: controller.incomeLineGraphSpot,
+                    isCurved: true,
+                    color: customTheme.green,
+                    barWidth: 3,
+                    isStrokeCapRound: true,
+                    show: true,
+                    dotData: const FlDotData(show: false),
+                    // belowBarData: BarAreaData(
+                    //   show: true,
+                    //   gradient: LinearGradient(
+                    //     colors: gradientColors,
+                    //     begin: Alignment.topCenter,
+                    //     end: Alignment.bottomCenter,
+                    //     stops: const [0.1, 1],
+                    //   ),
+                    // ),
                   ),
                 ],
               ),
@@ -646,6 +667,35 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                 ],
               ),
             ],
+          ),
+
+          // Financial Advice
+          // Financial Advice
+          const SizedBox(height: 8),
+          InkWell(
+            onTap: () {
+              // Navigate to view all transaction
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const FinancialBlogScreen(),
+                ),
+              );
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FxText.labelMedium(
+                  "Discover more",
+                  color: customTheme.lightPurple,
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: customTheme.lightPurple,
+                  size: 16,
+                ),
+              ],
+            ),
           ),
         ],
       ),
