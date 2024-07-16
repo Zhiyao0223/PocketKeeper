@@ -115,3 +115,4 @@ flutter:
     - assets/icons/
     - assets/fonts/
     - .env
+    - gen_ai_credential.json

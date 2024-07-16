@@ -54,4 +54,20 @@ class FinancialBlog {
       'updatedDate': updatedDate.toIso8601String(),
     };
   }
+
+  // From JSON
+  factory FinancialBlog.fromJson(Map<String, dynamic> json) {
+    return FinancialBlog(
+      tmpId: int.tryParse(json['blog_id'] ?? 0),
+      tmpBlogTitle: json['title'],
+      tmpAuthorName: json['author_name'],
+      tmpBlogImage: json['image'],
+      tmpAuthorImage: json['author_image'],
+      tmpUrl: json['url'],
+      tmpAverageReadingTime: int.tryParse(json['average_reading_time']),
+      tmpStatus: int.tryParse(json['status']),
+      tmpCreatedDate: DateTime.parse(json['created_date']),
+      tmpUpdatedDate: DateTime.parse(json['updated_date']),
+    );
+  }
 }

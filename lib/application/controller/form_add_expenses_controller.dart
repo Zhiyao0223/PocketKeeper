@@ -48,6 +48,8 @@ class FormAddExpensesController extends FxController {
   DateTime selectedDate = DateTime.now();
   XFile? selectedImage;
 
+  late GeminiService geminiService;
+
   // Contructor
   FormAddExpensesController(
     this.ticker, {
@@ -64,6 +66,8 @@ class FormAddExpensesController extends FxController {
   @override
   void initState() {
     super.initState();
+
+    geminiService = GeminiService(false);
 
     // Fetch data
     fetchData();
@@ -281,7 +285,6 @@ class FormAddExpensesController extends FxController {
       return;
     }
 
-    GeminiService geminiService = GeminiService();
     String categoryString =
         await geminiService.predictCategory(remarkController.text);
 

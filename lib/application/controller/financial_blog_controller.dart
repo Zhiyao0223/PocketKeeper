@@ -1,10 +1,16 @@
+import 'dart:developer';
+
+import 'package:pocketkeeper/application/expense_cache.dart';
 import 'package:pocketkeeper/application/model/financial_blog.dart';
+import 'package:pocketkeeper/application/service/api_service.dart';
+import 'package:pocketkeeper/application/service/gemini_service.dart';
 import 'package:pocketkeeper/template/state_management/controller.dart';
 
 class FinancialBlogController extends FxController {
   bool isDataFetched = false, isShowMoreAdvice = false;
 
   List<FinancialBlog> blogs = [];
+  List<String> advices = [];
 
   // Constructor
   FinancialBlogController();
@@ -17,62 +23,53 @@ class FinancialBlogController extends FxController {
   }
 
   void fetchData() async {
-    blogs = [
-      FinancialBlog(
-        tmpId: 1,
-        tmpBlogTitle: "How to save money",
-        tmpAuthorName: "John Doe",
-        tmpStatus: 1,
-        tmpAverageReadingTime: 5,
-        tmpCreatedDate: DateTime.now(),
-        tmpUpdatedDate: DateTime.now(),
-        tmpBlogImage: null,
-        tmpUrl: "https://www.google.com",
-      ),
-      FinancialBlog(
-        tmpId: 2,
-        tmpBlogTitle: "How to invest in stocks",
-        tmpAuthorName: "Jane Doe",
-        tmpStatus: 1,
-        tmpAverageReadingTime: 10,
-        tmpCreatedDate: DateTime.now(),
-        tmpUpdatedDate: DateTime.now(),
-        tmpBlogImage: null,
-      ),
-      FinancialBlog(
-        tmpId: 3,
-        tmpBlogTitle: "How to save money",
-        tmpAuthorName: "John Doe",
-        tmpStatus: 1,
-        tmpAverageReadingTime: 5,
-        tmpCreatedDate: DateTime.now(),
-        tmpUpdatedDate: DateTime.now(),
-        tmpBlogImage: null,
-      ),
-      FinancialBlog(
-        tmpId: 4,
-        tmpBlogTitle: "How to invest in stocks",
-        tmpAuthorName: "Jane Doe",
-        tmpStatus: 1,
-        tmpAverageReadingTime: 10,
-        tmpCreatedDate: DateTime.now(),
-        tmpUpdatedDate: DateTime.now(),
-        tmpBlogImage: null,
-      ),
-      FinancialBlog(
-        tmpId: 5,
-        tmpBlogTitle: "How to save money",
-        tmpAuthorName: "John Doe",
-        tmpStatus: 1,
-        tmpAverageReadingTime: 5,
-        tmpCreatedDate: DateTime.now(),
-        tmpUpdatedDate: DateTime.now(),
-        tmpBlogImage: null,
-      ),
-    ];
+    await fetchAdvice();
+    await fetchBlogs();
 
     isDataFetched = true;
     update();
+  }
+
+  Future<void> fetchBlogs() async {
+    try {
+      const String filename = "get-blog.php";
+      Map<String, dynamic> requestBody = {
+        "process": "get_blog",
+      };
+
+      Map<String, dynamic> responseJson = await ApiService.post(
+        filename: filename,
+        body: requestBody,
+      );
+
+      // Store all blogs into cache
+      if (responseJson["status"] == 200) {
+        ExpenseCache.blogs.clear();
+
+        for (var blog in responseJson["body"]["blogs"]) {
+          FinancialBlog financialBlog = FinancialBlog.fromJson(blog);
+          ExpenseCache.blogs.add(financialBlog);
+        }
+
+        blogs = ExpenseCache.blogs;
+        log("Get blog successful!");
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<void> fetchAdvice() async {
+    GeminiService geminiService = GeminiService(true);
+
+    try {
+      String advice = await geminiService.generateAdvice();
+
+      // Split by new line
+      advices = advice.split("\n");
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   @override

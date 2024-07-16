@@ -105,39 +105,21 @@ class _FinancialBlogScreenState extends State<FinancialBlogScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const FxText.labelLarge(
-                      "Advice",
-                      fontSize: 18,
+                    FxText.labelLarge(
+                      "Financial Advice",
+                      fontSize: 16,
+                      color: customTheme.colorPrimary,
                     ),
                     const SizedBox(height: 8),
-                    const FxText.bodyMedium(
-                      "Here are some tips to help you manage your finances better.",
-                      xMuted: true,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      "1. Set a budget and stick to it.",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: customTheme.black,
+
+                    // Advice Text
+                    for (String advice in controller.advices) ...[
+                      FxText.bodyMedium(
+                        advice,
+                        textAlign: TextAlign.justify,
+                        xMuted: true,
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "2. Save for emergencies.",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: customTheme.black,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "3. Pay off your debts.",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: customTheme.black,
-                      ),
-                    ),
+                    ],
                   ],
                 ),
               ),
@@ -154,8 +136,21 @@ class _FinancialBlogScreenState extends State<FinancialBlogScreen> {
                     controller.isShowMoreAdvice = !controller.isShowMoreAdvice;
                   });
                 },
-                child: FxText.bodyMedium(
-                  controller.isShowMoreAdvice ? "Show less" : "Show more",
+                child: Row(
+                  children: [
+                    FxText.bodyMedium(
+                      controller.isShowMoreAdvice ? "Show less" : "Show more",
+                      color: customTheme.colorPrimary,
+                      fontWeight: 600,
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(
+                      controller.isShowMoreAdvice
+                          ? Icons.keyboard_double_arrow_up
+                          : Icons.keyboard_double_arrow_down,
+                      color: customTheme.colorPrimary,
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -203,7 +198,7 @@ class _FinancialBlogScreenState extends State<FinancialBlogScreen> {
             CachedNetworkImage(
               imageUrl: blog.blogImage ??
                   "https://cdn.dribbble.com/users/915817/screenshots/5834160/mobile-blog-app_4x.jpg?resize=1000x750&vertical=center",
-              width: 75,
+              width: 80,
               height: 110,
               fit: BoxFit.cover,
               placeholder: (context, url) => buildCircularLoadingIndicator(),
@@ -227,8 +222,9 @@ class _FinancialBlogScreenState extends State<FinancialBlogScreen> {
                     children: [
                       ClipOval(
                         child: CachedNetworkImage(
+                          // Default user if null
                           imageUrl: blog.authorImage ??
-                              "https://cdn.dribbble.com/users/915817/screenshots/5834160/mobile-blog-app_4x.jpg?resize=1000x750&vertical=center",
+                              "https://th.bing.com/th/id/OIP.SrKYitjP5GdtE0a98StaAAAAAA?rs=1&pid=ImgDetMain",
                           width: 25,
                           height: 25,
                           fit: BoxFit.cover,

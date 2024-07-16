@@ -29,7 +29,7 @@ class CategoryService extends ObjectboxService<Category> {
 
     try {
       return categories.firstWhere((Category category) =>
-          category.categoryName == name &&
+          category.categoryName.toLowerCase() == name &&
           category.categoryType == (isExpenseCategory ? 0 : 1) &&
           category.status == 0);
     } catch (e) {
