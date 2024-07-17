@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
-import 'package:pocketkeeper/application/app_constant.dart';
 import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/user.dart';
 import 'package:pocketkeeper/application/service/api_service.dart';
@@ -192,7 +191,12 @@ class ProfileSettingFormController extends FxController {
   }
 
   Future<void> redirectDiscord() async {
-    final Uri url = Uri.https('discord.com', '/users/$discordBotUID');
+    // DM bot
+    // final Uri url = Uri.https('discord.com', '/users/$discordBotUID');
+
+    // Invite bot to server
+    final Uri url = Uri.parse(
+        'https://discord.com/oauth2/authorize?client_id=1263008779000352829&permissions=8&integration_type=0&scope=bot');
 
     try {
       if (await canLaunchUrl(url)) {

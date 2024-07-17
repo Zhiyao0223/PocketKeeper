@@ -14,7 +14,7 @@ App Constant
 */
 const appName = "PocketKeeper";
 const appVersion = "1.0.0";
-const discordBotUID = "912976342692266024";
+// const discordBotUID = "912976342692266024";
 
 const _assetDirectory = "assets/";
 const imageDirectory = "${_assetDirectory}images/";
