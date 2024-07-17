@@ -32,7 +32,7 @@ class FinancialBlogController extends FxController {
 
   Future<void> fetchBlogs() async {
     try {
-      const String filename = "get-blog.php";
+      const String filename = "get_blog.php";
       Map<String, dynamic> requestBody = {
         "process": "get_blog",
       };
