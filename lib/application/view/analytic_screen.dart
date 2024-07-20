@@ -659,7 +659,7 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                   ),
                   const SizedBox(width: 8),
                   FxText.labelMedium(
-                    "${controller.currencyIndicator}${controller.netProfit.toCommaSeparated()}",
+                    "${controller.currencyIndicator}${controller.netProfit > 0 ? (controller.netProfit.toCommaSeparated()) : (controller.netProfit * -1).toCommaSeparated()}",
                     color: (controller.totalExpense > controller.totalIncome)
                         ? customTheme.red
                         : customTheme.green,

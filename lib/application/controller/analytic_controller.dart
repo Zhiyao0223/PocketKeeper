@@ -203,8 +203,8 @@ class AnalyticController extends FxController {
     // Calculate total
     double headerTotal = 0;
     if (expenseslineGraphSpot.isNotEmpty) {
-      for (int i = 1; i <= 7; i++) {
-        headerTotal += expenseslineGraphSpot[i - 1].y;
+      for (int i = 0; i < expenseslineGraphSpot.length; i++) {
+        headerTotal += expenseslineGraphSpot[i].y;
       }
     }
     lineGraphTotal = "+$currencyIndicator$headerTotal";

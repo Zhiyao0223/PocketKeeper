@@ -2,7 +2,10 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
+import 'package:pocketkeeper/application/expense_cache.dart';
+import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/application/service/account_service.dart';
+import 'package:pocketkeeper/application/service/api_service.dart';
 import 'package:pocketkeeper/application/service/app_setting_service.dart';
 import 'package:pocketkeeper/application/service/expense_goal_service.dart';
 import 'package:pocketkeeper/application/service/expense_limit_service.dart';
@@ -169,7 +172,44 @@ class BackupService {
 
   // Resync data
   // TODO
-  bool resyncData() {
+  Future<bool> resyncData() async {
+    try {
+      // Get data from API
+      const String filename = "get_unsync_data.php";
+      Map<String, dynamic> requestBody = {
+        "process": "get_unsync",
+      };
+
+      Map<String, dynamic> responseJson = await ApiService.post(
+        filename: filename,
+        body: requestBody,
+      );
+
+      // Store all blogs into cache
+      ExpenseService expenseService = ExpenseService();
+      if (responseJson["status"] == 200) {
+        for (var expense in responseJson["body"]["expenses"]) {
+          Expenses record = Expenses.fromJson(expense);
+
+          if (record.expensesType == 0) {
+            ExpenseCache.expenses.add(record);
+          } else {
+            ExpenseCache.incomes.add(record);
+          }
+
+          // Store into database
+          expenseService.add(record);
+        }
+        log("Get unsync data successful!");
+      }
+    } catch (e) {
+      log('Error: $e');
+      showToast(
+        customMessage: "Slow / No internet connection. Please try again.",
+      );
+      return false;
+    }
+
     return true;
   }
 }

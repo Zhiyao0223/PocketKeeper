@@ -100,9 +100,9 @@ class BackupRestoreController extends FxController {
     Navigator.pop(context);
   }
 
-  void resyncData() {
+  Future<void> resyncData() async{
     // Resync data
-    bool resyncStatus = backupService.resyncData();
+    bool resyncStatus = await backupService.resyncData();
 
     // Fail to resync (Most probably no internet)
     if (!resyncStatus) {

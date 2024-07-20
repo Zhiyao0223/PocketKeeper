@@ -1,0 +1,4 @@
+enum ContentLineType {
+  twoLines,
+  threeLines,
+}

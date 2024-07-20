@@ -114,14 +114,16 @@ class ExpenseService extends ObjectboxService<Expenses> {
       othersTotal += entry.value;
     }
 
-    // Find "other" category from sorted entries
-    Category others = Category(
-      tmpCategoryName: "Others",
-      tmpIconHex: Icons.settings.codePoint,
-      tmpStatus: 0,
-      tmpIconColor: Colors.grey,
-    );
-    topCategoryMap[others] = othersTotal;
+    // Find "other" category from sorted entries (only add if not empty)
+    if (othersTotal > 0) {
+      Category others = Category(
+        tmpCategoryName: "Others",
+        tmpIconHex: Icons.settings.codePoint,
+        tmpStatus: 0,
+        tmpIconColor: Colors.grey,
+      );
+      topCategoryMap[others] = othersTotal;
+    }
 
     return topCategoryMap;
   }

@@ -7,7 +7,9 @@ import 'package:pocketkeeper/application/service/gemini_service.dart';
 import 'package:pocketkeeper/template/state_management/controller.dart';
 
 class FinancialBlogController extends FxController {
-  bool isDataFetched = false, isShowMoreAdvice = false;
+  bool isDataFetched = false,
+      isShowMoreAdvice = false,
+      noInternetConnection = false;
 
   List<FinancialBlog> blogs = [];
   List<String> advices = [];
@@ -31,6 +33,7 @@ class FinancialBlogController extends FxController {
   }
 
   Future<void> fetchBlogs() async {
+    noInternetConnection = false;
     try {
       const String filename = "get_blog.php";
       Map<String, dynamic> requestBody = {
@@ -55,6 +58,7 @@ class FinancialBlogController extends FxController {
         log("Get blog successful!");
       }
     } catch (e) {
+      noInternetConnection = true;
       log(e.toString());
     }
   }

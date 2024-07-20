@@ -8,6 +8,8 @@ import 'package:pocketkeeper/theme/custom_theme.dart';
 import 'package:pocketkeeper/widget/appbar.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:pocketkeeper/widget/shimmer_placeholder.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FinancialBlogScreen extends StatefulWidget {
@@ -48,11 +50,6 @@ class _FinancialBlogScreenState extends State<FinancialBlogScreen> {
   }
 
   Widget _buildBody() {
-    // Check if all data loaded
-    if (!controller.isDataFetched) {
-      return buildCircularLoadingIndicator();
-    }
-
     return Scaffold(
       backgroundColor: customTheme.lightPurple,
       appBar: buildSafeAreaAppBar(appBarColor: customTheme.lightPurple),
@@ -113,13 +110,17 @@ class _FinancialBlogScreenState extends State<FinancialBlogScreen> {
                     const SizedBox(height: 8),
 
                     // Advice Text
-                    for (String advice in controller.advices) ...[
-                      FxText.bodyMedium(
-                        advice,
-                        textAlign: TextAlign.justify,
-                        xMuted: true,
-                      ),
-                    ],
+                    if (controller.isDataFetched)
+                      for (String advice in controller.advices) ...[
+                        FxText.bodyMedium(
+                          advice,
+                          textAlign: TextAlign.justify,
+                          xMuted: true,
+                        ),
+                      ]
+                    else
+                      for (int index = 0; index < 3; index++)
+                        _buildShimmerWidget(buildTitlePlaceholder()),
                   ],
                 ),
               ),
@@ -127,40 +128,59 @@ class _FinancialBlogScreenState extends State<FinancialBlogScreen> {
           ),
           // Show more
           const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    controller.isShowMoreAdvice = !controller.isShowMoreAdvice;
-                  });
-                },
-                child: Row(
-                  children: [
-                    FxText.bodyMedium(
-                      controller.isShowMoreAdvice ? "Show less" : "Show more",
-                      color: customTheme.colorPrimary,
-                      fontWeight: 600,
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      controller.isShowMoreAdvice
-                          ? Icons.keyboard_double_arrow_up
-                          : Icons.keyboard_double_arrow_down,
-                      color: customTheme.colorPrimary,
-                    ),
-                  ],
+          if (controller.advices.isNotEmpty)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      controller.isShowMoreAdvice =
+                          !controller.isShowMoreAdvice;
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      FxText.bodyMedium(
+                        controller.isShowMoreAdvice ? "Show less" : "Show more",
+                        color: customTheme.colorPrimary,
+                        fontWeight: 600,
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        controller.isShowMoreAdvice
+                            ? Icons.keyboard_double_arrow_up
+                            : Icons.keyboard_double_arrow_down,
+                        color: customTheme.colorPrimary,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
         ],
       ),
     );
   }
 
   Widget _buildBlogList() {
+    // If no internet connection
+    if (controller.noInternetConnection || !controller.isDataFetched) {
+      Widget child = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          const SizedBox(height: 16.0),
+          for (int index = 0; index < 3; index++) ...[
+            buildBannerPlaceholder(),
+            const SizedBox(height: 16.0),
+          ],
+        ],
+      );
+
+      return _buildShimmerWidget(child);
+    }
+
     return Column(
       children: [
         for (int index = 0; index < controller.blogs.length; index++)
@@ -253,6 +273,18 @@ class _FinancialBlogScreenState extends State<FinancialBlogScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerWidget(Widget child) {
+    return Shimmer.fromColors(
+      baseColor: customTheme.lightGrey.withOpacity(0.7),
+      highlightColor: Colors.grey.shade100,
+      enabled: true,
+      child: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: child,
       ),
     );
   }
