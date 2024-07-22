@@ -5,7 +5,8 @@ import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/enum/sync_status.dart';
 import 'package:pocketkeeper/application/model/money_account.dart';
 import 'package:pocketkeeper/application/model/objectbox/objectbox.g.dart';
-import 'package:pocketkeeper/utils/converters/image.dart';
+import 'package:pocketkeeper/application/model/user.dart';
+import 'package:pocketkeeper/application/service/user_service.dart';
 
 @Entity()
 class Expenses {
@@ -31,6 +32,7 @@ class Expenses {
   late DateTime updatedDate;
 
   // Database use
+  final user = ToOne<Users>();
   final category = ToOne<Category>();
   final account = ToOne<Accounts>();
 
@@ -52,6 +54,12 @@ class Expenses {
     status = tmpStatus ?? 0;
     createdDate = tmpCreatedDate ?? DateTime.now();
     updatedDate = tmpUpdatedDate ?? DateTime.now();
+
+    setUsers();
+  }
+
+  void setUsers() {
+    user.target = UserService().getLoginedUser();
   }
 
   void setCategory(Category tmpCategory) {
@@ -62,8 +70,8 @@ class Expenses {
     account.target = tmpAccount;
   }
 
-  void setImage(XFile tmpFile) async {
-    image = await tmpFile.getBytesFromImage();
+  Future<void> setImage(XFile tmpFile) async {
+    image = await tmpFile.readAsBytes();
   }
 
   // To JSON

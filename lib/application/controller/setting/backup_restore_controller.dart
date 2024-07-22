@@ -29,6 +29,7 @@ class BackupRestoreController extends FxController {
   void fetchData() async {
     lastBackupDate = MemberCache.appSetting.lastBackupDate;
     lastRestoreDate = MemberCache.appSetting.lastRestoreDate;
+    lastResyncDate = MemberCache.appSetting.lastResyncDate;
 
     isDataFetched = true;
     update();

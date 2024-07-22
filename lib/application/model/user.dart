@@ -4,7 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pocketkeeper/application/model/objectbox/objectbox.g.dart';
 import 'package:pocketkeeper/application/model/role.dart';
 import 'package:pocketkeeper/utils/converters/string.dart';
-import 'package:pocketkeeper/utils/converters/image.dart';
 
 @Entity()
 class Users {
@@ -50,7 +49,7 @@ class Users {
   }
 
   void setImage(XFile image) async {
-    profilePicture = await image.getBytesFromImage();
+    profilePicture = await image.readAsBytes();
   }
 
   // To JSON

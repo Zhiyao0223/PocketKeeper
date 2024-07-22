@@ -130,12 +130,11 @@ class FPVerificationCodeController extends FxController {
     hasError = false;
 
     // Get verification code
-    int inputCode = int.parse(
-      firstCodeController.text +
-          secondCodeController.text +
-          thirdCodeController.text +
-          fourthCodeController.text,
-    );
+    int inputCode = int.tryParse(firstCodeController.text +
+            secondCodeController.text +
+            thirdCodeController.text +
+            fourthCodeController.text) ??
+        -1;
 
     if (verificationCode != inputCode) {
       showToast(customMessage: "Invalid verification code");

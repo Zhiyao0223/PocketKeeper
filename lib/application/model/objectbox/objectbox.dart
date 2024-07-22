@@ -6,11 +6,13 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/category.dart';
+import 'package:pocketkeeper/application/model/enum/notification_type.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/application/model/expense_goal.dart';
 import 'package:pocketkeeper/application/model/expense_limit.dart';
 import 'package:pocketkeeper/application/model/goal_saving_record.dart';
 import 'package:pocketkeeper/application/model/money_account.dart';
+import 'package:pocketkeeper/application/model/notification.dart';
 import 'package:pocketkeeper/application/model/role.dart';
 import 'objectbox.g.dart';
 
@@ -235,6 +237,19 @@ class ObjectBox {
         ),
       ];
       store.box<Role>().putMany(roles);
+    }
+
+    // Notification
+    if (store.box<Notifications>().isEmpty()) {
+      Notifications notification = Notifications(
+        tmpTitle: "Welcome to PocketKeeper",
+        tmpDescription:
+            "PocketKeeper is a simple and easy-to-use app to manage your expenses and savings.",
+        tmpStatus: 0,
+        tmpNotificationType: NotificationType.info,
+        tmpCreatedDate: DateTime.now(),
+      );
+      store.box<Notifications>().put(notification);
     }
   }
 

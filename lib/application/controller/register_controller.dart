@@ -60,7 +60,7 @@ class RegisterController extends FxController {
         .hasMatch(text)) {
       return null;
     } else {
-      return "Username must be between 6 - 100 alphanumeric characters. With 6 alphabet characters.";
+      return "Username length must between 6-100";
     }
   }
 
@@ -81,11 +81,13 @@ class RegisterController extends FxController {
   }
 
   String? validateConfirmPassword(String? value) {
-    if (equalString(
+    if (validateEmptyString(value)) {
+      return "Confirm password cannot be empty";
+    } else if (!equalString(
       firstString: value,
       secondString: passwordController.text,
     )) {
-      return "Password does not match with confirm password";
+      return "Passwords do not match";
     }
     return null;
   }
@@ -126,15 +128,10 @@ class RegisterController extends FxController {
       // Indicate success login
       showToast(customMessage: "Registration successful!");
 
-      // Store user id for future access
-      // SharedPreferences prefs = await SharedPreferences.getInstance();
-      // await prefs.setString(
-      //     "user_id", responseJson["body"]["user_id"].toString());
-
       return true;
     }
     // Indicate error message
-    showToast(customMessage: responseJson["message"]);
+    showToast(customMessage: "Error: ${responseJson['body']}");
     return false;
   }
 

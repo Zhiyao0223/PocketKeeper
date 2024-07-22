@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pocketkeeper/application/controller/form_add_expenses_controller.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/application/model/money_account.dart';
+import 'package:pocketkeeper/application/view/navigation_screen.dart';
 import 'package:pocketkeeper/application/view/receipt_scanner_screen.dart';
 import 'package:pocketkeeper/template/utils/spacing.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
@@ -782,15 +783,27 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
           // Submit form
-          if (controller.submitForm()) {
+          await controller.submitForm().then((value) {
             // Close keyboard
             FocusManager.instance.primaryFocus?.unfocus();
 
             // Close screen
-            Navigator.of(context).pop();
-          }
+            if (value) {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const NavigationScreen(
+                      fromLogin: true,
+                      navigationIndex: 0,
+                    );
+                  },
+                ),
+                (route) => false,
+              );
+            }
+          });
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: customTheme.colorPrimary,

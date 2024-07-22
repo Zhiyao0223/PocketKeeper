@@ -215,6 +215,7 @@ class LoginController extends FxController {
           tmpStatus: int.parse(responseJson["body"]["status"]),
           tmpCreatedDate: responseJson["body"]["created_date"],
           tmpUpdatedDate: responseJson["body"]["updated_date"],
+          tmpDiscordId: responseJson["body"]["discord_id"],
         );
 
         // Download image from server and store in cache

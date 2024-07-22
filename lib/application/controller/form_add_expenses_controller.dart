@@ -226,7 +226,7 @@ class FormAddExpensesController extends FxController {
   }
 
   // Form submit
-  bool submitForm() {
+  Future<bool> submitForm() async {
     if (formKey.currentState!.validate()) {
       // Save data to objectbox
       Expenses expense = Expenses(
@@ -239,7 +239,7 @@ class FormAddExpensesController extends FxController {
       expense.setAccount(selectedAccount);
 
       if (selectedImage != null) {
-        expense.setImage(selectedImage!);
+        await expense.setImage(selectedImage!);
       }
 
       // Update if editing

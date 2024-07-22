@@ -123,7 +123,7 @@ class ProfileSettingsScreenState extends State<ProfileSettingScreen> {
                     FxText.bodySmall(
                       controller.currentUser.discordId == ""
                           ? "Not connected"
-                          : controller.currentUser.discordId,
+                          : "Connected",
                       xMuted: true,
                     ),
                   ],
@@ -167,7 +167,7 @@ class ProfileSettingsScreenState extends State<ProfileSettingScreen> {
             const SizedBox(height: 16),
             if (controller.currentUser.discordId == "")
               _buildListTile(
-                label: 'Link / Unlink Discord',
+                label: 'Link Discord',
                 leadingIcon: Icons.discord,
                 onTap: () async {
                   await Navigator.push(

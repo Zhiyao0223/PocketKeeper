@@ -17,7 +17,7 @@ class UserService extends ObjectboxService<Users> {
     final List<Users> users = getAll();
 
     if (users.isNotEmpty) {
-      user.id = users.first.id;
+      user.id = users.firstWhere((Users u) => u.email == user.email).id;
     }
 
     put(user);

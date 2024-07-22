@@ -12,14 +12,20 @@ class ExpenseService extends ObjectboxService<Expenses> {
   // Get all expenses / income that are not deleted
   List<Expenses> getAllActiveRecords() {
     final List<Expenses> expenses = getAll();
-    return expenses.where((Expenses expense) => expense.status == 0).toList();
+    return expenses
+        .where((Expenses expense) =>
+            expense.status == 0 &&
+            expense.user.target!.email == MemberCache.user!.email)
+        .toList();
   }
 
   List<Expenses> getAllActiveIncomes() {
     final List<Expenses> expenses = getAll();
     return expenses
         .where((Expenses expense) =>
-            expense.status == 0 && expense.expensesType == 1)
+            expense.status == 0 &&
+            expense.expensesType == 1 &&
+            expense.user.target!.email == MemberCache.user!.email)
         .toList();
   }
 
@@ -27,7 +33,9 @@ class ExpenseService extends ObjectboxService<Expenses> {
     final List<Expenses> expenses = getAll();
     return expenses
         .where((Expenses expense) =>
-            expense.status == 0 && expense.expensesType == 0)
+            expense.status == 0 &&
+            expense.expensesType == 0 &&
+            expense.user.target!.email == MemberCache.user!.email)
         .toList();
   }
 

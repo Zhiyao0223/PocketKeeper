@@ -93,7 +93,7 @@ class FPNewPasswordController extends FxController {
       firstString: value,
       secondString: passwordController.text,
     )) {
-      return "Password does not match with confirm password";
+      return "Passwords do not match";
     }
     return null;
   }

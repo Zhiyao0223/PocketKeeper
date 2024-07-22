@@ -78,7 +78,7 @@ class ProfileSettingFormController extends FxController {
         .hasMatch(text)) {
       return null;
     } else {
-      return "Username must be between 6 - 100 alphanumeric characters. With 6 alphabet characters.";
+      return "Username length must between 6-100.";
     }
   }
 
@@ -95,11 +95,11 @@ class ProfileSettingFormController extends FxController {
   }
 
   String? validateConfirmPassword(String? value) {
-    if (equalString(
+    if (!equalString(
       firstString: value,
       secondString: passwordController.text,
     )) {
-      return "Password does not match with confirm password";
+      return "Passwords do not match";
     }
     return null;
   }

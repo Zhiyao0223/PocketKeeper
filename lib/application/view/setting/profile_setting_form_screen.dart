@@ -169,8 +169,8 @@ class ProfileSettingFormScreenState extends State<ProfileSettingFormScreen> {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: FxText.bodyMedium(
-                        (value < 1000) ? "Link Status" : "Unlink Status",
+                      title: const FxText.bodyMedium(
+                        "Link Discord",
                         textAlign: TextAlign.center,
                       ),
                       content: (value < 1000)

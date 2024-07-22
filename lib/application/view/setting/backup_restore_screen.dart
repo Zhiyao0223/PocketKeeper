@@ -81,10 +81,10 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
 
             // Resync
             _buildListTileItem(
-              icon: Icons.file_download,
+              icon: Icons.sync,
               title: "Resync Data",
               subTitle: controller.getLastResyncDate(),
-              onTapFunction: controller.exportData,
+              onTapFunction: controller.resyncData,
             ),
           ],
         ),
