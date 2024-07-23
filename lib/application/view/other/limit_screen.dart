@@ -258,9 +258,32 @@ class _LimitScreenState extends State<LimitScreen>
     );
   }
 
-  /*
-  Show dialog for view
-  */
+  // Sub widget for view dialog
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          FxText.bodySmall(label),
+          FxText.labelSmall(value),
+        ],
+      ),
+    );
+  }
+
+  // Sub widget for view dialog
+  Widget _buildActionButton(IconData icon, VoidCallback onPressed) {
+    return InkWell(
+      onTap: onPressed,
+      child: Icon(
+        icon,
+        color: customTheme.black,
+      ),
+    );
+  }
+
+  // Show dialog for view
   Future<void> _buildBudgetDialog({
     required ExpenseLimit limit,
     required double limitAmount,
@@ -525,31 +548,6 @@ class _LimitScreenState extends State<LimitScreen>
           },
         );
       },
-    );
-  }
-
-  // Sub widget for view dialog
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          FxText.bodySmall(label),
-          FxText.labelSmall(value),
-        ],
-      ),
-    );
-  }
-
-  // Sub widget for view dialog
-  Widget _buildActionButton(IconData icon, VoidCallback onPressed) {
-    return InkWell(
-      onTap: onPressed,
-      child: Icon(
-        icon,
-        color: customTheme.black,
-      ),
     );
   }
 }

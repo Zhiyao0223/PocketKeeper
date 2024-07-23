@@ -3,6 +3,7 @@ import 'package:pocketkeeper/application/controller/register_controller.dart';
 import 'package:pocketkeeper/template/utils/spacing.dart';
 import 'package:pocketkeeper/template/widgets/widgets.dart';
 import 'package:pocketkeeper/theme/themes.dart';
+import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
 import '../../theme/custom_theme.dart';
 import '../../template/state_management/state_management.dart';
 
@@ -55,7 +56,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     // Prevent load UI if data is not finish load
     if (!controller.isDataFetched) {
       // Display spinner while loading
-      return _buildLoading();
+      return buildCircularLoadingIndicator();
     }
 
     return Scaffold(
@@ -134,14 +135,6 @@ class _RegisterScreenState extends State<RegisterScreen>
           ),
         ),
       ),
-    );
-  }
-
-  // Display spinner while loading
-  Widget _buildLoading() {
-    return CircularProgressIndicator(
-      backgroundColor: customTheme.white,
-      color: customTheme.colorPrimary,
     );
   }
 

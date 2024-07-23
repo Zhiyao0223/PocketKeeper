@@ -132,7 +132,7 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                                   fontWeight: 700,
                                 ),
                                 // Month filter
-                                __buildSummaryMonthFilterButton(),
+                                _buildSummaryMonthFilterButton(),
                               ],
                             ),
                             const SizedBox(height: 8),
@@ -176,7 +176,7 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
   }
 
   // Same row wih summary title, to filter month for pie chart
-  Widget __buildSummaryMonthFilterButton() {
+  Widget _buildSummaryMonthFilterButton() {
     return DropdownButton2<String>(
       value: controller.pieChartSelectedMonth,
       isExpanded: false,

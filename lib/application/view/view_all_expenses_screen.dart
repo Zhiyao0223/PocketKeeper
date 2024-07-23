@@ -131,8 +131,8 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
                         TabBarView(
                           controller: tabController,
                           children: [
-                            _buildlTab(),
-                            _buildlTab(isIncome: true),
+                            _buildTab(),
+                            _buildTab(isIncome: true),
                           ],
                         ),
                       ],
@@ -144,7 +144,7 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
     );
   }
 
-  Widget _buildlTab({bool isIncome = false}) {
+  Widget _buildTab({bool isIncome = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
       child: Column(

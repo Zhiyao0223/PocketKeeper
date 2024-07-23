@@ -405,9 +405,32 @@ class _GoalScreenState extends State<GoalScreen>
     );
   }
 
-  /*
-  Show dialog for view
-  */
+  // Sub widget for view dialog
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          FxText.bodySmall(label),
+          FxText.labelSmall(value),
+        ],
+      ),
+    );
+  }
+
+  // Sub widget for view dialog
+  Widget _buildActionButton(IconData icon, VoidCallback onPressed) {
+    return InkWell(
+      onTap: onPressed,
+      child: Icon(
+        icon,
+        color: customTheme.black,
+      ),
+    );
+  }
+
+  // Show dialog for view
   Future<void> _buildGoalDialog({
     required ExpenseGoal goal,
     required double remainingBalance,
@@ -548,31 +571,6 @@ class _GoalScreenState extends State<GoalScreen>
           ),
         );
       },
-    );
-  }
-
-  // Sub widget for view dialog
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          FxText.bodySmall(label),
-          FxText.labelSmall(value),
-        ],
-      ),
-    );
-  }
-
-  // Sub widget for view dialog
-  Widget _buildActionButton(IconData icon, VoidCallback onPressed) {
-    return InkWell(
-      onTap: onPressed,
-      child: Icon(
-        icon,
-        color: customTheme.black,
-      ),
     );
   }
 }
