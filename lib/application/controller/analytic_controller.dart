@@ -59,7 +59,7 @@ class AnalyticController extends FxController {
     incomeLineGraphSpot = [];
 
     // General
-    currencyIndicator = MemberCache.appSetting.currencyIndicator;
+    currencyIndicator = MemberCache.appSetting!.currencyIndicator;
 
     // Pie Chart
     Map<Category, double> tmpCategoryExpenses =
@@ -97,14 +97,28 @@ class AnalyticController extends FxController {
       expenseService
           .getTotalExpensesByDay(startDate, endDate)
           .forEach((key, value) {
-        expenseslineGraphSpot.add(FlSpot(key.toDouble(), value));
+        expenseslineGraphSpot
+            .add(FlSpot((key - startDate.day).toDouble(), value));
       });
 
       expenseService
           .getTotalIncomeByDay(startDate, endDate)
           .forEach((key, value) {
-        incomeLineGraphSpot.add(FlSpot(key.toDouble(), value));
+        incomeLineGraphSpot
+            .add(FlSpot((key - startDate.day).toDouble(), value));
       });
+
+      // Add remaining as 0
+      for (double i = 1; i <= 7; i++) {
+        // If not found add
+        if (expenseslineGraphSpot.where((element) => element.x == i).isEmpty) {
+          expenseslineGraphSpot.add(FlSpot(i, 0));
+        }
+
+        if (incomeLineGraphSpot.where((element) => element.x == i).isEmpty) {
+          incomeLineGraphSpot.add(FlSpot(i, 0));
+        }
+      }
 
       xAxisInterval = 1;
       minX = 1;
@@ -133,6 +147,18 @@ class AnalyticController extends FxController {
         incomeLineGraphSpot.add(FlSpot(key.toDouble(), value));
       });
 
+      // Add remaining as 0
+      for (double i = 1; i <= lastDayOfMonth.day; i++) {
+        // If not found add
+        if (expenseslineGraphSpot.where((element) => element.x == i).isEmpty) {
+          expenseslineGraphSpot.add(FlSpot(i, 0));
+        }
+
+        if (incomeLineGraphSpot.where((element) => element.x == i).isEmpty) {
+          incomeLineGraphSpot.add(FlSpot(i, 0));
+        }
+      }
+
       xAxisInterval = lastDayOfMonth.day / 5;
       minX = 1;
       maxX = lastDayOfMonth.day.toDouble();
@@ -151,21 +177,21 @@ class AnalyticController extends FxController {
         incomeLineGraphSpot.add(FlSpot(key.toDouble(), value));
       });
 
+      // Add remaining as 0
+      for (double i = 1; i <= 12; i++) {
+        // If not found add
+        if (expenseslineGraphSpot.where((element) => element.x == i).isEmpty) {
+          expenseslineGraphSpot.add(FlSpot(i, 0));
+        }
+
+        if (incomeLineGraphSpot.where((element) => element.x == i).isEmpty) {
+          incomeLineGraphSpot.add(FlSpot(i, 0));
+        }
+      }
+
       xAxisInterval = 3;
       minX = 1;
       maxX = 12;
-    }
-
-    // If empty, add 0
-    if (expenseslineGraphSpot.isEmpty) {
-      for (int i = 1; i <= maxX; i++) {
-        expenseslineGraphSpot.add(FlSpot(i.toDouble(), 0));
-      }
-    }
-    if (incomeLineGraphSpot.isEmpty) {
-      for (int i = 1; i <= maxX; i++) {
-        incomeLineGraphSpot.add(FlSpot(i.toDouble(), 0));
-      }
     }
 
     // Calculate y-axis interval
@@ -189,7 +215,7 @@ class AnalyticController extends FxController {
         ? incomeLineGraphSpot.reduce((a, b) => a.y > b.y ? a : b).y
         : 25;
     maxY = tmpExpensesMaxY > tmpIncomeMaxY ? tmpExpensesMaxY : tmpIncomeMaxY;
-    maxY = maxY == 0 ? 25 : maxY;
+    maxY = maxY == 0 ? 25 : maxY + yAxisInterval;
 
     // Calculate y-axis min
     double tmpIncomeMinY = (incomeLineGraphSpot.isNotEmpty)
@@ -202,12 +228,14 @@ class AnalyticController extends FxController {
 
     // Calculate total
     double headerTotal = 0;
-    if (expenseslineGraphSpot.isNotEmpty) {
-      for (int i = 0; i < expenseslineGraphSpot.length; i++) {
-        headerTotal += expenseslineGraphSpot[i].y;
-      }
+    for (int i = 0; i < expenseslineGraphSpot.length; i++) {
+      headerTotal += expenseslineGraphSpot[i].y;
     }
-    lineGraphTotal = "+$currencyIndicator$headerTotal";
+    lineGraphTotal = "$currencyIndicator${headerTotal.removeExtraDecimal()}";
+
+    // Sort by x-axis
+    expenseslineGraphSpot.sort((a, b) => a.x.compareTo(b.x));
+    incomeLineGraphSpot.sort((a, b) => a.x.compareTo(b.x));
 
     // Cash flow
     netProfit = totalIncome - totalExpense;

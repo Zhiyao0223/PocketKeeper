@@ -51,7 +51,10 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     }
 
     return Scaffold(
-      appBar: buildCommonAppBar(headerTitle: "Preferences", context: context),
+      appBar: buildCommonAppBar(
+        headerTitle: "Backup & Restore Data",
+        context: context,
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: ListView(

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/member_cache.dart';
+import 'package:pocketkeeper/application/service/local_notification_service.dart';
+import 'package:pocketkeeper/application/view/login_screen.dart';
 import 'package:pocketkeeper/template/state_management/controller.dart';
 import 'package:pocketkeeper/widget/show_toast.dart';
 
 class DeveloperController extends FxController {
   bool isDataFetched = false;
+
+  LocalNotificationService localNotificationService =
+      LocalNotificationService();
 
   // Constructor
   DeveloperController();
@@ -29,11 +34,11 @@ class DeveloperController extends FxController {
 
   void clearData() {
     MemberCache.objectBox!.resetDatabase().then((value) {
-      showToast(
-        customMessage: (value) ? "Data cleared" : "Failed to clear data",
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        (route) => false,
       );
-      Navigator.of(context).pop();
-      update();
     });
   }
 

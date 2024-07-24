@@ -55,8 +55,8 @@ class LocalNotificationService {
 
     await flutterLocalNotificationsPlugin.show(
       0,
-      'Daily Check-In Reminder',
-      'Don\'t forget to check in!',
+      channelName,
+      description,
       notificationDetails,
     );
 

@@ -87,11 +87,20 @@ class ExpenseService extends ObjectboxService<Expenses> {
         continue;
       }
 
-      final Category category = expense.category.target!;
-      if (categoryMap.containsKey(category)) {
-        categoryMap[category] = categoryMap[category]! + expense.amount;
+      final int categoryId = expense.category.targetId;
+
+      // Check if map consist of the categoryId
+      bool isExist = categoryMap.keys
+          .any((Category category) => category.id == categoryId);
+
+      if (isExist) {
+        categoryMap.update(
+          categoryMap.keys
+              .firstWhere((Category category) => category.id == categoryId),
+          (double value) => value + expense.amount,
+        );
       } else {
-        categoryMap[category] = expense.amount;
+        categoryMap[expense.category.target!] = expense.amount;
       }
     }
 

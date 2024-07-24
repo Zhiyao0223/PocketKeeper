@@ -30,7 +30,7 @@ class ConnectivityService {
       final List<ConnectivityResult> result =
           await _connectivity.checkConnectivity();
 
-      return result.contains(ConnectivityResult.none);
+      return !result.contains(ConnectivityResult.none);
     } on PlatformException catch (e) {
       log('Error: $e');
       return false;

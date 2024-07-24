@@ -110,14 +110,21 @@ class _FinancialBlogScreenState extends State<FinancialBlogScreen> {
                     const SizedBox(height: 8),
 
                     // Advice Text
-                    if (controller.isDataFetched)
+                    if (controller.isDataFetched &&
+                        !controller.isAdviceException)
                       for (String advice in controller.advices) ...[
                         FxText.bodyMedium(
                           advice,
                           textAlign: TextAlign.justify,
                           xMuted: true,
                         ),
-                      ]
+                      ],
+                    if (controller.isAdviceException)
+                      const FxText.bodyMedium(
+                        "Failed to fetch advice. Please check your internet connection.",
+                        textAlign: TextAlign.justify,
+                        xMuted: true,
+                      )
                     else
                       for (int index = 0; index < 3; index++)
                         _buildShimmerWidget(buildTitlePlaceholder()),

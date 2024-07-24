@@ -29,6 +29,7 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
   late CustomTheme customTheme;
   late ViewAllExpensesController controller;
   late TabController tabController;
+  late ScrollController scrollController;
 
   @override
   void initState() {
@@ -38,6 +39,7 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
     controller = FxControllerStore.put(ViewAllExpensesController());
 
     tabController = TabController(length: 2, vsync: this);
+    scrollController = ScrollController();
 
     // Add listener to detect tab changes
     tabController.animation?.addListener(() {
@@ -45,6 +47,13 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
           tabController.index + tabController.offset.round();
 
       if (tabControllerIndex != controller.selectedTabIndex) {
+        // Scroll back to the top
+        scrollController.animateTo(
+          0.0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+
         controller.selectedTabIndex = tabControllerIndex;
         controller.fetchData();
       }
@@ -72,6 +81,10 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
           appBar: buildSafeAreaAppBar(appBarColor: customTheme.lightPurple),
           body: SafeArea(
             child: NestedScrollView(
+              controller: scrollController,
+              physics: (controller.filteredData.isEmpty)
+                  ? const NeverScrollableScrollPhysics()
+                  : const AlwaysScrollableScrollPhysics(),
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
@@ -149,50 +162,62 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
       child: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: customTheme.white.withOpacity(0.87),
-              borderRadius: BorderRadius.circular(30.0),
-              border: Border.all(
-                color: customTheme.grey.withOpacity(0.3),
-                width: 1.0,
+          if (controller.filteredData.isNotEmpty)
+            Container(
+              decoration: BoxDecoration(
+                color: customTheme.white.withOpacity(0.87),
+                borderRadius: BorderRadius.circular(30.0),
+                border: Border.all(
+                  color: customTheme.grey.withOpacity(0.3),
+                  width: 1.0,
+                ),
               ),
-            ),
-            margin: const EdgeInsets.only(bottom: 20.0),
-            width: MediaQuery.of(context).size.width * 0.9,
-            child: Center(
-              child: FxTextField(
-                controller: controller.searchController,
-                onChanged: (value) {
-                  controller.isShowClearButton = !validateEmptyString(value);
-                  controller.searchQuery = value;
-                  controller.filterData();
-                },
-                decoration: InputDecoration(
-                  hintText: 'Search Description...',
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: (controller.isShowClearButton)
-                      ? IconButton(
-                          onPressed: () {
-                            controller.isShowClearButton = false;
-                            controller.fetchData();
-                          },
-                          icon: const Icon(Icons.clear),
-                        )
-                      : null,
-                  border: InputBorder.none,
+              margin: const EdgeInsets.only(bottom: 20.0),
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: Center(
+                child: FxTextField(
+                  controller: controller.searchController,
+                  onChanged: (value) {
+                    controller.isShowClearButton = !validateEmptyString(value);
+                    controller.searchQuery = value;
+                    controller.filterData();
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Search Description...',
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: (controller.isShowClearButton)
+                        ? IconButton(
+                            onPressed: () {
+                              controller.isShowClearButton = false;
+                              controller.fetchData();
+                            },
+                            icon: const Icon(Icons.clear),
+                          )
+                        : null,
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
             ),
-          ),
           // Show message if no data found else show data
           (controller.filteredData.isEmpty)
-              ? FxText.bodyMedium(
-                  'No record found',
-                  color: customTheme.grey,
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/no_record_found.png',
+                      height: 200,
+                      width: 200,
+                    ),
+                    FxText.bodyMedium(
+                      'No record found',
+                      color: customTheme.grey,
+                    ),
+                  ],
                 )
               : Expanded(
                   child: ListView.builder(
+                    primary: false,
                     itemCount: controller.groupedData.length,
                     itemBuilder: (context, index) {
                       List<Expenses> expensesList =
@@ -271,9 +296,24 @@ class _ViewAllExpensesState extends State<ViewAllExpensesScreen>
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          FxText.labelSmall(
-                            tmpExpenses.category.target!.categoryName,
-                            color: customTheme.black,
+                          Row(
+                            children: [
+                              FxText.labelSmall(
+                                tmpExpenses.category.target!.categoryName,
+                                color: customTheme.black,
+                              ),
+                              const SizedBox(width: 5),
+                              // Show account icon
+                              if (tmpExpenses.account.target != null)
+                                Icon(
+                                  IconData(
+                                    tmpExpenses.account.target!.accountIconHex,
+                                    fontFamily: 'MaterialIcons',
+                                  ),
+                                  color: customTheme.grey,
+                                  size: 13,
+                                ),
+                            ],
                           ),
                           FxText.bodySmall(
                             (tmpExpenses.description.length > 20)

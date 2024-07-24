@@ -14,7 +14,7 @@ class MemberCache {
   static String? oauthAccessToken =
       "ya29.a0AXooCgt1PQotHM4kOzdg1tOq4BRxnFkYeiJVgKyk45KU2aGtD6cFXIkIh5EKLKmj70E2GPQZPcVols1GvAXvKJFKsRvOD0UqqootuAi-5JTIUV8yxzj6Zxf79521qdWh0bUGwW8oiFXS3xRE0qHs5tem_AtXnY323EA4aCgYKAf8SARASFQHGX2MiMnS_5Ap179nCE0NC4TqqyA0171";
 
-  static AppSetting appSetting = AppSetting();
+  static AppSetting? appSetting;
 
   // Local database
   static ObjectBox? objectBox;
@@ -25,6 +25,9 @@ class MemberCache {
   // Notification
   static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+
+  // Gemini Tuned Model for Auto Categorizing
+  static bool isGeminiTunedModelEnable = false;
 
   // This function is to initialize login
   static Future<void> initLogin() async {
@@ -37,7 +40,7 @@ class MemberCache {
       );
     }
 
-    AppSettingService().initAppSetting();
+    appSetting = AppSettingService().initAppSetting();
     LocalNotificationService().init();
   }
 

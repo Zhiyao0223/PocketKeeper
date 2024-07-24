@@ -23,7 +23,7 @@ class BudgetingPreferenceController extends FxController {
   }
 
   void fetchData() async {
-    appSetting = MemberCache.appSetting;
+    appSetting = MemberCache.appSetting!;
     selectedEndofMonthIndex = appSetting.endOfMonth;
 
     // Find selected currency

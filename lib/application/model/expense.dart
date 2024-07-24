@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:pocketkeeper/application/expense_cache.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/enum/sync_status.dart';
 import 'package:pocketkeeper/application/model/money_account.dart';
@@ -102,5 +104,25 @@ class Expenses {
     expensesDate = DateTime.parse(json['expensesDate']);
     createdDate = DateTime.parse(json['createdDate']);
     updatedDate = DateTime.parse(json['updatedDate']);
+  }
+
+  // From Server JSON
+  Expenses.fromServerJson(Map<String, dynamic> json) {
+    user.target = MemberCache.user!;
+    description = json['description'];
+    amount = double.parse(json['amount']);
+    expensesType = int.parse((json['category_id'])) <= 16 ? 0 : 1;
+    category.target = (expensesType == 0)
+        ? ExpenseCache.expenseCategories
+            .elementAt(int.parse(json['category_id']) - 1)
+        : ExpenseCache.incomeCategories
+            .elementAt(int.parse(json['category_id']) - 16 - 1);
+    account.target = ExpenseCache.accounts.first;
+    syncStatus = int.parse(json['sync_status']);
+    status = int.parse(json['status']);
+    image = null;
+    expensesDate = DateTime.parse(json['created_date']);
+    createdDate = DateTime.parse(json['created_date']);
+    updatedDate = DateTime.parse(json['updated_date']);
   }
 }

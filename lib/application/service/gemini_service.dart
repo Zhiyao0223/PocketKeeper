@@ -169,7 +169,7 @@ class GeminiService {
         Content.text("output: "),
       ]);
 
-      return response.text ?? 'No response';
+      return response.text ?? 'Technical Issue. Please try again.';
     } catch (e) {
       return 'Error: $e';
     }

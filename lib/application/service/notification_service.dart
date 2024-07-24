@@ -7,14 +7,21 @@ class NotificationService extends ObjectboxService<Notifications> {
   NotificationService() : super(MemberCache.objectBox!.store, Notifications);
 
   // Update all notifications to read
-  void updateAllToRead() {
+  int updateAllToRead() {
+    int updatedCount = 0;
+
     final List<Notifications> notifications = getAll();
     for (final Notifications notification in notifications) {
-      notification.readStatus = ReadStatus.read.index;
+      if (notification.readStatus != ReadStatus.read.index) {
+        notification.readStatus = ReadStatus.read.index;
+        updatedCount++;
+      }
     }
 
     // Update all
     putMany(notifications);
+
+    return updatedCount;
   }
 
   // Get total unread notification count

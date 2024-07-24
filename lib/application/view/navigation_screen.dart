@@ -35,7 +35,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   late NavigationController controller;
   final LocalAuthentication _localAuth = LocalAuthentication();
 
-  late bool _isAuthenticated;
+  late bool _requireAuthenticated;
 
   // Navigation bar icon (Dashboard, Analytics, Others, Settings)
   List<IconData> iconList = [
@@ -54,8 +54,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
     controller.bottomNavIndex = widget.navigationIndex ?? 0;
 
     // Only need to authenticate if user is not from login or biometric setting is off
-    _isAuthenticated =
-        widget.fromLogin || !MemberCache.appSetting.isBiometricOn;
+    _requireAuthenticated =
+        widget.fromLogin || !(MemberCache.appSetting!.isBiometricOn);
 
     // Authentication will be triggered after the first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -151,7 +151,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   Future<void> _authenticate() async {
     // From login or already authenticated
-    if (_isAuthenticated) {
+    if (_requireAuthenticated) {
       return;
     }
 
@@ -162,7 +162,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
     if (didAuthenticate && mounted) {
       setState(() {
-        _isAuthenticated = true;
+        _requireAuthenticated = true;
       });
     } else {
       // Optionally handle authentication failure (e.g., show a dialog or exit the app)

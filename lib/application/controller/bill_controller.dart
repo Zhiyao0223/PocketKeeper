@@ -18,7 +18,7 @@ class BillController extends FxController {
   }
 
   void fetchData() async {
-    currencyIndicator = MemberCache.appSetting.currencyIndicator;
+    currencyIndicator = MemberCache.appSetting!.currencyIndicator;
 
     monthlySubscription = 61.88;
 

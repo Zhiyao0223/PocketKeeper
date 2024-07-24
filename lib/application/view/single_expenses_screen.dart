@@ -88,6 +88,8 @@ class _SingleExpensesScreenState extends State<SingleExpensesScreen> {
                                 const Divider(),
                                 _buildCategoryField(),
                                 const Divider(),
+                                _buildAccountField(),
+                                const Divider(),
                                 _buildAttachImage(),
                                 const Divider(),
                               ],
@@ -316,7 +318,7 @@ class _SingleExpensesScreenState extends State<SingleExpensesScreen> {
             child: TextFormField(
               textAlignVertical: TextAlignVertical.center,
               textAlign: TextAlign.start,
-              style: FxTextStyle.bodyMedium(),
+              style: FxTextStyle.bodyMedium(xMuted: true),
               keyboardType: TextInputType.text,
               readOnly: true,
               decoration: InputDecoration(
@@ -481,20 +483,60 @@ class _SingleExpensesScreenState extends State<SingleExpensesScreen> {
             onTap: () {
               // Show image in full screen
               showDialog(
+                barrierDismissible: false,
                 context: context,
                 builder: (context) {
                   return Dialog(
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      height: MediaQuery.of(context).size.height * 0.8,
-                      child: PhotoView(
-                        enableRotation: false,
-                        enablePanAlways: false,
-                        minScale: PhotoViewComputedScale.contained,
-                        imageProvider: MemoryImage(
-                          controller.selectedExpense.image!,
+                    backgroundColor: Colors.transparent,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.close,
+                              color: customTheme.white,
+                              size: 30,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
                         ),
-                      ),
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            // Define the max height and width
+                            final maxHeight = constraints.maxHeight * 0.5;
+                            final maxWidth = constraints.maxWidth * 0.8;
+
+                            // Calculate the width and height maintaining the image aspect ratio
+                            double containerWidth = maxWidth;
+                            double containerHeight =
+                                containerWidth / controller.imageAspectRatio;
+
+                            if (containerHeight > maxHeight) {
+                              containerHeight = maxHeight;
+                              containerWidth =
+                                  containerHeight * controller.imageAspectRatio;
+                            }
+
+                            return Container(
+                              color: Colors.transparent,
+                              width: containerWidth,
+                              height: containerHeight,
+                              child: PhotoView(
+                                enableRotation: false,
+                                enablePanAlways: false,
+                                minScale: PhotoViewComputedScale.contained,
+                                imageProvider: MemoryImage(
+                                    controller.selectedExpense.image!),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   );
                 },
@@ -506,14 +548,50 @@ class _SingleExpensesScreenState extends State<SingleExpensesScreen> {
               height: 200,
             ),
           ),
-        // Padding(
-        //   padding: const EdgeInsets.symmetric(vertical: 10.0),
-        //   child: PhotoView(
-        //     imageProvider: MemoryImage(
-        //       controller.selectedExpense.image!,
-        //     ),
-        //   ),
-        // ),
+      ],
+    );
+  }
+
+  Widget _buildAccountField() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.account_balance_wallet,
+              color: customTheme.grey,
+              size: 20,
+            ),
+            const SizedBox(width: 10.0),
+            const FxText.bodyMedium('Account'),
+            const SizedBox(width: 5.0),
+          ],
+        ),
+        Expanded(
+          child: SizedBox(
+            child: TextFormField(
+              textAlignVertical: TextAlignVertical.center,
+              textAlign: TextAlign.start,
+              style: FxTextStyle.bodyMedium(xMuted: true),
+              readOnly: true,
+              decoration: InputDecoration(
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                isDense: true,
+                filled: true,
+                fillColor: customTheme.white,
+                hintText: "Select a account",
+                contentPadding: FxSpacing.all(10),
+                hintStyle: FxTextStyle.bodyMedium(xMuted: true),
+                isCollapsed: true,
+                border: InputBorder.none,
+              ),
+              maxLines: 1,
+              controller: controller.accountController,
+              cursorColor: customTheme.black,
+            ),
+          ),
+        ),
       ],
     );
   }

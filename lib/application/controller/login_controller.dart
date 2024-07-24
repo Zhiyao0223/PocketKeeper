@@ -83,7 +83,7 @@ class LoginController extends FxController {
 
       // If user exist, proceed to store user data and redirect to home page
       if (apiResponse["status"] == 200 && apiResponse["body"] != "-1") {
-        MemberCache.appSetting.isGoogleSignIn = true;
+        MemberCache.appSetting!.isGoogleSignIn = true;
 
         Users tmpuser = Users(
           tmpId: int.parse(apiResponse["body"]["user_id"]),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/controller/developer_controller.dart';
 import 'package:pocketkeeper/application/member_cache.dart';
-import 'package:pocketkeeper/application/service/local_notification_service.dart';
 import 'package:pocketkeeper/template/state_management/builder.dart';
 import 'package:pocketkeeper/template/state_management/controller_store.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
@@ -61,6 +60,10 @@ class _DeveloperScreenState extends State<DeveloperScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: ListView(
           children: [
+            // Enable auto categorization
+            _buildEnableAutoCategorization(),
+            const Divider(),
+
             // Get dummy data
             _buildListTileItem(
               icon: Icons.backup,
@@ -134,6 +137,30 @@ class _DeveloperScreenState extends State<DeveloperScreen> {
     );
   }
 
+  Widget _buildEnableAutoCategorization() {
+    return ListTile(
+      leading: Icon(Icons.rocket, color: customTheme.colorPrimary),
+      title: const FxText.labelMedium(
+        "Enable Auto Categorization",
+        xMuted: true,
+      ),
+      trailing: Transform.scale(
+        scale: 0.75,
+        child: Switch(
+          activeTrackColor: customTheme.colorPrimary.withOpacity(0.5),
+          value: MemberCache.appSetting!.isBiometricOn,
+          onChanged: (value) {
+            setState(() {
+              MemberCache.isGeminiTunedModelEnable = value;
+            });
+          },
+          activeColor: customTheme.colorPrimary,
+        ),
+      ),
+      contentPadding: EdgeInsets.zero,
+    );
+  }
+
   void _buildNotificationList() {
     // Appear a dialog box with multiple container to select (eg: Budget reminder, daily reminder for recording budget, etc)
     showDialog(
@@ -152,7 +179,7 @@ class _DeveloperScreenState extends State<DeveloperScreen> {
                   backgroundColor: customTheme.colorPrimary,
                 ),
                 onPressed: () {
-                  LocalNotificationService().sendNotification(
+                  controller.localNotificationService.sendNotification(
                     channelId: "budget_reminder",
                     channelName: "Budget Reminder",
                     description: "You have spent 50% of your budget",
@@ -169,7 +196,7 @@ class _DeveloperScreenState extends State<DeveloperScreen> {
                   backgroundColor: customTheme.colorPrimary,
                 ),
                 onPressed: () {
-                  LocalNotificationService().sendNotification(
+                  controller.localNotificationService.sendNotification(
                     channelId: "daily_checkin",
                     channelName: "Daily Check-In",
                     description: "Don't forget to record your expenses daily!",
@@ -185,12 +212,5 @@ class _DeveloperScreenState extends State<DeveloperScreen> {
         );
       },
     );
-  }
-
-  Future<void> resetToDefault() async {
-    // Reset all data to default
-    await MemberCache.objectBox!.resetDatabase().then((value) {
-      Navigator.pop(context);
-    });
   }
 }

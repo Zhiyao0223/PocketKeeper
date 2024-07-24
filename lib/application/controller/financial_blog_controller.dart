@@ -9,7 +9,8 @@ import 'package:pocketkeeper/template/state_management/controller.dart';
 class FinancialBlogController extends FxController {
   bool isDataFetched = false,
       isShowMoreAdvice = false,
-      noInternetConnection = false;
+      noInternetConnection = false,
+      isAdviceException = false;
 
   List<FinancialBlog> blogs = [];
   List<String> advices = [];
@@ -68,6 +69,10 @@ class FinancialBlogController extends FxController {
 
     try {
       String advice = await geminiService.generateAdvice();
+
+      // Check for exception especialy internet connection
+      isAdviceException =
+          (advices.isEmpty || advices.contains("SocketException"));
 
       // Split by new line
       advices = advice.split("\n");

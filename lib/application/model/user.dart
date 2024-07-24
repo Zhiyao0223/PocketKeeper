@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:image_picker/image_picker.dart';
@@ -61,7 +62,8 @@ class Users {
       'password': password,
       'discordId': discordId,
       'status': status,
-      'profilePicture': profilePicture,
+      'profilePicture':
+          profilePicture != null ? base64Encode(profilePicture!) : null,
       'createdDate': createdDate.toIso8601String(),
       'updatedDate': updatedDate.toIso8601String(),
     };
@@ -75,7 +77,9 @@ class Users {
     password = json['password'];
     discordId = json['discordId'];
     status = json['status'];
-    profilePicture = json['profilePicture'];
+    profilePicture = json['profilePicture'] != null
+        ? base64Decode(json['profilePicture'])
+        : null;
     createdDate = DateTime.parse(json['createdDate']);
     updatedDate = DateTime.parse(json['updatedDate']);
   }

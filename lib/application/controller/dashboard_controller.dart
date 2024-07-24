@@ -63,13 +63,13 @@ class DashboardController extends FxController {
     currentMonthYear = DateFormat('MMMM yyyy').format(now);
 
     // Get currency indicator
-    currencyIndicator = MemberCache.appSetting.currencyIndicator;
+    currencyIndicator = MemberCache.appSetting!.currencyIndicator;
 
     // Get total expenses, remaining balance and monthly budget
     totalExpenses =
         expenseService.getTotalExpensesInMonth(currentMonth, now.year);
 
-    monthlyBudget = MemberCache.appSetting.monthlyLimit;
+    monthlyBudget = MemberCache.appSetting!.monthlyLimit;
     remainingBalance = monthlyBudget - totalExpenses;
 
     // Get financial status message

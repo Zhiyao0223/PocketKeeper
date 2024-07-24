@@ -27,9 +27,9 @@ class BackupRestoreController extends FxController {
   }
 
   void fetchData() async {
-    lastBackupDate = MemberCache.appSetting.lastBackupDate;
-    lastRestoreDate = MemberCache.appSetting.lastRestoreDate;
-    lastResyncDate = MemberCache.appSetting.lastResyncDate;
+    lastBackupDate = MemberCache.appSetting!.lastBackupDate;
+    lastRestoreDate = MemberCache.appSetting!.lastRestoreDate;
+    lastResyncDate = MemberCache.appSetting!.lastResyncDate;
 
     isDataFetched = true;
     update();
@@ -65,7 +65,7 @@ class BackupRestoreController extends FxController {
 
     // Set current date
     lastBackupDate = DateTime.now();
-    MemberCache.appSetting.lastBackupDate = lastBackupDate;
+    MemberCache.appSetting!.lastBackupDate = lastBackupDate;
 
     // Update user
     Users user = MemberCache.user!;
@@ -86,7 +86,7 @@ class BackupRestoreController extends FxController {
 
     // Set current date
     lastRestoreDate = DateTime.now();
-    MemberCache.appSetting.lastRestoreDate = lastRestoreDate;
+    MemberCache.appSetting!.lastRestoreDate = lastRestoreDate;
 
     // Update user
     Users user = MemberCache.user!;
@@ -101,7 +101,7 @@ class BackupRestoreController extends FxController {
     Navigator.pop(context);
   }
 
-  Future<void> resyncData() async{
+  Future<void> resyncData() async {
     // Resync data
     bool resyncStatus = await backupService.resyncData();
 
@@ -114,7 +114,7 @@ class BackupRestoreController extends FxController {
 
     // Set current date
     lastResyncDate = DateTime.now();
-    MemberCache.appSetting.lastResyncDate = lastResyncDate;
+    MemberCache.appSetting!.lastResyncDate = lastResyncDate;
 
     // Update user
     Users user = MemberCache.user!;

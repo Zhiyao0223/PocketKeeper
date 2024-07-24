@@ -32,7 +32,7 @@ class AccountController extends FxController {
   void fetchData() async {
     ExpenseService expenseService = ExpenseService();
 
-    currencyIndicator = MemberCache.appSetting.currencyIndicator;
+    currencyIndicator = MemberCache.appSetting!.currencyIndicator;
     accounts = ExpenseCache.accounts;
 
     accountBalances = expenseService.getAccountBalancesInMonth();

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:pocketkeeper/application/expense_cache.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/application/service/account_service.dart';
 import 'package:pocketkeeper/application/service/api_service.dart';
@@ -65,7 +66,19 @@ class BackupService {
       data.addEntries([MapEntry("user", tmpData)]);
     }
 
-    return await _writeToFile(data: data, isExport: isExport);
+    // Check if data is empty
+    bool hasData = false;
+    data.forEach((key, value) {
+      if (value.isNotEmpty) {
+        hasData = true;
+      }
+    });
+
+    if (!hasData) {
+      showToast(customMessage: "No data to ${isExport ? 'export' : 'backup'}");
+    }
+
+    return hasData ? await _writeToFile(data: data, isExport: isExport) : false;
   }
 
   Future<bool> _writeToFile({
@@ -99,9 +112,7 @@ class BackupService {
       await file.writeAsString(jsonData);
 
       // Open google drive
-      await googleDriveService.uploadFile(file);
-
-      status = true;
+      status = await googleDriveService.uploadFile(file);
     }
 
     return status;
@@ -171,13 +182,24 @@ class BackupService {
   }
 
   // Resync data
-  // TODO
   Future<bool> resyncData() async {
+    // Sync expenses first then profile
+    bool status = await resyncExpenses();
+    if (status) {
+      status = await resyncProfile();
+    }
+
+    return status;
+  }
+
+  // Resync expenses
+  Future<bool> resyncExpenses() async {
     try {
       // Get data from API
       const String filename = "get_unsync_data.php";
       Map<String, dynamic> requestBody = {
         "process": "get_unsync",
+        "email": MemberCache.user!.email,
       };
 
       Map<String, dynamic> responseJson = await ApiService.post(
@@ -189,7 +211,7 @@ class BackupService {
       ExpenseService expenseService = ExpenseService();
       if (responseJson["status"] == 200) {
         for (var expense in responseJson["body"]["expenses"]) {
-          Expenses record = Expenses.fromJson(expense);
+          Expenses record = Expenses.fromServerJson(expense);
 
           if (record.expensesType == 0) {
             ExpenseCache.expenses.add(record);
@@ -209,6 +231,50 @@ class BackupService {
       );
       return false;
     }
+
+    return true;
+  }
+
+  // No time, temporary no do
+  // Resync profile
+  Future<bool> resyncProfile() async {
+    //   try {
+    //     // Get data from API
+    //     const String filename = "get_unsync_data.php";
+    //     Map<String, dynamic> requestBody = {
+    //       "process": "get_unsync",
+    //       "email": MemberCache.user!.email,
+    //     };
+
+    //     Map<String, dynamic> responseJson = await ApiService.post(
+    //       filename: filename,
+    //       body: requestBody,
+    //     );
+
+    //     // Store all blogs into cache
+    //     ExpenseService expenseService = ExpenseService();
+    //     if (responseJson["status"] == 200) {
+    //       for (var expense in responseJson["body"]["expenses"]) {
+    //         Expenses record = Expenses.fromServerJson(expense);
+
+    //         if (record.expensesType == 0) {
+    //           ExpenseCache.expenses.add(record);
+    //         } else {
+    //           ExpenseCache.incomes.add(record);
+    //         }
+
+    //         // Store into database
+    //         expenseService.add(record);
+    //       }
+    //       log("Get unsync data successful!");
+    //     }
+    //   } catch (e) {
+    //     log('Error: $e');
+    //     showToast(
+    //       customMessage: "Slow / No internet connection. Please try again.",
+    //     );
+    //     return false;
+    //   }
 
     return true;
   }

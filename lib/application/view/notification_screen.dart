@@ -8,7 +8,6 @@ import 'package:pocketkeeper/application/model/notification.dart';
 import 'package:pocketkeeper/template/widgets/text/text.dart';
 import 'package:pocketkeeper/theme/custom_theme.dart';
 import 'package:pocketkeeper/widget/circular_loading_indicator.dart';
-import 'package:pocketkeeper/widget/show_toast.dart';
 import '../../template/state_management/state_management.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -73,10 +72,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               color: customTheme.colorPrimary,
             ),
             onPressed: () {
-              setState(() {
-                controller.markAllAsRead();
-                showToast(customMessage: 'All notifications marked as read');
-              });
+              controller.markAllAsRead();
             },
           ),
         ],
@@ -95,7 +91,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget _buildNotificationItem(
     Notifications notificationItem,
   ) {
-    bool isHighlighted = notificationItem.readStatus != ReadStatus.unread.index;
+    bool isUnread = notificationItem.readStatus == ReadStatus.unread.index;
     String formatDateTime =
         controller.formatDateTime(notificationItem.createdDate);
 
@@ -109,11 +105,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
     } else if (notificationItem.notificationType ==
         NotificationType.warning.index) {
       icon = Icons.warning_amber_rounded;
-      iconColor = customTheme.onWarning;
+      iconColor = customTheme.red;
     } else if (notificationItem.notificationType ==
         NotificationType.error.index) {
       icon = Icons.error_outline;
-      iconColor = customTheme.onError;
+      iconColor = customTheme.red;
     } else if (notificationItem.notificationType ==
         NotificationType.success.index) {
       icon = Icons.check_circle_outline;
@@ -130,7 +126,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return InkWell(
       onTap: () {
         // Only executed if notification is not read to prevent continous setState
-        if (isHighlighted == false) {
+        if (isUnread == true) {
+          isUnread = false;
           controller.updateReadStatus(notificationItem);
         }
       },
@@ -138,13 +135,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
         margin: const EdgeInsets.symmetric(vertical: 8.0),
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: isHighlighted
-              ? customTheme.grey.withOpacity(0.05)
+          color: isUnread
+              ? customTheme.lightGrey.withOpacity(0.6)
               : customTheme.white,
           borderRadius: BorderRadius.circular(10.0),
           border: Border.all(
             color: Colors.grey.shade200,
-            width: 1.0,
+            width: 2.0,
           ),
         ),
         child: Row(
@@ -152,7 +149,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           children: [
             CircleAvatar(
               radius: 20.0,
-              backgroundColor: iconColor.withOpacity(0.1),
+              backgroundColor: iconColor.withOpacity(0.05),
               child: Icon(icon, color: iconColor, size: 20.0),
             ),
             const SizedBox(width: 16.0),

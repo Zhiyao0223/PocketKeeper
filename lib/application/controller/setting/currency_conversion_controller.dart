@@ -3,7 +3,9 @@ import 'package:currency_converter/currency_converter.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketkeeper/application/model/currencies.dart';
 import 'package:pocketkeeper/template/state_management/controller.dart';
+import 'package:pocketkeeper/utils/connectivity_service.dart';
 import 'package:pocketkeeper/utils/validators/string_validator.dart';
+import 'package:pocketkeeper/widget/show_toast.dart';
 
 class CurrencyConversionController extends FxController {
   bool isDataFetched = false;
@@ -61,6 +63,12 @@ class CurrencyConversionController extends FxController {
   }
 
   void convert() async {
+    // Check for internet connection
+    if (!await ConnectivityService().isConnected()) {
+      showToast(customMessage: "No internet connection");
+      return;
+    }
+
     // Refetch the data
     fromCurrencyCode = currencyDatabase[fromCurrencyIndex]['code'];
     toCurrencyCode = currencyDatabase[toCurrencyIndex]['code'];
@@ -104,6 +112,8 @@ class CurrencyConversionController extends FxController {
 
     if (double.tryParse(value!) == null) {
       return "Invalid amount";
+    } else if (double.parse(value) <= 0) {
+      return "Amount must be greater than 0";
     }
 
     return null;

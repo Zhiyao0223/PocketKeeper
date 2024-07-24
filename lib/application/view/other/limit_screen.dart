@@ -505,7 +505,7 @@ class _LimitScreenState extends State<LimitScreen>
                       // Suggestions
                       const SizedBox(height: 10),
                       FxText.bodySmall(
-                        'Suggestion: ${MemberCache.appSetting.currencyIndicator}${controller.suggestedAmount.removeExtraDecimal()}',
+                        'Suggestion: ${MemberCache.appSetting!.currencyIndicator}${controller.suggestedAmount.removeExtraDecimal()}',
                         color: customTheme.black,
                         xMuted: true,
                       ),

@@ -21,9 +21,11 @@ class SingleExpensesController extends FxController {
   TextEditingController timeController = TextEditingController();
   TextEditingController imageController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
+  TextEditingController accountController = TextEditingController();
 
   DateTime selectedDate = DateTime.now();
   XFile? selectedImage;
+  double imageAspectRatio = 1;
 
   SingleExpensesController(this.selectedExpense);
 
@@ -70,6 +72,7 @@ class SingleExpensesController extends FxController {
     timeController.text =
         selectedExpense.expensesDate.toDateString(dateFormat: "hh:mm a");
     categoryController.text = selectedExpense.category.target!.categoryName;
+    accountController.text = selectedExpense.account.target!.accountName;
 
     // Check if image available
     imageController.text = "No receipt attached";
@@ -78,10 +81,11 @@ class SingleExpensesController extends FxController {
         selectedImage = value;
         imageController.text = selectedImage!.name;
       });
+
+      imageAspectRatio = await getImageAspectRatio();
     }
 
     isDataFetched = true;
-
     update();
   }
 
@@ -97,6 +101,17 @@ class SingleExpensesController extends FxController {
       ExpenseCache.incomes
           .removeWhere((element) => element.id == selectedExpense.id);
     }
+  }
+
+  Future<double> getImageAspectRatio() async {
+    if (selectedImage == null) {
+      return 1;
+    }
+
+    var decodedImage =
+        await decodeImageFromList(await selectedImage!.readAsBytes());
+
+    return decodedImage.height / decodedImage.width;
   }
 
   @override

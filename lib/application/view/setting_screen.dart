@@ -202,11 +202,11 @@ class _SettingScreenState extends State<SettingScreen> {
         scale: 0.75,
         child: Switch(
           activeTrackColor: customTheme.colorPrimary.withOpacity(0.5),
-          value: MemberCache.appSetting.isBiometricOn,
+          value: MemberCache.appSetting!.isBiometricOn,
           onChanged: (value) {
             setState(() {
-              MemberCache.appSetting.isBiometricOn = value;
-              AppSettingService().put(MemberCache.appSetting);
+              MemberCache.appSetting!.isBiometricOn = value;
+              AppSettingService().put(MemberCache.appSetting!);
             });
           },
           activeColor: customTheme.colorPrimary,
@@ -227,10 +227,10 @@ class _SettingScreenState extends State<SettingScreen> {
         scale: 0.75,
         child: Switch(
           activeTrackColor: customTheme.colorPrimary.withOpacity(0.5),
-          value: MemberCache.appSetting.isNotificationOn,
+          value: MemberCache.appSetting!.isNotificationOn,
           onChanged: (value) {
             setState(() {
-              MemberCache.appSetting.isNotificationOn = value;
+              MemberCache.appSetting!.isNotificationOn = value;
             });
           },
           activeColor: customTheme.colorPrimary,
@@ -336,7 +336,7 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
           // ignore: deprecated_member_use_from_same_package
           subtitle: FxText.caption(
-            'Version ${MemberCache.appSetting.appVersion}',
+            'Version ${MemberCache.appSetting!.appVersion}',
             xMuted: true,
           ),
           contentPadding: EdgeInsets.zero,

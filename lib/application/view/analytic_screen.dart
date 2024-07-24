@@ -434,7 +434,6 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                 maxY: controller.maxY,
                 minX: controller.minX,
                 maxX: controller.maxX,
-                baselineY: 0,
                 // Grid in graph
                 gridData: FlGridData(
                   show: true,
@@ -453,12 +452,14 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                       interval: controller.yAxisInterval,
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
-                        // Display the value of the graph
-                        return FxText.bodySmall(
-                          '\$${value.toStringAsFixed(0)}',
-                          fontSize: 11,
-                          xMuted: true,
-                        );
+                        // Only display the interval value of the graph if is divisible to prevent duplication
+                        return (value % controller.yAxisInterval == 0)
+                            ? FxText.bodySmall(
+                                '\$${value.toStringAsFixed(0)}',
+                                fontSize: 11,
+                                xMuted: true,
+                              )
+                            : const SizedBox();
                       },
                     ),
                   ),
@@ -478,7 +479,7 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                         if (controller.selectedLineGraphFilter == 0) {
                           // Filter by week
                           return Padding(
-                            padding: const EdgeInsets.only(top: 5),
+                            padding: const EdgeInsets.only(top: 10),
                             child: FxText.bodySmall(
                               value.toInt().toWeekDayString(true),
                               xMuted: true,
@@ -487,7 +488,7 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                         } else if (controller.selectedLineGraphFilter == 1) {
                           // Filter by month
                           return Padding(
-                            padding: const EdgeInsets.only(top: 5),
+                            padding: const EdgeInsets.only(top: 10),
                             child: FxText.bodySmall(
                               "${controller.now.month.toMonthString(true)} ${value.toInt()}",
                               xMuted: true,
@@ -496,7 +497,7 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                         } else {
                           // Filter by year
                           return Padding(
-                            padding: const EdgeInsets.only(top: 5),
+                            padding: const EdgeInsets.only(top: 10),
                             child: FxText.bodySmall(
                               value.toInt().toMonthString(true),
                               xMuted: true,
@@ -515,7 +516,27 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                       return touchedSpots.map((LineBarSpot touchedSpot) {
                         final FlSpot spot = touchedSpot;
                         return LineTooltipItem(
-                          '\$${spot.y.toStringAsFixed(2)}',
+                          children: [
+                            TextSpan(
+                              text: (controller.selectedLineGraphFilter == 0)
+                                  ? "${controller.now.day.toWeekDayString(true)}: "
+                                  : (controller.selectedLineGraphFilter == 1)
+                                      ? " ${spot.x.toInt()} ${controller.now.month.toMonthString(true)}: "
+                                      : "${spot.x.toInt().toMonthString(true)}: ",
+                              style: TextStyle(
+                                color: customTheme.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text:
+                                  '${controller.currencyIndicator}${spot.y.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                color: customTheme.white,
+                              ),
+                            ),
+                          ],
+                          '',
                           const TextStyle(color: Colors.white),
                         );
                       }).toList();
@@ -527,6 +548,7 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                 lineBarsData: [
                   // Expenses
                   LineChartBarData(
+                    preventCurveOverShooting: true,
                     spots: controller.expenseslineGraphSpot,
                     isCurved: true,
                     color: customTheme.red,
@@ -534,18 +556,10 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                     isStrokeCapRound: true,
                     show: true,
                     dotData: const FlDotData(show: false),
-                    // belowBarData: BarAreaData(
-                    //   show: true,
-                    //   gradient: LinearGradient(
-                    //     colors: gradientColors,
-                    //     begin: Alignment.topCenter,
-                    //     end: Alignment.bottomCenter,
-                    //     stops: const [0.1, 1],
-                    //   ),
-                    // ),
                   ),
                   // Incomes
                   LineChartBarData(
+                    preventCurveOverShooting: true,
                     spots: controller.incomeLineGraphSpot,
                     isCurved: true,
                     color: customTheme.green,
@@ -553,15 +567,6 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                     isStrokeCapRound: true,
                     show: true,
                     dotData: const FlDotData(show: false),
-                    // belowBarData: BarAreaData(
-                    //   show: true,
-                    //   gradient: LinearGradient(
-                    //     colors: gradientColors,
-                    //     begin: Alignment.topCenter,
-                    //     end: Alignment.bottomCenter,
-                    //     stops: const [0.1, 1],
-                    //   ),
-                    // ),
                   ),
                 ],
               ),
@@ -659,7 +664,7 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                   ),
                   const SizedBox(width: 8),
                   FxText.labelMedium(
-                    "${controller.currencyIndicator}${controller.netProfit > 0 ? (controller.netProfit.toCommaSeparated()) : (controller.netProfit * -1).toCommaSeparated()}",
+                    "${controller.currencyIndicator}${controller.netProfit >= 0 ? (controller.netProfit.toCommaSeparated()) : (controller.netProfit * -1).toCommaSeparated()}",
                     color: (controller.totalExpense > controller.totalIncome)
                         ? customTheme.red
                         : customTheme.green,
@@ -669,7 +674,6 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
             ],
           ),
 
-          // Financial Advice
           // Financial Advice
           const SizedBox(height: 8),
           InkWell(

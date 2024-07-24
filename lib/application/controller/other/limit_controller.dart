@@ -48,6 +48,7 @@ class LimitController extends FxController {
     totalBudget = 0;
     chartProgress = 0;
     budgetAvailableForAllocation = 0;
+    availableBalance = 0;
     categoryLimitsAndTotalSpent = {};
 
     expenseLimits = ExpenseCache.expenseLimits;
@@ -68,7 +69,7 @@ class LimitController extends FxController {
     remainingDays = getRemainingDayUntilNextMonth();
     chartProgress = totalSpent / totalBudget;
     budgetAvailableForAllocation =
-        MemberCache.appSetting.monthlyLimit - totalBudget;
+        MemberCache.appSetting!.monthlyLimit - totalBudget;
 
     // Give initial value to text controller
     amountController.text = "0";
@@ -183,28 +184,28 @@ class LimitController extends FxController {
   void updateSuggestion() {
     switch (selectedCategory.categoryName) {
       case "Food":
-        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.3;
+        suggestedAmount = MemberCache.appSetting!.monthlyLimit * 0.3;
         break;
       case "Grocery":
-        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.15;
+        suggestedAmount = MemberCache.appSetting!.monthlyLimit * 0.15;
         break;
       case "Transport":
-        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.1;
+        suggestedAmount = MemberCache.appSetting!.monthlyLimit * 0.1;
         break;
       case "Entertainment":
-        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.2;
+        suggestedAmount = MemberCache.appSetting!.monthlyLimit * 0.2;
         break;
       case "Health":
-        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.1;
+        suggestedAmount = MemberCache.appSetting!.monthlyLimit * 0.1;
         break;
       case "Education":
-        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.05;
+        suggestedAmount = MemberCache.appSetting!.monthlyLimit * 0.05;
         break;
       case "Others":
-        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.1;
+        suggestedAmount = MemberCache.appSetting!.monthlyLimit * 0.1;
         break;
       default:
-        suggestedAmount = MemberCache.appSetting.monthlyLimit * 0.1;
+        suggestedAmount = MemberCache.appSetting!.monthlyLimit * 0.1;
     }
   }
 

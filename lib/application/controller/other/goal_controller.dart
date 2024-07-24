@@ -26,7 +26,7 @@ class GoalController extends FxController {
 
   void fetchData() async {
     // Get the currency symbol
-    currencySymbol = MemberCache.appSetting.currencyIndicator;
+    currencySymbol = MemberCache.appSetting!.currencyIndicator;
 
     // Get all active goals and sort them by due date
     activeGoals = ExpenseGoalService().getAllActiveGoals();

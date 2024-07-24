@@ -7,6 +7,7 @@ import 'package:pocketkeeper/application/model/enum/read_status.dart';
 import 'package:pocketkeeper/application/model/notification.dart';
 import 'package:pocketkeeper/application/service/notification_service.dart';
 import 'package:pocketkeeper/utils/custom_animation.dart';
+import 'package:pocketkeeper/widget/show_toast.dart';
 
 import '../../template/state_management/controller.dart';
 
@@ -45,7 +46,7 @@ class NotificationController extends FxController {
           tmpTitle: "Welcome to PocketKeeper",
           tmpDescription:
               "Thank you for using PocketKeeper. Start managing your expenses now!",
-          tmpNotificationType: NotificationType.none,
+          tmpNotificationType: NotificationType.info,
           tmpReadStatus: ReadStatus.unread,
           tmpCreatedDate: DateTime.now(),
         ),
@@ -56,6 +57,15 @@ class NotificationController extends FxController {
         NotificationService().add(element);
       }
     }
+
+    // Sort by status (unread, read) then date
+    notifications.sort((a, b) {
+      if (a.readStatus == b.readStatus) {
+        return b.createdDate.compareTo(a.createdDate);
+      } else {
+        return b.readStatus.compareTo(a.readStatus);
+      }
+    });
 
     isDataFetched = true;
 
@@ -68,14 +78,19 @@ class NotificationController extends FxController {
     notification.readStatus = ReadStatus.read.index;
     NotificationService().put(notification);
 
-    // Update UI
     fetchData();
   }
 
   // Mark all unseen notification as read
   void markAllAsRead() {
     // Update objectbox
-    NotificationService().updateAllToRead();
+    int updateCounter = NotificationService().updateAllToRead();
+    showToast(
+      customMessage: (updateCounter != 0)
+          ? 'All notifications marked as read'
+          : 'No new notifications to mark as read',
+    );
+    fetchData();
   }
 
   // Return formmated date time

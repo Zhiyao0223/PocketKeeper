@@ -202,10 +202,15 @@ class _GoalScreenState extends State<GoalScreen>
                         for (ExpenseGoal goal in controller.activeGoals)
                           _buildGoalCard(
                             goal: goal,
-                            lastContributionRecord:
-                                controller.lastGoalSaving.firstWhere(
-                              (element) => element.goal.targetId == goal.goalId,
-                            ),
+                            lastContributionRecord: (controller
+                                    .lastGoalSaving.isNotEmpty)
+                                ? controller.lastGoalSaving
+                                    .where(
+                                      (element) =>
+                                          element.goal.targetId == goal.goalId,
+                                    )
+                                    .firstOrNull
+                                : null,
                           ),
                       ],
 

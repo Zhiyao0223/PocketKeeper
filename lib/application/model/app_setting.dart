@@ -69,6 +69,7 @@ class AppSetting {
       'isNotificationOn': isNotificationOn,
       'isGoogleSignIn': isGoogleSignIn,
       'isBiometricOn': isBiometricOn,
+      'lastResyncDate': lastResyncDate?.toIso8601String(),
       'lastBackupDate': lastBackupDate?.toIso8601String(),
       'lastRestoreDate': lastRestoreDate?.toIso8601String(),
       'monthlyLimit': monthlyLimit,
@@ -93,6 +94,9 @@ class AppSetting {
         : null;
     lastRestoreDate = json['lastRestoreDate'] != null
         ? DateTime.parse(json['lastRestoreDate'])
+        : null;
+    lastResyncDate = json['lastResyncDate'] != null
+        ? DateTime.parse(json['lastResyncDate'])
         : null;
     monthlyLimit = json['monthlyLimit'];
     endOfMonth = json['endOfMonth'];

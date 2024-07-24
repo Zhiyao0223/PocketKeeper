@@ -95,25 +95,26 @@ class _BudgetingPreferencesScreenState
               },
             ),
 
+            // No implement relevant function, so hide first
             // End of Month
-            _buildListTileItem(
-              icon: Icons.calendar_today,
-              title: "End of Month",
-              trailingWidget: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FxText.labelLarge(
-                    "${controller.appSetting.endOfMonth}",
-                  ),
-                  const SizedBox(width: 8),
-                  const Icon(Icons.chevron_right),
-                ],
-              ),
-              onTapFunction: () {
-                // Open dialog to set end of month
-                _buildEndOfMonthDialog();
-              },
-            ),
+            // _buildListTileItem(
+            //   icon: Icons.calendar_today,
+            //   title: "End of Month",
+            //   trailingWidget: Row(
+            //     mainAxisSize: MainAxisSize.min,
+            //     children: [
+            //       FxText.labelLarge(
+            //         "${controller.appSetting.endOfMonth}",
+            //       ),
+            //       const SizedBox(width: 8),
+            //       const Icon(Icons.chevron_right),
+            //     ],
+            //   ),
+            //   onTapFunction: () {
+            //     // Open dialog to set end of month
+            //     _buildEndOfMonthDialog();
+            //   },
+            // ),
           ],
         ),
       ),
@@ -259,50 +260,50 @@ class _BudgetingPreferencesScreenState
     });
   }
 
-  Future<void> _buildEndOfMonthDialog() async {
-    await showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const FxText.labelLarge(
-            "Set End of Month",
-            textAlign: TextAlign.center,
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  const FxText.labelMedium("Select day:"),
-                  const Spacer(),
-                  DropdownButton<int>(
-                    dropdownColor: customTheme.lightGrey,
-                    menuMaxHeight: MediaQuery.of(context).size.height * 0.4,
-                    value: controller.appSetting.endOfMonth,
-                    items: List.generate(30, (index) {
-                      return DropdownMenuItem<int>(
-                        value: index + 1,
-                        child: FxText.bodyMedium(
-                          "${index + 1}",
-                        ),
-                      );
-                    }),
-                    onChanged: (int? value) {
-                      if (value != null) {
-                        controller.appSetting.endOfMonth = value;
-                        Navigator.pop(context);
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    ).then((_) {
-      controller.fetchData();
-    });
-  }
+  // Future<void> _buildEndOfMonthDialog() async {
+  //   await showDialog(
+  //     context: context,
+  //     barrierDismissible: true,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: const FxText.labelLarge(
+  //           "Set End of Month",
+  //           textAlign: TextAlign.center,
+  //         ),
+  //         content: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             Row(
+  //               children: [
+  //                 const FxText.labelMedium("Select day:"),
+  //                 const Spacer(),
+  //                 DropdownButton<int>(
+  //                   dropdownColor: customTheme.lightGrey,
+  //                   menuMaxHeight: MediaQuery.of(context).size.height * 0.4,
+  //                   value: controller.appSetting.endOfMonth,
+  //                   items: List.generate(30, (index) {
+  //                     return DropdownMenuItem<int>(
+  //                       value: index + 1,
+  //                       child: FxText.bodyMedium(
+  //                         "${index + 1}",
+  //                       ),
+  //                     );
+  //                   }),
+  //                   onChanged: (int? value) {
+  //                     if (value != null) {
+  //                       controller.appSetting.endOfMonth = value;
+  //                       Navigator.pop(context);
+  //                     }
+  //                   },
+  //                 ),
+  //               ],
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   ).then((_) {
+  //     controller.fetchData();
+  //   });
+  // }
 }

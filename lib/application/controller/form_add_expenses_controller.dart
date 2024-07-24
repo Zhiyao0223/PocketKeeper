@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pocketkeeper/application/expense_cache.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
 import 'package:pocketkeeper/application/model/money_account.dart';
@@ -68,6 +69,7 @@ class FormAddExpensesController extends FxController {
     super.initState();
 
     geminiService = GeminiService(false);
+    isGeminiEnable = MemberCache.isGeminiTunedModelEnable;
 
     // Fetch data
     fetchData();

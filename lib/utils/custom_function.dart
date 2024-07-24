@@ -122,7 +122,7 @@ Future<XFile?> downloadImageAsXFile(String imageUrl) async {
 // This function is to count remaining days until the end of the month (Set by user)
 int getRemainingDayUntilNextMonth() {
   final now = DateTime.now();
-  final endOfMonth = MemberCache.appSetting.endOfMonth;
+  final endOfMonth = MemberCache.appSetting!.endOfMonth;
 
   // Get last day of the month and calculate difference from now
   if (endOfMonth == 30) {
