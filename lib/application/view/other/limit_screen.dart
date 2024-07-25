@@ -532,6 +532,10 @@ class _LimitScreenState extends State<LimitScreen>
                     color: customTheme.white,
                   ),
                   onPressed: () {
+                    if (!controller.formKey.currentState!.validate() ||
+                        controller.checkIfCategoryAlreadyExist(!isEditing)) {
+                      return;
+                    }
                     controller.createBudget(isEditing);
 
                     if (isEditing) {

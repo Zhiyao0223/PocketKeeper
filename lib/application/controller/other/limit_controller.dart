@@ -109,9 +109,7 @@ class LimitController extends FxController {
   String? validateAmount(String? value) {
     if (validateEmptyString(value)) {
       return "Please enter amount";
-    }
-
-    if (double.parse(value!) <= 0) {
+    } else if (double.parse(value!) <= 0) {
       return "Amount must be greater than 0";
     }
 
@@ -126,11 +124,8 @@ class LimitController extends FxController {
   }
 
   void createBudget(bool isEditing) {
-    // Validate form
-    if (!formKey.currentState!.validate() ||
-        checkIfCategoryAlreadyExist(!isEditing)) {
-      return;
-    } else if (isEditing) {
+    // Check if editing
+    if (isEditing) {
       updateBudget();
       return;
     }
