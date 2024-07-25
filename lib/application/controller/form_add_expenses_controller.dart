@@ -69,7 +69,7 @@ class FormAddExpensesController extends FxController {
     super.initState();
 
     geminiService = GeminiService(false);
-    isGeminiEnable = MemberCache.isGeminiTunedModelEnable;
+    isGeminiEnable = MemberCache.isTunedModelEnable;
 
     // Fetch data
     fetchData();
@@ -202,6 +202,8 @@ class FormAddExpensesController extends FxController {
       return "Amount cannot be empty";
     } else if (RegExp(r'^[0-9]+(\.[0-9]{1,2})?$').hasMatch(text!) == false) {
       return "Invalid amount";
+    } else if (double.parse(text) <= 0) {
+      return "Amount must be greater than 0";
     }
     return null;
   }

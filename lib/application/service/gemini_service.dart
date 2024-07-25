@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer' as dev;
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -15,8 +16,8 @@ class GeminiService {
   late final GenerativeModel model;
   bool isPermissionGranted = false;
 
-  GeminiService(bool isAdvice) {
-    if (isAdvice) {
+  GeminiService(bool isStandardModel) {
+    if (isStandardModel) {
       initStandardModel();
     } else {
       initTunedModel();
@@ -172,6 +173,30 @@ class GeminiService {
       return response.text ?? 'Technical Issue. Please try again.';
     } catch (e) {
       return 'Error: $e';
+    }
+  }
+
+  Future<String> getReceiptDetails(Uint8List file) async {
+    final prompt = TextPart(
+        "can you return me in this json format? If not available put \"n/a\"\njson = {\n    \"storeName\": \"\",\n    \"total\":\"\",\n    \"datetime(d/M/yyyy HH:mm)\": \"\"\n}");
+    final imageParts = [
+      DataPart(
+        'image/jpeg',
+        file,
+      ),
+    ];
+
+    try {
+      final response = await model.generateContent(
+        [
+          Content.multi([prompt, ...imageParts]),
+        ],
+      );
+
+      return response.text ?? '';
+    } catch (e) {
+      dev.log('Error: $e');
+      return e.toString();
     }
   }
 }

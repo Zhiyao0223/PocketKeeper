@@ -72,7 +72,7 @@ class FinancialBlogController extends FxController {
 
       // Check for exception especialy internet connection
       isAdviceException =
-          (advices.isEmpty || advices.contains("SocketException"));
+          (advice.isEmpty || advice.contains("SocketException"));
 
       // Split by new line
       advices = advice.split("\n");

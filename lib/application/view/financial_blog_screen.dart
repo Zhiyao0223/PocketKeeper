@@ -118,16 +118,18 @@ class _FinancialBlogScreenState extends State<FinancialBlogScreen> {
                           textAlign: TextAlign.justify,
                           xMuted: true,
                         ),
-                      ],
-                    if (controller.isAdviceException)
-                      const FxText.bodyMedium(
-                        "Failed to fetch advice. Please check your internet connection.",
-                        textAlign: TextAlign.justify,
-                        xMuted: true,
-                      )
-                    else
-                      for (int index = 0; index < 3; index++)
-                        _buildShimmerWidget(buildTitlePlaceholder()),
+                      ]
+                    else ...[
+                      if (controller.isAdviceException)
+                        const FxText.bodyMedium(
+                          "Failed to fetch advice. Please check your internet connection.",
+                          textAlign: TextAlign.justify,
+                          xMuted: true,
+                        )
+                      else
+                        for (int index = 0; index < 3; index++)
+                          _buildShimmerWidget(buildTitlePlaceholder()),
+                    ]
                   ],
                 ),
               ),

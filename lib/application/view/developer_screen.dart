@@ -64,6 +64,10 @@ class _DeveloperScreenState extends State<DeveloperScreen> {
             _buildEnableAutoCategorization(),
             const Divider(),
 
+            // Enable better ocr model
+            _buildEnableBetterOCRModel(),
+            const Divider(),
+
             // Get dummy data
             _buildListTileItem(
               icon: Icons.backup,
@@ -148,10 +152,34 @@ class _DeveloperScreenState extends State<DeveloperScreen> {
         scale: 0.75,
         child: Switch(
           activeTrackColor: customTheme.colorPrimary.withOpacity(0.5),
-          value: MemberCache.appSetting!.isBiometricOn,
+          value: MemberCache.isTunedModelEnable,
           onChanged: (value) {
             setState(() {
-              MemberCache.isGeminiTunedModelEnable = value;
+              MemberCache.isTunedModelEnable = value;
+            });
+          },
+          activeColor: customTheme.colorPrimary,
+        ),
+      ),
+      contentPadding: EdgeInsets.zero,
+    );
+  }
+
+  Widget _buildEnableBetterOCRModel() {
+    return ListTile(
+      leading: Icon(Icons.qr_code, color: customTheme.colorPrimary),
+      title: const FxText.labelMedium(
+        "Enable Better OCR",
+        xMuted: true,
+      ),
+      trailing: Transform.scale(
+        scale: 0.75,
+        child: Switch(
+          activeTrackColor: customTheme.colorPrimary.withOpacity(0.5),
+          value: MemberCache.isImageModelEnable,
+          onChanged: (value) {
+            setState(() {
+              MemberCache.isImageModelEnable = value;
             });
           },
           activeColor: customTheme.colorPrimary,

@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'dart:developer' as dev;
+import 'dart:developer';
 import 'dart:io';
 import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:intl/intl.dart';
+import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/expense.dart';
+import 'package:pocketkeeper/application/service/gemini_service.dart';
 import 'package:pocketkeeper/utils/converters/string.dart';
 import 'package:pocketkeeper/utils/validators/custom_validator.dart';
 import 'package:pocketkeeper/utils/validators/string_validator.dart';
@@ -67,30 +71,81 @@ class ReceiptScannerController extends FxController {
     // Convert image to file
     InputImage inputImage = InputImage.fromFile(File(picture));
 
-    // Perform OCR to extract text
-    final textRecognizer = TextRecognizer();
-    final RecognizedText recognizedText =
-        await textRecognizer.processImage(inputImage);
-
-    List<String> processedText =
-        _processTextRecognitionResult(recognizedText.blocks);
-
-    Map<String, dynamic> receiptInfo = extractReceiptInfo(processedText);
-
+    // Temp variable store data
     // Now you can access the extracted information
-    DateTime? receiptDateTime = receiptInfo['dateTime'];
-    String expensesRemark = receiptInfo['expensesRemark'];
-    double totalPrice = receiptInfo['totalPrice'];
-    // List<String> items = receiptInfo['items'];
+    DateTime? receiptDateTime;
+    String expensesRemark = "";
+    double totalPrice = -1;
+
+    // New method
+    if (MemberCache.isImageModelEnable) {
+      GeminiService geminiService = GeminiService(true);
+
+      String responseJson =
+          await geminiService.getReceiptDetails(selectedExpenses!.image!);
+
+      if (responseJson.isEmpty) {
+        showToast(customMessage: "Technical issue. Please try again later.");
+        return false;
+      }
+
+      // Remove until { for start and } for end
+      responseJson = responseJson.substring(responseJson.indexOf('{'));
+      responseJson =
+          responseJson.substring(0, responseJson.lastIndexOf('}') + 1);
+
+      Map<String, dynamic> response = jsonDecode(responseJson);
+      log(response.toString());
+
+      receiptDateTime = DateFormat("d/M/yyyy HH:mm")
+          .parse(response['datetime(d/M/yyyy HH:mm)']);
+
+      if (receiptDateTime.year < 2000) {
+        // Add year till exceed 2000
+        int tmpYear = receiptDateTime.year;
+        if (tmpYear < 100) {
+          tmpYear += 2000;
+        } else if (tmpYear < 2000) {
+          tmpYear += 1000;
+        }
+
+        receiptDateTime = DateTime(
+          tmpYear,
+          receiptDateTime.month,
+          receiptDateTime.day,
+          receiptDateTime.hour,
+          receiptDateTime.minute,
+        );
+      }
+
+      expensesRemark = response['storeName'] ?? "";
+      totalPrice = double.tryParse(response['total']) ?? 0;
+    }
+    // Old method
+    else {
+      // Perform OCR to extract text
+      final textRecognizer = TextRecognizer();
+      final RecognizedText recognizedText =
+          await textRecognizer.processImage(inputImage);
+
+      List<String> processedText =
+          _processTextRecognitionResult(recognizedText.blocks);
+
+      Map<String, dynamic> receiptInfo = extractReceiptInfo(processedText);
+
+      // Now you can access the extracted information
+      receiptDateTime = receiptInfo['dateTime'];
+      expensesRemark = receiptInfo['expensesRemark'];
+      totalPrice = receiptInfo['totalPrice'];
+
+      // Close resource
+      textRecognizer.close();
+    }
 
     // Use the extracted information as needed
     dev.log('Date and Time: ${receiptDateTime?.toString() ?? 'Not found'}');
     dev.log('Expenses Remark: $expensesRemark');
     dev.log('Total Price: \$${totalPrice.toStringAsFixed(2)}');
-    // dev.log('Items:');
-    // for (String item in items) {
-    //   dev.log('  $item');
-    // }
 
     if (checkIfExtractUsefulData(
       description: expensesRemark,
@@ -100,17 +155,15 @@ class ReceiptScannerController extends FxController {
       selectedExpenses!.description = expensesRemark;
       selectedExpenses!.amount = totalPrice;
       selectedExpenses!.expensesDate = receiptDateTime ?? DateTime.now();
+
+      return true;
     } else {
       // Handle invalid data
       dev.log('Invalid data extracted from receipt');
       showToast(customMessage: "Failed to extract data from receipt");
+
+      return false;
     }
-
-    // Close resource
-    textRecognizer.close();
-
-    // Perform OCR
-    return true;
   }
 
   List<String> _processTextRecognitionResult(List<TextBlock> blocks) {
@@ -367,7 +420,7 @@ class ReceiptScannerController extends FxController {
 
     if (validateEmptyString(description)) {
       isUseful = true;
-    } else if (validateDouble(amount)) {
+    } else if (amount != "-1" && validateDouble(amount)) {
       isUseful = true;
     } else if (validateDateTime(date)) {
       isUseful = true;

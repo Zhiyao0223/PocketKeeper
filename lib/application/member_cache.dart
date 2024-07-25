@@ -26,8 +26,9 @@ class MemberCache {
   static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  // Gemini Tuned Model for Auto Categorizing
-  static bool isGeminiTunedModelEnable = false;
+  // Tuned Model for Auto Categorizing
+  static bool isTunedModelEnable = false;
+  static bool isImageModelEnable = true;
 
   // This function is to initialize login
   static Future<void> initLogin() async {
