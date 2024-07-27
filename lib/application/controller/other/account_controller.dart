@@ -43,6 +43,11 @@ class AccountController extends FxController {
           expenseService.getExpensesByAccountId(accounts[i].accountName);
     }
 
+    // Sort expenses by date
+    accountExpenses.forEach((key, value) {
+      value.sort((a, b) => b.expensesDate.compareTo(a.expensesDate));
+    });
+
     currentMonth = DateTime.now().month.toMonthString();
 
     isDataFetched = true;

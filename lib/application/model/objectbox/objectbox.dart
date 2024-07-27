@@ -29,15 +29,6 @@ class ObjectBox {
     // Define the database directory
     final dbDir = Directory(p.join(docsDir.path, "pocketkeeper"));
 
-    // Delete previous database
-    // if (await dbDir.exists()) {
-    //   try {
-    //     await dbDir.delete(recursive: true);
-    //   } catch (e) {
-    //     log("Error deleting database directory: $e");
-    //   }
-    // }
-
     // Create new database
     final store = await openStore(
       directory: dbDir.path,
@@ -299,7 +290,7 @@ class ObjectBox {
         tmpTargetAmount: 1000,
         tmpDescription: "New phone",
         tmpIconHex: Icons.phone.codePoint,
-        dueDate: DateTime(2024, 7, 24, 10, 33, 30, 0, 0),
+        dueDate: DateTime(2024, 8, 24, 10, 33, 30, 0, 0),
         tmpStatus: 0,
       ),
       ExpenseGoal(
@@ -319,9 +310,9 @@ class ObjectBox {
         tmpStatus: 0,
       ),
       ExpenseGoal(
-        tmpCurrentAmount: 10000,
-        tmpTargetAmount: 10000,
-        tmpDescription: "New house",
+        tmpCurrentAmount: 1000,
+        tmpTargetAmount: 1000,
+        tmpDescription: "New bicycle",
         tmpIconHex: Icons.home.codePoint,
         dueDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
         tmpUpdatedDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
@@ -410,7 +401,7 @@ class ObjectBox {
     // Expenses
     Expenses expense1 = Expenses(
       tmpAmount: 10,
-      tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
+      tmpExpensesDate: DateTime(2024, 7, 24, 10, 33, 30, 0, 0),
       tmpDescription: "Lunch",
       tmpExpensesType: 0,
       tmpStatus: 0,
@@ -420,7 +411,7 @@ class ObjectBox {
 
     Expenses expense2 = Expenses(
       tmpAmount: 20,
-      tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
+      tmpExpensesDate: DateTime(2024, 7, 23, 10, 33, 30, 0, 0),
       tmpDescription: "Daily grocery",
       tmpExpensesType: 0,
       tmpStatus: 0,
@@ -430,7 +421,7 @@ class ObjectBox {
 
     Expenses expense3 = Expenses(
       tmpAmount: 120,
-      tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
+      tmpExpensesDate: DateTime(2024, 7, 24, 10, 33, 30, 0, 0),
       tmpDescription: "Topup RapidKL card",
       tmpExpensesType: 0,
       tmpStatus: 0,
@@ -440,7 +431,7 @@ class ObjectBox {
 
     Expenses expense4 = Expenses(
       tmpAmount: 30,
-      tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
+      tmpExpensesDate: DateTime(2024, 7, 26, 10, 33, 30, 0, 0),
       tmpDescription: "T-Shirt",
       tmpExpensesType: 0,
       tmpStatus: 0,
@@ -450,7 +441,7 @@ class ObjectBox {
 
     Expenses expense5 = Expenses(
       tmpAmount: 500,
-      tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
+      tmpExpensesDate: DateTime(2024, 7, 26, 10, 33, 30, 0, 0),
       tmpDescription: "Movie",
       tmpExpensesType: 0,
       tmpStatus: 0,
@@ -458,18 +449,131 @@ class ObjectBox {
     expense5.category.target = categories[4];
     expense5.account.target = accounts[0];
 
+    // For August
+    Expenses expense6 = Expenses(
+      tmpAmount: 10,
+      tmpExpensesDate: DateTime(2024, 8, 5, 10, 33, 30, 0, 0),
+      tmpDescription: "Lunch",
+      tmpExpensesType: 0,
+      tmpStatus: 0,
+    );
+    expense6.category.target = categories[0];
+    expense6.account.target = accounts[0];
+
+    Expenses expense7 = Expenses(
+      tmpAmount: 20,
+      tmpExpensesDate: DateTime(2024, 8, 3, 10, 33, 30, 0, 0),
+      tmpDescription: "Daily grocery",
+      tmpExpensesType: 0,
+      tmpStatus: 0,
+    );
+    expense7.category.target = categories[1];
+    expense7.account.target = accounts[0];
+
+    Expenses expense8 = Expenses(
+      tmpAmount: 120,
+      tmpExpensesDate: DateTime(2024, 8, 3, 10, 33, 30, 0, 0),
+      tmpDescription: "Rent car",
+      tmpExpensesType: 0,
+      tmpStatus: 0,
+    );
+    expense8.category.target = categories[2];
+    expense8.account.target = accounts[0];
+
+    Expenses expense9 = Expenses(
+      tmpAmount: 30,
+      tmpExpensesDate: DateTime(2024, 8, 6, 10, 33, 30, 0, 0),
+      tmpDescription: "T-Shirt",
+      tmpExpensesType: 0,
+      tmpStatus: 0,
+    );
+    expense9.category.target = categories[3];
+    expense9.account.target = accounts[0];
+
+    Expenses expense10 = Expenses(
+      tmpAmount: 500,
+      tmpExpensesDate: DateTime(2024, 8, 5, 10, 33, 30, 0, 0),
+      tmpDescription: "Movie",
+      tmpExpensesType: 0,
+      tmpStatus: 0,
+    );
+    expense10.category.target = categories[4];
+    expense10.account.target = accounts[0];
+
+    // For June
+    Expenses expense11 = Expenses(
+      tmpAmount: 10,
+      tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
+      tmpDescription: "Lunch",
+      tmpExpensesType: 0,
+      tmpStatus: 0,
+    );
+
+    expense11.category.target = categories[0];
+    expense11.account.target = accounts[0];
+
+    Expenses expense12 = Expenses(
+      tmpAmount: 20,
+      tmpExpensesDate: DateTime(2024, 6, 23, 10, 33, 30, 0, 0),
+      tmpDescription: "Daily grocery",
+      tmpExpensesType: 0,
+      tmpStatus: 0,
+    );
+    expense12.category.target = categories[1];
+    expense12.account.target = accounts[0];
+
+    Expenses expense13 = Expenses(
+      tmpAmount: 120,
+      tmpExpensesDate: DateTime(2024, 6, 20, 10, 33, 30, 0, 0),
+      tmpDescription: "Topup Grab Wallet",
+      tmpExpensesType: 0,
+      tmpStatus: 0,
+    );
+    expense13.category.target = categories[2];
+    expense13.account.target = accounts[0];
+
+    Expenses expense14 = Expenses(
+      tmpAmount: 30,
+      tmpExpensesDate: DateTime(2024, 6, 26, 10, 33, 30, 0, 0),
+      tmpDescription: "T-Shirt",
+      tmpExpensesType: 0,
+      tmpStatus: 0,
+    );
+    expense14.category.target = categories[3];
+    expense14.account.target = accounts[0];
+
+    Expenses expense15 = Expenses(
+      tmpAmount: 500,
+      tmpExpensesDate: DateTime(2024, 6, 26, 10, 33, 30, 0, 0),
+      tmpDescription: "Movie",
+      tmpExpensesType: 0,
+      tmpStatus: 0,
+    );
+    expense15.category.target = categories[4];
+    expense15.account.target = accounts[0];
+
     store.box<Expenses>().putMany([
       expense1,
       expense2,
       expense3,
       expense4,
       expense5,
+      expense6,
+      expense7,
+      expense8,
+      expense9,
+      expense10,
+      expense11,
+      expense12,
+      expense13,
+      expense14,
+      expense15,
     ]);
 
     // Income
     Expenses income1 = Expenses(
       tmpAmount: 4000,
-      tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
+      tmpExpensesDate: DateTime(2024, 7, 29, 10, 33, 30, 0, 0),
       tmpDescription: "Salary",
       tmpExpensesType: 1,
       tmpStatus: 0,
@@ -479,7 +583,7 @@ class ObjectBox {
 
     Expenses income2 = Expenses(
       tmpAmount: 1000,
-      tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
+      tmpExpensesDate: DateTime(2024, 7, 30, 10, 33, 30, 0, 0),
       tmpDescription: "KPI Bonus",
       tmpExpensesType: 1,
       tmpStatus: 0,
@@ -489,7 +593,7 @@ class ObjectBox {
 
     Expenses income3 = Expenses(
       tmpAmount: 200,
-      tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
+      tmpExpensesDate: DateTime(2024, 8, 1, 10, 33, 30, 0, 0),
       tmpDescription: "Gift from friend",
       tmpExpensesType: 1,
       tmpStatus: 0,
@@ -497,10 +601,78 @@ class ObjectBox {
     income3.category.target = categories[18];
     income3.account.target = accounts[1];
 
+    // For August
+    Expenses income4 = Expenses(
+      tmpAmount: 4000,
+      tmpExpensesDate: DateTime(2024, 8, 29, 10, 33, 30, 0, 0),
+      tmpDescription: "Salary",
+      tmpExpensesType: 1,
+      tmpStatus: 0,
+    );
+    income4.category.target = categories[16];
+    income4.account.target = accounts[1];
+
+    Expenses income5 = Expenses(
+      tmpAmount: 1000,
+      tmpExpensesDate: DateTime(2024, 8, 30, 10, 33, 30, 0, 0),
+      tmpDescription: "Commission",
+      tmpExpensesType: 1,
+      tmpStatus: 0,
+    );
+    income5.category.target = categories[17];
+    income5.account.target = accounts[1];
+
+    Expenses income6 = Expenses(
+      tmpAmount: 200,
+      tmpExpensesDate: DateTime(2024, 8, 1, 10, 33, 30, 0, 0),
+      tmpDescription: "Stock Investment",
+      tmpExpensesType: 1,
+      tmpStatus: 0,
+    );
+    income6.category.target = categories[19];
+    income6.account.target = accounts[1];
+
+    // For June
+    Expenses income7 = Expenses(
+      tmpAmount: 4000,
+      tmpExpensesDate: DateTime(2024, 6, 29, 10, 33, 30, 0, 0),
+      tmpDescription: "Salary",
+      tmpExpensesType: 1,
+      tmpStatus: 0,
+    );
+    income7.category.target = categories[16];
+    income7.account.target = accounts[1];
+
+    Expenses income8 = Expenses(
+      tmpAmount: 1000,
+      tmpExpensesDate: DateTime(2024, 6, 30, 10, 33, 30, 0, 0),
+      tmpDescription: "Bonus",
+      tmpExpensesType: 1,
+      tmpStatus: 0,
+    );
+    income8.category.target = categories[17];
+    income8.account.target = accounts[1];
+
+    Expenses income9 = Expenses(
+      tmpAmount: 200,
+      tmpExpensesDate: DateTime(2024, 6, 1, 10, 33, 30, 0, 0),
+      tmpDescription: "Gift from family",
+      tmpExpensesType: 1,
+      tmpStatus: 0,
+    );
+    income9.category.target = categories[18];
+    income9.account.target = accounts[1];
+
     store.box<Expenses>().putMany([
       income1,
       income2,
       income3,
+      income4,
+      income5,
+      income6,
+      income7,
+      income8,
+      income9,
     ]);
   }
 
