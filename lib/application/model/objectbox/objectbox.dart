@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:pocketkeeper/application/expense_cache.dart';
 import 'package:pocketkeeper/application/member_cache.dart';
 import 'package:pocketkeeper/application/model/category.dart';
 import 'package:pocketkeeper/application/model/enum/notification_type.dart';
@@ -14,6 +15,10 @@ import 'package:pocketkeeper/application/model/goal_saving_record.dart';
 import 'package:pocketkeeper/application/model/money_account.dart';
 import 'package:pocketkeeper/application/model/notification.dart';
 import 'package:pocketkeeper/application/model/role.dart';
+import 'package:pocketkeeper/application/service/account_service.dart';
+import 'package:pocketkeeper/application/service/category_service.dart';
+import 'package:pocketkeeper/application/service/expense_service.dart';
+import 'package:pocketkeeper/application/service/goal_saving_record_service.dart';
 import 'objectbox.g.dart';
 
 class ObjectBox {
@@ -252,6 +257,7 @@ class ObjectBox {
     store.box<Expenses>().removeAll();
     store.box<ExpenseGoal>().removeAll();
     store.box<ExpenseLimit>().removeAll();
+    store.box<GoalSavingRecord>().removeAll();
 
     // Give dummy data
     // Account
@@ -674,6 +680,17 @@ class ObjectBox {
       income8,
       income9,
     ]);
+
+    // Store into cache
+    ExpenseCache.accounts = AccountService().getAllActiveAccounts();
+    ExpenseCache.incomeCategories = CategoryService().getIncomeCategories();
+    ExpenseCache.expenseCategories = CategoryService().getExpenseCategories();
+    ExpenseCache.expenseGoals = expenseGoals;
+    ExpenseCache.expenseLimits = store.box<ExpenseLimit>().getAll();
+    ExpenseCache.expenses = ExpenseService().getAllActiveExpenses();
+    ExpenseCache.incomes = ExpenseService().getAllActiveIncomes();
+    ExpenseCache.goalSavingRecords =
+        GoalSavingRecordService().getAllActiveRecords();
   }
 
   /// Close the store.

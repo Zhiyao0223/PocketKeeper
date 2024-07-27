@@ -51,7 +51,8 @@ class GoalSavingRecordService extends ObjectboxService<GoalSavingRecord> {
     for (final GoalSavingRecord record in records) {
       // Exist in list and date is earlier
       if (lastContribution.containsKey(record.goal.target!.goalId) &&
-          lastContribution[record.id]!.isAfter(record.savingDate)) {
+          lastContribution[record.goal.target!.goalId]!
+              .isAfter(record.savingDate)) {
         continue;
       }
 
