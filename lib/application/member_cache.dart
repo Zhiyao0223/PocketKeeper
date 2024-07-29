@@ -12,7 +12,7 @@ class MemberCache {
   static Users? user;
 
   static String? oauthAccessToken =
-      "ya29.a0AXooCgt1PQotHM4kOzdg1tOq4BRxnFkYeiJVgKyk45KU2aGtD6cFXIkIh5EKLKmj70E2GPQZPcVols1GvAXvKJFKsRvOD0UqqootuAi-5JTIUV8yxzj6Zxf79521qdWh0bUGwW8oiFXS3xRE0qHs5tem_AtXnY323EA4aCgYKAf8SARASFQHGX2MiMnS_5Ap179nCE0NC4TqqyA0171";
+      "ya29.a0AXooCgvHzsqzYzLoXl_nbykdnyJ7bvecHGaltV--KnC4yK49NtSymtKnwslYZ8MCpzC1Myv_4kp8dRIOQl01HZAeTC-EmpZFizVuuUQ_bvp-CRucT580KqXFWfCqwBNkOJuJu5QdtaxWNqAi5yZH9XOzkxvtdITxsG7YaCgYKAeUSARASFQHGX2Mi6OzscmYD7NoR187UcK0rLA0171";
 
   static AppSetting? appSetting;
 
@@ -27,7 +27,7 @@ class MemberCache {
       FlutterLocalNotificationsPlugin();
 
   // Tuned Model for Auto Categorizing
-  static bool isTunedModelEnable = false;
+  static bool isTunedModelEnable = true;
   static bool isImageModelEnable = true;
 
   // This function is to initialize login

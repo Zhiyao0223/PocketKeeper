@@ -87,6 +87,7 @@ class AnalyticController extends FxController {
       // Filter by week
       DateTime startDate = now.subtract(Duration(days: now.weekday - 1));
       DateTime endDate = startDate.add(const Duration(days: 6));
+      DateTime endOfMonthForStartDate = DateTime(now.year, now.month + 1, 0);
 
       lineGraphTitle =
           "${startDate.day} ${startDate.month.toMonthString(true)} - ${endDate.day} ${endDate.month.toMonthString(true)}";
@@ -97,15 +98,22 @@ class AnalyticController extends FxController {
       expenseService
           .getTotalExpensesByDay(startDate, endDate)
           .forEach((key, value) {
-        expenseslineGraphSpot
-            .add(FlSpot((key - startDate.day).toDouble(), value));
+        // Get difference between start date and key
+        int diff = (key - startDate.day) >= 0
+            ? key - startDate.day + 1
+            : endOfMonthForStartDate.day - startDate.day + key + 1;
+
+        expenseslineGraphSpot.add(FlSpot(diff.toDouble(), value));
       });
 
       expenseService
           .getTotalIncomeByDay(startDate, endDate)
           .forEach((key, value) {
-        incomeLineGraphSpot
-            .add(FlSpot((key - startDate.day).toDouble(), value));
+        int diff = (key - startDate.day) >= 0
+            ? key - startDate.day + 1
+            : endOfMonthForStartDate.day - startDate.day + key + 1;
+
+        incomeLineGraphSpot.add(FlSpot(diff.toDouble(), value));
       });
 
       // Add remaining as 0

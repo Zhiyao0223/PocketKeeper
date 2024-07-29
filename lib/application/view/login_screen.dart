@@ -79,8 +79,6 @@ class _LoginScreenState extends State<LoginScreen>
               onVerticalDragDown: (_) =>
                   FocusManager.instance.primaryFocus?.unfocus(),
               child: SingleChildScrollView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
                 padding: EdgeInsets.symmetric(
                   horizontal: MediaQuery.of(context).size.width * 0.1,
                 ),

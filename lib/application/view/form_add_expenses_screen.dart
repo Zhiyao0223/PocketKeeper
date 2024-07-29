@@ -420,6 +420,7 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
                     minDate: DateTime(2000),
                     maxDate: DateTime(2100),
                     barrierLabel: 'Close',
+                    initialDate: controller.selectedDate,
                     currentDateDecoration: BoxDecoration(
                       // Underline border
                       border: Border(
@@ -534,7 +535,7 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
                   // Show time picker
                   showTimePicker(
                     context: context,
-                    initialTime: TimeOfDay.now(),
+                    initialTime: controller.getTimeOfDay(),
                     builder: (BuildContext context, Widget? child) {
                       return MediaQuery(
                         data: MediaQuery.of(context).copyWith(
@@ -791,17 +792,21 @@ class _FormAddExpensesState extends State<FormAddExpensesScreen>
 
             // Close screen
             if (value) {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const NavigationScreen(
-                      fromLogin: true,
-                      navigationIndex: 0,
-                    );
-                  },
-                ),
-                (route) => false,
-              );
+              if (controller.isEditing) {
+                Navigator.of(context).pop();
+              } else {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const NavigationScreen(
+                        fromLogin: true,
+                        navigationIndex: 0,
+                      );
+                    },
+                  ),
+                  (route) => false,
+                );
+              }
             }
           });
         },

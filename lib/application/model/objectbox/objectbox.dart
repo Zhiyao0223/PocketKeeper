@@ -406,7 +406,7 @@ class ObjectBox {
 
     // Expenses
     Expenses expense1 = Expenses(
-      tmpAmount: 10,
+      tmpAmount: 20,
       tmpExpensesDate: DateTime(2024, 7, 24, 10, 33, 30, 0, 0),
       tmpDescription: "Lunch",
       tmpExpensesType: 0,
@@ -416,7 +416,7 @@ class ObjectBox {
     expense1.account.target = accounts[0];
 
     Expenses expense2 = Expenses(
-      tmpAmount: 20,
+      tmpAmount: 30,
       tmpExpensesDate: DateTime(2024, 7, 23, 10, 33, 30, 0, 0),
       tmpDescription: "Daily grocery",
       tmpExpensesType: 0,
@@ -426,7 +426,7 @@ class ObjectBox {
     expense2.account.target = accounts[0];
 
     Expenses expense3 = Expenses(
-      tmpAmount: 120,
+      tmpAmount: 100,
       tmpExpensesDate: DateTime(2024, 7, 24, 10, 33, 30, 0, 0),
       tmpDescription: "Topup RapidKL card",
       tmpExpensesType: 0,
@@ -436,7 +436,7 @@ class ObjectBox {
     expense3.account.target = accounts[0];
 
     Expenses expense4 = Expenses(
-      tmpAmount: 30,
+      tmpAmount: 70,
       tmpExpensesDate: DateTime(2024, 7, 26, 10, 33, 30, 0, 0),
       tmpDescription: "T-Shirt",
       tmpExpensesType: 0,
@@ -446,7 +446,7 @@ class ObjectBox {
     expense4.account.target = accounts[0];
 
     Expenses expense5 = Expenses(
-      tmpAmount: 500,
+      tmpAmount: 50,
       tmpExpensesDate: DateTime(2024, 7, 26, 10, 33, 30, 0, 0),
       tmpDescription: "Movie",
       tmpExpensesType: 0,
@@ -457,7 +457,7 @@ class ObjectBox {
 
     // For August
     Expenses expense6 = Expenses(
-      tmpAmount: 10,
+      tmpAmount: 25,
       tmpExpensesDate: DateTime(2024, 8, 5, 10, 33, 30, 0, 0),
       tmpDescription: "Lunch",
       tmpExpensesType: 0,
@@ -467,7 +467,7 @@ class ObjectBox {
     expense6.account.target = accounts[0];
 
     Expenses expense7 = Expenses(
-      tmpAmount: 20,
+      tmpAmount: 42,
       tmpExpensesDate: DateTime(2024, 8, 3, 10, 33, 30, 0, 0),
       tmpDescription: "Daily grocery",
       tmpExpensesType: 0,
@@ -487,9 +487,9 @@ class ObjectBox {
     expense8.account.target = accounts[0];
 
     Expenses expense9 = Expenses(
-      tmpAmount: 30,
+      tmpAmount: 65,
       tmpExpensesDate: DateTime(2024, 8, 6, 10, 33, 30, 0, 0),
-      tmpDescription: "T-Shirt",
+      tmpDescription: "Stocking",
       tmpExpensesType: 0,
       tmpStatus: 0,
     );
@@ -497,9 +497,9 @@ class ObjectBox {
     expense9.account.target = accounts[0];
 
     Expenses expense10 = Expenses(
-      tmpAmount: 500,
+      tmpAmount: 70,
       tmpExpensesDate: DateTime(2024, 8, 5, 10, 33, 30, 0, 0),
-      tmpDescription: "Movie",
+      tmpDescription: "Exhibition ticket",
       tmpExpensesType: 0,
       tmpStatus: 0,
     );
@@ -508,9 +508,9 @@ class ObjectBox {
 
     // For June
     Expenses expense11 = Expenses(
-      tmpAmount: 10,
+      tmpAmount: 35,
       tmpExpensesDate: DateTime(2024, 6, 24, 10, 33, 30, 0, 0),
-      tmpDescription: "Lunch",
+      tmpDescription: "Dinner",
       tmpExpensesType: 0,
       tmpStatus: 0,
     );
@@ -519,7 +519,7 @@ class ObjectBox {
     expense11.account.target = accounts[0];
 
     Expenses expense12 = Expenses(
-      tmpAmount: 20,
+      tmpAmount: 18,
       tmpExpensesDate: DateTime(2024, 6, 23, 10, 33, 30, 0, 0),
       tmpDescription: "Daily grocery",
       tmpExpensesType: 0,
@@ -529,7 +529,7 @@ class ObjectBox {
     expense12.account.target = accounts[0];
 
     Expenses expense13 = Expenses(
-      tmpAmount: 120,
+      tmpAmount: 50,
       tmpExpensesDate: DateTime(2024, 6, 20, 10, 33, 30, 0, 0),
       tmpDescription: "Topup Grab Wallet",
       tmpExpensesType: 0,
@@ -541,7 +541,7 @@ class ObjectBox {
     Expenses expense14 = Expenses(
       tmpAmount: 30,
       tmpExpensesDate: DateTime(2024, 6, 26, 10, 33, 30, 0, 0),
-      tmpDescription: "T-Shirt",
+      tmpDescription: "Glove",
       tmpExpensesType: 0,
       tmpStatus: 0,
     );
@@ -549,9 +549,9 @@ class ObjectBox {
     expense14.account.target = accounts[0];
 
     Expenses expense15 = Expenses(
-      tmpAmount: 500,
+      tmpAmount: 140,
       tmpExpensesDate: DateTime(2024, 6, 26, 10, 33, 30, 0, 0),
-      tmpDescription: "Movie",
+      tmpDescription: "Party",
       tmpExpensesType: 0,
       tmpStatus: 0,
     );

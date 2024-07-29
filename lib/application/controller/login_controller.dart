@@ -41,8 +41,8 @@ class LoginController extends FxController {
     super.initState();
 
     // Initialize controller
-    emailController = TextEditingController(text: "xiaowu0223@gmail.com");
-    passwordController = TextEditingController(text: "test@123");
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
 
     fetchData();
   }
@@ -95,9 +95,14 @@ class LoginController extends FxController {
         );
 
         // Download image from server and store in cache
-        String imageUrl = backendImageUrl + apiResponse["body"]["image"];
-        XFile tmpImg = await downloadImageAsXFile(imageUrl) ??
+        XFile tmpImg =
             await loadAssetAsXFile("assets/images/user_placeholder.jpg");
+        if (apiResponse["body"]["image"] != null) {
+          String imageUrl = backendImageUrl + apiResponse["body"]["image"];
+          tmpImg = await downloadImageAsXFile(imageUrl) ??
+              await loadAssetAsXFile("assets/images/user_placeholder.jpg");
+        }
+
         tmpuser.setImage(tmpImg);
 
         await onSuccessLogin(tmpuser);
@@ -163,7 +168,6 @@ class LoginController extends FxController {
     // Store share preferences if is valid user
     if (responseJson["status"] == 200) {
       Users tmpuser = Users(
-        tmpId: int.parse(responseJson["body"]["user_id"]),
         tmpName: responseJson["body"]["username"],
         tmpEmail: responseJson["body"]["email"],
         tmpStatus: int.parse(responseJson["body"]["status"]),
@@ -260,9 +264,6 @@ class LoginController extends FxController {
     // Reset id to 0 before put into objectbox
     user.id = 0;
     UserService().put(user);
-
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // await prefs.setString("user_id", user.id.toString());
   }
 
   //

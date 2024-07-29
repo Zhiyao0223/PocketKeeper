@@ -1,11 +1,14 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pocketkeeper/widget/show_toast.dart';
 
 class AppPermission {
   // Initialize (First time)
   static Future<void> init() async {
     await Permission.camera.request();
     await Permission.notification.request();
+    await Permission.storage.request();
+    await Permission.manageExternalStorage.request();
   }
 
   // Go to settings to enable permission
@@ -35,5 +38,21 @@ class AppPermission {
     }
 
     return false;
+  }
+
+  static Future<bool> requestStoragePermission() async {
+    if (await Permission.manageExternalStorage.isGranted) {
+      return true;
+    }
+
+    PermissionStatus statuses =
+        await Permission.manageExternalStorage.request();
+
+    if (statuses == PermissionStatus.denied) {
+      showToast(
+        customMessage: "App may malfunction without granted permissions",
+      );
+    }
+    return statuses == PermissionStatus.granted;
   }
 }

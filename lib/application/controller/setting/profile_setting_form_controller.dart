@@ -60,7 +60,7 @@ class ProfileSettingFormController extends FxController {
         appbarTitle = "Change Password";
         break;
       case 2:
-        appbarTitle = "Link / Unlink Discord";
+        appbarTitle = "Link Discord";
     }
 
     // Set default value
@@ -181,7 +181,7 @@ class ProfileSettingFormController extends FxController {
 
       // Store share preferences if is valid user
       if (responseJson["status"] == 200) {
-        log("Link / unlink discord successful! Code: ${responseJson['body']['code']}");
+        log("Link discord successful! Code: ${responseJson['body']['code']}");
         return responseJson['body']["code"];
       }
     } catch (e) {

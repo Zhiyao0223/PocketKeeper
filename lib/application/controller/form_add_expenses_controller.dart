@@ -312,6 +312,11 @@ class FormAddExpensesController extends FxController {
     update();
   }
 
+  // Get time of day from selected date
+  TimeOfDay getTimeOfDay() {
+    return TimeOfDay(hour: selectedDate.hour, minute: selectedDate.minute);
+  }
+
   @override
   String getTag() {
     return "FormAddExpensesController";

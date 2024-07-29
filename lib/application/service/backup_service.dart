@@ -15,6 +15,7 @@ import 'package:pocketkeeper/application/service/goal_saving_record_service.dart
 import 'package:pocketkeeper/application/service/google_drive_service.dart';
 import 'package:pocketkeeper/application/service/notification_service.dart';
 import 'package:pocketkeeper/application/service/user_service.dart';
+import 'package:pocketkeeper/utils/app_permission.dart';
 import 'package:pocketkeeper/utils/custom_function.dart';
 import 'package:pocketkeeper/widget/show_toast.dart';
 
@@ -109,10 +110,20 @@ class BackupService {
       String jsonData = convertListToJSON(data);
 
       // Write CSV data to the file
-      await file.writeAsString(jsonData);
+      try {
+        await AppPermission.requestStoragePermission();
 
-      // Open google drive
-      status = await googleDriveService.uploadFile(file);
+        await file.writeAsString(jsonData);
+
+        // Open google drive
+        status = await googleDriveService.uploadFile(file);
+      } catch (e) {
+        log('Error: $e');
+        showToast(
+          customMessage: "Error writing to file. Please try again.",
+        );
+        return false;
+      }
     }
 
     return status;
@@ -131,8 +142,19 @@ class BackupService {
     // Convert data to CSV string
     String csvData = convertListToCSV(tmpData);
 
-    //Write CSV data to the file
-    await file.writeAsString(csvData);
+    try {
+      await AppPermission.requestStoragePermission();
+
+      //Write CSV data to the file
+      await file.writeAsString(csvData);
+    } catch (e) {
+      log('Error: $e');
+      showToast(
+        customMessage: "Error writing to file. Please try again.",
+      );
+      return false;
+    }
+    // await file.writeAsString(csvData);
 
     log('Data exported to CSV file: ${file.path}');
     showToast(
