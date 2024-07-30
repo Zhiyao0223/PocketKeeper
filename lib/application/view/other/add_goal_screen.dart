@@ -201,7 +201,7 @@ class _AddGoalScreenState extends State<AddGoalScreen>
           onPressed: () {
             controller.submitGoal().then((value) {
               if (value) {
-                showToast(customMessage: "Account saved successfully");
+                showToast(customMessage: "Goal saved successfully");
 
                 if (widget.selectedGoal != null) {
                   Navigator.of(context)
