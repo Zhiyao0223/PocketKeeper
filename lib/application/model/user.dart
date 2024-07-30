@@ -27,7 +27,7 @@ class Users {
   @Property(type: PropertyType.date)
   late DateTime updatedDate;
 
-  final role = ToOne<Role>();
+  var role = ToOne<Role>();
 
   Users({
     int? tmpId,
@@ -61,6 +61,7 @@ class Users {
       'email': email,
       'password': password,
       'discordId': discordId,
+      'role': role.targetId,
       'status': status,
       'profilePicture':
           profilePicture != null ? base64Encode(profilePicture!) : null,
@@ -76,6 +77,7 @@ class Users {
     email = json['email'];
     password = json['password'];
     discordId = json['discordId'];
+    role = ToOne<Role>(targetId: json['role']);
     status = json['status'];
     profilePicture = json['profilePicture'] != null
         ? base64Decode(json['profilePicture'])

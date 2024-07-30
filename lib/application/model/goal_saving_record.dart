@@ -20,7 +20,7 @@ class GoalSavingRecord {
   late DateTime updatedDate;
 
   // Database use
-  final goal = ToOne<ExpenseGoal>();
+  var goal = ToOne<ExpenseGoal>();
 
   GoalSavingRecord({
     double? tmpAmount,
@@ -47,6 +47,7 @@ class GoalSavingRecord {
     return {
       'id': id,
       'amount': amount,
+      'goal': goal.targetId,
       'syncStatus': syncStatus,
       'status': status,
       'savingDate': savingDate.toIso8601String(),
@@ -59,6 +60,7 @@ class GoalSavingRecord {
   GoalSavingRecord.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     amount = json['amount'];
+    goal = ToOne<ExpenseGoal>(targetId: json['goal']);
     syncStatus = json['syncStatus'];
     status = json['status'];
     savingDate = DateTime.parse(json['savingDate']);

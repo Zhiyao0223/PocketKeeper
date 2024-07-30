@@ -16,7 +16,7 @@ class ExpenseLimit {
   @Property(type: PropertyType.date)
   late DateTime updatedDate;
 
-  final category = ToOne<Category>();
+  var category = ToOne<Category>();
 
   ExpenseLimit({
     double? tmpAmount,
@@ -41,6 +41,7 @@ class ExpenseLimit {
     return {
       'id': id,
       'amount': amount,
+      'category': category.target!.id,
       'syncStatus': syncStatus,
       'status': status,
       'createdDate': createdDate.toIso8601String(),
@@ -52,6 +53,7 @@ class ExpenseLimit {
   ExpenseLimit.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     amount = json['amount'];
+    category = ToOne<Category>(targetId: json['category']);
     syncStatus = json['syncStatus'];
     status = json['status'];
     createdDate = DateTime.parse(json['createdDate']);

@@ -34,9 +34,9 @@ class Expenses {
   late DateTime updatedDate;
 
   // Database use
-  final user = ToOne<Users>();
-  final category = ToOne<Category>();
-  final account = ToOne<Accounts>();
+  var user = ToOne<Users>();
+  var category = ToOne<Category>();
+  var account = ToOne<Accounts>();
 
   Expenses({
     double? tmpAmount,
@@ -83,6 +83,9 @@ class Expenses {
       'description': description,
       'amount': amount,
       'expensesType': expensesType,
+      'account': account.target!.id,
+      'category': category.target!.id,
+      'user': user.target!.id,
       'syncStatus': syncStatus,
       'status': status,
       'image': image,
@@ -104,6 +107,9 @@ class Expenses {
     expensesDate = DateTime.parse(json['expensesDate']);
     createdDate = DateTime.parse(json['createdDate']);
     updatedDate = DateTime.parse(json['updatedDate']);
+    account = ToOne<Accounts>(targetId: json['account']);
+    category = ToOne<Category>(targetId: json['category']);
+    user = ToOne<Users>(targetId: json['user']);
   }
 
   // From Server JSON

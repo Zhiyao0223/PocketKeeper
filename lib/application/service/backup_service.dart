@@ -176,14 +176,17 @@ class BackupService {
     Map<String, dynamic> jsonData = convertJSONToList(responseJson);
 
     // Breakdown data and add into respective tables
+    UserService().deleteAll();
+    UserService().restoreBackup(jsonData);
+
+    AccountService().deleteAll();
+    AccountService().restoreBackup(jsonData);
+
     ExpenseService().deleteAll();
     ExpenseService().restoreBackup(jsonData);
 
     AppSettingService().deleteAll();
     AppSettingService().restoreBackup(jsonData);
-
-    AccountService().deleteAll();
-    AccountService().restoreBackup(jsonData);
 
     ExpenseGoalService().deleteAll();
     ExpenseGoalService().restoreBackup(jsonData);
@@ -196,9 +199,6 @@ class BackupService {
 
     NotificationService().deleteAll();
     NotificationService().restoreBackup(jsonData);
-
-    UserService().deleteAll();
-    UserService().restoreBackup(jsonData);
 
     return true;
   }
