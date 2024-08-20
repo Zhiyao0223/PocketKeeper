@@ -12,6 +12,12 @@ class ExpenseService extends ObjectboxService<Expenses> {
   // Get all expenses / income that are not deleted
   List<Expenses> getAllActiveRecords() {
     final List<Expenses> expenses = getAll();
+
+    // Replace null target with current user
+    for (final Expenses expense in expenses) {
+      expense.user.target ??= MemberCache.user;
+    }
+
     return expenses
         .where((Expenses expense) =>
             expense.status == 0 &&
@@ -21,6 +27,12 @@ class ExpenseService extends ObjectboxService<Expenses> {
 
   List<Expenses> getAllActiveIncomes() {
     final List<Expenses> expenses = getAll();
+
+    // Replace null target with current user
+    for (final Expenses expense in expenses) {
+      expense.user.target ??= MemberCache.user;
+    }
+
     return expenses
         .where((Expenses expense) =>
             expense.status == 0 &&
@@ -31,6 +43,12 @@ class ExpenseService extends ObjectboxService<Expenses> {
 
   List<Expenses> getAllActiveExpenses() {
     final List<Expenses> expenses = getAll();
+
+    // Replace null target with current user
+    for (final Expenses expense in expenses) {
+      expense.user.target ??= MemberCache.user;
+    }
+
     return expenses
         .where((Expenses expense) =>
             expense.status == 0 &&

@@ -85,7 +85,7 @@ class Expenses {
       'expensesType': expensesType,
       'account': account.target!.id,
       'category': category.target!.id,
-      'user': user.target!.id,
+      'user': user.target?.id ?? MemberCache.user!.id,
       'syncStatus': syncStatus,
       'status': status,
       'image': image,
