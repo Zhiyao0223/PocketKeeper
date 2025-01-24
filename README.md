@@ -24,18 +24,39 @@ Welcome to PocketKeeper, a simple and intuitive personal finance management tool
 
 ## Installation
 
+Please have the following installed on your machine before running the application:
+```bash
+- Any IDE
+- Flutter
+- PHP
+- MySQL
+- Node.js
+- Python
+- Android SDK / Emulator (not required if use physical device)
+```
+
+To run locally:
 1. Clone the repository: `git clone https://github.com/Zhiyao0223/PocketKeeper.git`
 2. Navigate to the project directory: `cd PocketKeeper`
 3. Install the dependencies: `flutter pub get`
 4. Start the application: `flutter run`
 
+To test application:
+1. Download .apk
+2. Install on your phone and launch!
+
 ## Usage
 
-1. Open PocketKeeper in your desired emulator or mobile deviecs.
-2. Sign up for a new account or log in if you already have one.
-3. Start adding your expenses and income to track your financial activities.
-4. Explore the various features and tools available to manage your finances effectively.
+PocketKeeper
+- This is the main project that contains the Flutter mobile application for PocketKeeper. It is a smart mobile expenses tracking application integrates with various advance features such as Firebase, Google Cloud Platform (GCP), Natural Language Processing (NLP), Optical Character Recognition (OCR) and more.
+
+Discord Bot
+- This is a Discord bot project that integrates with PocketKeeper mobile application and provides users with the ability to add their expenses / incomes through Discord.
+
+Backend
+- Contains backend server project that connects the Flutter mobile application with the MySQL database. Function such as login, register and so on are being done here.
+- Contains Python machine learning model and dataset for the Natural Language Processing (NLP) features in PocketKeeper.
 
 ## Contact
 
-If you have any questions or suggestions, feel free to reach out to us at zhiyao0223@gmail.com
+If you have any questions or suggestions, feel free to reach out to me at zhiyao0223@gmail.com
