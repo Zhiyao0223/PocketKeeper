@@ -1,3 +1,6 @@
 [submodule "FYP-Discord-Bot"]
 	path = FYP-Discord-Bot
 	url = https://github.com/Zhiyao0223/FYP-Discord-Bot.git
+[submodule "PocketKeeper-Backend"]
+	path = PocketKeeper-Backend
+	url = https://github.com/Zhiyao0223/PocketKeeper-Backend.git
